@@ -1,5 +1,5 @@
-import { getApp, getApps, initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
+import { getApp, getApps, initializeApp } from 'firebase/app';
+import { Auth, getAuth, onAuthStateChanged, User } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -10,8 +10,17 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp()
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-const auth = getAuth(app)
+const auth = getAuth(app);
 
-export { app, auth }
+function getCurrentUser(auth: Auth): Promise<User | null> {
+  return new Promise<User | null>((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      unsubscribe();
+      resolve(user);
+    }, reject);
+  });
+}
+
+export { app, auth, getCurrentUser };

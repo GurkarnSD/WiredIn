@@ -25,15 +25,32 @@ const Login: React.FC = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        signInWithEmailAndPassword(loginForm.email.toLowerCase(), loginForm.password);
+        console.log(loginForm)
+
+        signInWithEmailAndPassword(loginForm.email.toLowerCase(), loginForm.password)
+            .then((userCredential) => {
+                const user = userCredential?.user;
+
+                if (user) {
+                    console.log('Login success:', user);
+                    // Redirect to a success page or perform other actions
+                } else {
+                    console.log('Login error:', userCredential);
+                    // Handle login error, show error message, etc.
+                }
+            })
+            .catch((error) => {
+                console.log('Login error:', error);
+                // Handle login error, show error message, etc.
+            });
     }
 
     return (
         <div className={styles.login}>
             <div className={styles.wiredIn}>WiredIn</div>
             <form className={styles.inputForm} onSubmit={handleSubmit}>
-                <input className={styles.input} type="text" placeholder="Email" onChange={handleChange} />
-                <input className={styles.input} type="password" placeholder="Password" onChange={handleChange} />
+                <input className={styles.input} type="text" placeholder="Email" name="email" onChange={handleChange} />
+                <input className={styles.input} type="password" placeholder="Password" name="password" onChange={handleChange} />
                 <button className={styles.loginButton} type='submit'>Log In</button>
                 <div className={styles.divider}>
                     <div className={styles.dividerLine}></div>
