@@ -12,6 +12,20 @@
   padding-right: 125px;
 }
 
+.loggedIn {
+  height: 500px;
+  width: 600px;
+  border-radius: 45px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  padding-left: 125px;
+  padding-right: 125px;
+}
+
 .wiredIn {
   color: #000000;
   font-weight: 800;
@@ -19,6 +33,12 @@
 }
 
 .inputForm {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+}
+
+.loggedInInfo {
   display: flex;
   flex-direction: column;
   margin-top: 30px;
@@ -55,6 +75,25 @@
   color: #ffffff;
 }
 
+.loginButton:hover {
+  cursor: pointer;
+}
+
+.logoutButton {
+  width: 400px;
+  height: 50px;
+  background-color: #ff4444;
+  border-radius: 15px;
+  border: none;
+  font-size: 25px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.logoutButton:hover {
+  cursor: pointer;
+}
+
 .divider {
   display: flex;
   align-items: center;
@@ -72,6 +111,7 @@
 .dividerText {
   font-size: 25px;
   font-weight: 800;
+  color: #000000;
 }
 
 .googleButton {
@@ -117,4 +157,26 @@
 
 .signup {
   color: #0096ff;
+}
+
+.currentUser {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.profilePic {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  margin-right: 40px;
+  background-color: #ffffff;
+}
+
+.displayName {
+  font-weight: 800;
+  font-size: 36px;
+  color: #000000;
+  text-align: center;
 }

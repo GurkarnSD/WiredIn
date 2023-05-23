@@ -1,11 +1,17 @@
-'use client';
 import styles from './styles/Login.module.css'
 import Link from 'next/link'
 import { useState } from 'react';
 import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth'
 import { auth } from '@/lib/firebase/app'
+import { useRouter } from 'next/navigation';
+import { User } from 'firebase/auth';
+import Image from 'next/image';
+import defaultProfile from '@/assets/defaultProfilePic.png'
 
-const Login: React.FC = () => {
+export default function Login(props: { user: User | null }) {
+    const user: User | null = props.user
+
+    const router = useRouter();
 
     const [loginForm, setLoginForm] = useState({
         email: '',
@@ -33,7 +39,7 @@ const Login: React.FC = () => {
 
                 if (user) {
                     console.log('Login success:', user);
-                    // Redirect to a success page or perform other actions
+                    router.push('/')
                 } else {
                     console.log('Login error:', userCredential);
                     // Handle login error, show error message, etc.
@@ -43,6 +49,21 @@ const Login: React.FC = () => {
                 console.log('Login error:', error);
                 // Handle login error, show error message, etc.
             });
+    }
+
+    if (user) {
+        return (
+            <div className={styles.loggedIn}>
+                <div className={styles.wiredIn}>WiredIn</div>
+                <form className={styles.loggedInInfo}>
+                    <div className={styles.currentUser}>
+                        <Image className={styles.profilePic} src={defaultProfile} alt="" />
+                        <div className={styles.displayName}>{user.displayName}</div>
+                    </div>
+                    <button className={styles.logoutButton} onClick={() => auth.signOut()}>Log Out</button>
+                </form>
+            </div>
+        )
     }
 
     return (
@@ -73,5 +94,3 @@ const Login: React.FC = () => {
         </div>
     )
 }
-
-export default Login;

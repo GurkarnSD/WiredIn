@@ -19,23 +19,28 @@
 }
 
 .links {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-left: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 40px;
 }
 
 .link {
-    color: #FFFFFF;
-    font-weight: 700;
-    font-size: 30px;
-    margin-right: 40px;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 30px;
+  margin-right: 40px;
 }
 
 .profilePic {
-    height: 60px;
-    width: 60px;
-    border-radius: 50%;
-    margin-right: 40px;
-    background-color: #FFFFFF;
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  margin-right: 40px;
+  background-color: #ffffff;
+}
+
+.dropdownContainer {
+  position: absolute;
+  right: 0;
 }

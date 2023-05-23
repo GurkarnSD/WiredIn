@@ -1,4 +1,3 @@
-'use client';
 import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth'
 import { auth } from '@/lib/firebase/app'
 import { useState } from 'react'
@@ -28,7 +27,7 @@ const ResetPassword: React.FC = () => {
                     :
                     <form className={styles.inputForm} onSubmit={handleSubmit}>
                         <input className={styles.input} required type="text" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
-                        <button className={styles.loginButton} type='submit'>Reset Password</button>
+                        <button className={styles.resetButton} type='submit'>Reset Password</button>
                     </form>
                 }
                 <div className={styles.additional}>

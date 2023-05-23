@@ -1,4 +1,3 @@
-'use client';
 import styles from './styles/Signup.module.css'
 import Link from 'next/link'
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'

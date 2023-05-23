@@ -9,7 +9,7 @@ export default function Home() {
 
   return (
     <>
-      <Navbar />
+      <Navbar user={user} />
       {user ? <div>Logged In {user.displayName}</div> : <div>Not Logged In</div>}
     </>
   )

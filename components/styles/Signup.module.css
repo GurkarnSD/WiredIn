@@ -55,6 +55,10 @@
   color: #ffffff;
 }
 
+.signupButton:hover {
+  cursor: pointer;
+}
+
 .divider {
   display: flex;
   align-items: center;
@@ -72,6 +76,7 @@
 .dividerText {
   font-size: 25px;
   font-weight: 800;
+  color: #000000;
 }
 
 .googleButton {
