@@ -1,5 +1,5 @@
 import functions = require("firebase-functions");
-import {createUserMongo} from "../../lib/mongo/user";
+import {createUserMongo, deleteUserMongo} from "../../lib/mongo/user";
 import * as admin from "firebase-admin";
 import {config} from "dotenv";
 config();
@@ -28,4 +28,12 @@ export const createUser = functions.auth.user().onCreate(async (user) => {
   }
 
   await createUserMongo(newUser);
+});
+
+export const deleteUser = functions.auth.user().onDelete(async (user) => {
+  admin.initializeApp({
+    credential: admin.credential.applicationDefault(),
+  });
+  console.log("Activated deleteUser function");
+  await deleteUserMongo(user.uid);
 });
