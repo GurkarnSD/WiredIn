@@ -1,0 +1,36 @@
+.container {
+  width: 1152px;
+  height: 464px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding: 25px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #000000;
+}
+
+.modify {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 80px;
+}
+
+.icon {
+  color: #000000;
+  font-size: 30px;
+}
+
+.icon:hover {
+  cursor: pointer;
+}

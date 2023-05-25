@@ -16,17 +16,16 @@ export const createUser = functions.auth.user().onCreate(async (user) => {
     uid: user.uid,
     email: user.email,
     displayName: user.displayName,
-    providerData: user.providerData,
+    following: [],
+    followers: [],
+    title: "",
+    bio: "",
   };
 
-  // Check if displayName is null
   if (!newUser.displayName) {
-    // Reload the user data to fetch updated displayName
     const updatedUser = await admin.auth().getUser(newUser.uid);
     newUser.displayName = updatedUser.displayName;
   }
 
   await createUserMongo(newUser);
-
-  console.log("New user created:", newUser);
 });
