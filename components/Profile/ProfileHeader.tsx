@@ -1,4 +1,3 @@
-"use client";
 import styles from '../styles/Profile/ProfileHeader.module.css'
 import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -53,9 +52,11 @@ export default function ProfileHeader(params: { pageUser: any, user: any }) {
                     <div className={styles.contentLeft}>
                         <div className={styles.header}>
                             <div className={styles.displayName}>{pageUser?.displayName}</div>
-                            {!pageUser?.followers.includes(user?.uid) ?
-                                <button className={styles.follow} onClick={() => followUser(user.uid, pageUser.uid)}>Follow</button>
-                                : <button className={styles.follow} onClick={() => unfollowUser(user.uid, pageUser.uid)}>Unfollow</button>}
+                            {user?.uid !== pageUser?.uid ? (
+                                !pageUser?.followers.includes(user?.uid) ?
+                                    <button className={styles.follow} onClick={() => followUser(user.uid, pageUser.uid)}>Follow</button>
+                                    : <button className={styles.follow} onClick={() => unfollowUser(user.uid, pageUser.uid)}>Unfollow</button>)
+                                : null}
                         </div>
                         <div className={styles.stats}>
                             <div className={styles.stat}>
@@ -75,7 +76,9 @@ export default function ProfileHeader(params: { pageUser: any, user: any }) {
                         <div className={styles.row}>
                             <div className={styles.title}>{pageUser?.title}</div>
                             <FontAwesomeIcon className={styles.icon} icon={faGithub} />
-                            <FontAwesomeIcon className={styles.iconEdit} icon={faEdit} />
+                            {user?.uid === pageUser?.uid &&
+                                <FontAwesomeIcon className={styles.iconEdit} icon={faEdit} />
+                            }
                         </div>
                         <div className={styles.bio}>{pageUser?.bio}</div>
                     </div>

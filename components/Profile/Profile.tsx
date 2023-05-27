@@ -14,10 +14,10 @@ export default function Profile(params: { pageUser: any }) {
     return (
         <div>
             <ProfileHeader pageUser={pageUser} user={user} />
-            <ProfileExperience />
-            <ProfileSkills />
-            <ProfileProjects />
-            <ProfileActivity />
+            <ProfileExperience pageUser={pageUser} user={user} />
+            <ProfileSkills pageUser={pageUser} user={user} />
+            <ProfileProjects pageUser={pageUser} user={user} />
+            <ProfileActivity pageUser={pageUser} />
         </div>
     )
 }

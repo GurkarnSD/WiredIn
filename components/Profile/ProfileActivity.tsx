@@ -1,7 +1,8 @@
-"use client";
 import styles from '../styles/Profile/ProfileActivity.module.css'
 
-export default function ProfileActivity() {
+export default function ProfileActivity(params: { pageUser: any }) {
+
+    const { pageUser } = params;
 
     return (
         <div className={styles.container}>
