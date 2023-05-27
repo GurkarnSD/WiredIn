@@ -1,3 +1,4 @@
+"use client";
 import styles from '../styles/Profile/ProfileActivity.module.css'
 
 export default function ProfileActivity() {
