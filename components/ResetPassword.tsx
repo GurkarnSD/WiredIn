@@ -1,3 +1,4 @@
+"use client";
 import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth'
 import { auth } from '@/lib/firebase/app'
 import { useState } from 'react'

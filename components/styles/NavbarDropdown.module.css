@@ -64,3 +64,24 @@
 .logout:hover {
   cursor: pointer;
 }
+
+.profilePic {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  margin-right: 40px;
+  background-color: #ffffff;
+}
+
+.dropdownContainer {
+  position: absolute;
+  top: 110px;
+  right: 0;
+}
+
+.link {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 30px;
+  margin-right: 40px;
+}

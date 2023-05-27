@@ -8,7 +8,7 @@ async function init() {
   if (db) return;
   try {
     client = await clientPromise;
-    console.log("Connected to MongoDB", client)
+    console.log("Connected to MongoDB")
     db = client.db('UserDatabase');
     console.log("Connected to DB")
     users = db.collection("users");
@@ -45,7 +45,23 @@ async function deleteUserMongo(uid: string): Promise<any> {
   }
 }
 
+async function getUserMongo(uid: string, name: string): Promise<any> {
+  console.log("Finding user:", uid)
+  const regexPattern = new RegExp(`^${name}$`, 'i');
+  
+  var result = {};
+  try {
+    if (!users) await init();
+    if (uid !== '') result = await users.findOne({ uid });
+    else if (name !== '') result = await users.findOne({ displayName: { $regex: regexPattern } });
+    return result;
+  } catch (error) {
+    throw new Error("Unable To Find User");
+  }
+}
+
 export {
   createUserMongo,
   deleteUserMongo,
+  getUserMongo,
 };

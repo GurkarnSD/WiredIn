@@ -1,15 +1,16 @@
+"use client";
 import styles from './styles/Login.module.css'
 import Link from 'next/link'
 import { useState } from 'react';
 import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth'
 import { auth } from '@/lib/firebase/app'
 import { useRouter } from 'next/navigation';
-import { User } from 'firebase/auth';
 import Image from 'next/image';
 import defaultProfile from '@/assets/defaultProfilePic.png'
+import useCurrentUser from "@/lib/firebase/user"
 
-export default function Login(props: { user: User | null }) {
-    const user: User | null = props.user
+export default function Login() {
+    const user = useCurrentUser();
 
     const router = useRouter();
 
