@@ -8,11 +8,9 @@ async function init() {
   if (db) return;
   try {
     client = await clientPromise;
-    console.log("Connected to MongoDB")
-    db = client.db('UserDatabase');
-    console.log("Connected to DB")
+    console.log("Connected to MongoDB");
+    db = client.db("UserDatabase");
     users = db.collection("users");
-    console.log("Connected to users collection")
   } catch (error) {
     console.log("Error connecting to MongoDB", error);
     throw new Error("Could not initialize MongoDB connection");
@@ -46,22 +44,29 @@ async function deleteUserMongo(uid: string): Promise<any> {
 }
 
 async function getUserMongo(uid: string, name: string): Promise<any> {
-  console.log("Finding user:", uid)
-  const regexPattern = new RegExp(`^${name}$`, 'i');
-  
+  console.log("Finding user:", uid);
+  const regexPattern = new RegExp(`^${name}$`, "i");
+
   var result = {};
   try {
     if (!users) await init();
-    if (uid !== '') result = await users.findOne({ uid });
-    else if (name !== '') result = await users.findOne({ displayName: { $regex: regexPattern } });
+    if (uid !== "") result = await users.findOne({ uid });
+    else if (name !== "")
+      result = await users.findOne({ displayName: { $regex: regexPattern } });
     return result;
   } catch (error) {
     throw new Error("Unable To Find User");
   }
 }
 
-export {
-  createUserMongo,
-  deleteUserMongo,
-  getUserMongo,
-};
+async function updateUserMongo(user: any): Promise<any> {
+  try {
+    if (!users) await init();
+    const result = await users.updateOne({ uid: user.uid }, { $set: user });
+    return result;
+  } catch (error) {
+    throw new Error("Unable To Update User");
+  }
+}
+
+export { createUserMongo, deleteUserMongo, getUserMongo, updateUserMongo };

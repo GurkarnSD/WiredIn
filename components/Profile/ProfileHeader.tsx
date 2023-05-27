@@ -5,9 +5,41 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 
-export default function ProfileHeader(params: { pageUser: any }) {
+const followUser = async (userId: string, pageUserId: string) => {
+    const res = await fetch('/api/follow', {
+        method: "POST",
+        body: JSON.stringify({
+            user: userId,
+            otherUser: pageUserId
+        })
+    })
 
-    const { pageUser } = params;
+    if (!res.ok) {
+        throw new Error("Failed to follow user")
+    }
+
+    return res.json()
+}
+
+const unfollowUser = async (userId: string, pageUserId: string) => {
+    const res = await fetch('/api/follow', {
+        method: "PUT",
+        body: JSON.stringify({
+            user: userId,
+            otherUser: pageUserId
+        })
+    })
+
+    if (!res.ok) {
+        throw new Error("Failed to unfollow user")
+    }
+
+    return res.json()
+}
+
+export default function ProfileHeader(params: { pageUser: any, user: any }) {
+
+    const { pageUser, user } = params;
 
     return (
         <div className={styles.container}>
@@ -21,7 +53,9 @@ export default function ProfileHeader(params: { pageUser: any }) {
                     <div className={styles.contentLeft}>
                         <div className={styles.header}>
                             <div className={styles.displayName}>{pageUser?.displayName}</div>
-                            <button className={styles.follow}>Follow</button>
+                            {!pageUser?.followers.includes(user?.uid) ?
+                                <button className={styles.follow} onClick={() => followUser(user.uid, pageUser.uid)}>Follow</button>
+                                : <button className={styles.follow} onClick={() => unfollowUser(user.uid, pageUser.uid)}>Unfollow</button>}
                         </div>
                         <div className={styles.stats}>
                             <div className={styles.stat}>
