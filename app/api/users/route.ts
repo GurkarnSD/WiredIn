@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getUserMongo } from "../../../lib/mongo/user";
+import { getUserPrisma } from "../../../lib/prisma/user";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -9,9 +9,9 @@ export async function GET(req: Request) {
   var res = {};
 
   if (uid) {
-    res = await getUserMongo(uid as string, '');
+    res = await getUserPrisma(uid as string, "");
   } else if (name) {
-    res = await getUserMongo('', name as string);
+    res = await getUserPrisma("", name as string);
   }
 
   return NextResponse.json(res);

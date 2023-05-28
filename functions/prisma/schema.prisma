@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  relationMode      = "prisma"
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  uid         String   @unique
+  email       String   @unique
+  displayName String?
+  title       String?
+  bio         String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  following   User[]   @relation("Following")
+  followers   User[]   @relation("Following")
+}

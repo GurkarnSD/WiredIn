@@ -53,7 +53,7 @@ export default function ProfileHeader(params: { pageUser: any, user: any }) {
                         <div className={styles.header}>
                             <div className={styles.displayName}>{pageUser?.displayName}</div>
                             {user?.uid !== pageUser?.uid ? (
-                                !pageUser?.followers.includes(user?.uid) ?
+                                !pageUser?.followers.some((follower: { uid: string }) => follower.uid === user?.uid) ?
                                     <button className={styles.follow} onClick={() => followUser(user.uid, pageUser.uid)}>Follow</button>
                                     : <button className={styles.follow} onClick={() => unfollowUser(user.uid, pageUser.uid)}>Unfollow</button>)
                                 : null}

@@ -1,23 +1,17 @@
 import functions = require("firebase-functions");
-import {createUserMongo, deleteUserMongo} from "../../lib/mongo/user";
+import {createUserPrisma, deleteUserPrisma} from "../../lib/prisma/user";
 import * as admin from "firebase-admin";
-import {config} from "dotenv";
-config();
 
-/**
- * Create user in MongoDB on user account creation through Firebase Auth.
- */
+admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+});
+
 export const createUser = functions.auth.user().onCreate(async (user) => {
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
-  });
   console.log("Activated createUser function");
   const newUser = {
     uid: user.uid,
     email: user.email,
     displayName: user.displayName,
-    following: [],
-    followers: [],
     title: "",
     bio: "",
   };
@@ -27,13 +21,10 @@ export const createUser = functions.auth.user().onCreate(async (user) => {
     newUser.displayName = updatedUser.displayName;
   }
 
-  await createUserMongo(newUser);
+  await createUserPrisma(newUser);
 });
 
 export const deleteUser = functions.auth.user().onDelete(async (user) => {
-  admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
-  });
   console.log("Activated deleteUser function");
-  await deleteUserMongo(user.uid);
+  await deleteUserPrisma(user.uid);
 });

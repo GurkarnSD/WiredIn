@@ -2,7 +2,7 @@ import styles from '@/styles/Profile.module.css'
 import Navbar from '@/components/Navbar'
 import Profile from '@/components/Profile/Profile';
 
-export const revalidate = 30;
+export const revalidate = 0;
 
 const fetchProfileUser = async (pageUser: string) => {
     const res = await fetch(`${process.env.API_URL}/api/users/?name=${pageUser}`)
