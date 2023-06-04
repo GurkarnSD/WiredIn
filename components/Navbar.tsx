@@ -1,8 +1,12 @@
 import styles from './styles/Navbar.module.css'
 import Link from 'next/link'
 import NavbarDropdown from '@/components/NavbarDropdown'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
-export default function Navbar() {
+export default async function Navbar() {
+
+    const session = await getServerSession(authOptions);
 
     return (
         <>
@@ -25,7 +29,7 @@ export default function Navbar() {
                     <Link className={styles.link} href="/jobs">
                         Jobs
                     </Link>
-                    <NavbarDropdown />
+                    <NavbarDropdown user={session?.user} />
                 </div>
             </div>
         </>

@@ -3,17 +3,12 @@ import styles from './styles/NavbarDropdown.module.css'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faComment, faGear } from '@fortawesome/free-solid-svg-icons'
-import { auth } from '@/lib/firebase/app'
-import { useRouter } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import defaultProfile from '@/assets/defaultProfilePic.png'
-import useCurrentUser from "@/lib/firebase/user"
+import { signOut } from 'next-auth/react';
 
-export default function NavbarDropdown() {
-    const user = useCurrentUser();
-
-    const router = useRouter();
+export default function NavbarDropdown({ user }: { user: any | null }) {
 
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
@@ -57,7 +52,7 @@ export default function NavbarDropdown() {
                                     </Link>
                                 </div>
                             </div>
-                            <div className={styles.logout} onClick={() => { router.push('/login'); auth.signOut() }}>Log Out</div>
+                            <div className={styles.logout} onClick={() => { signOut({ callbackUrl: 'http://localhost:3000/login' }) }}>Log Out</div>
                         </div>
                     </div>
                 )}

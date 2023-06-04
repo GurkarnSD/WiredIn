@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getUserPrisma } from "../../../lib/prisma/user";
+import { createUserPrisma, getUserPrisma } from "../../../lib/prisma/user";
+import { hash } from "bcrypt";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -15,4 +16,17 @@ export async function GET(req: Request) {
   }
 
   return NextResponse.json(res);
+}
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  const password = await hash(body.password, 12);
+
+  await createUserPrisma({
+    email: body.email,
+    password,
+    displayName: body.username,
+  });
+
+  return NextResponse.json({ response: "ok" });
 }

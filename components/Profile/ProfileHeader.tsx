@@ -42,6 +42,10 @@ const unfollowUser = async (userId: string, pageUserId: string) => {
 export default function ProfileHeader(params: { pageUser: any, user: any }) {
 
     const { pageUser, user } = params;
+
+    console.log(pageUser)
+    console.log(user)
+
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleOpenModal = () => {

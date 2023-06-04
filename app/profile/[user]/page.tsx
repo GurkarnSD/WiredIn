@@ -1,6 +1,8 @@
 import styles from '@/styles/Profile.module.css'
-import Navbar from '@/components/Navbar'
 import Profile from '@/components/Profile/Profile';
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import Navbar from '@/components/Navbar';
 
 export const revalidate = 0;
 
@@ -18,12 +20,14 @@ export default async function ProfilePage({ params }: { params: { user: string }
     const pageUser = params.user;
 
     const pageData = await fetchProfileUser(pageUser)
+    const session = await getServerSession(authOptions)
 
     return (
         <>
+            {/* @ts-expect-error Async Server Component */}
             <Navbar />
             <div className={styles.container}>
-                <Profile pageUser={pageData} />
+                <Profile pageUser={pageData} user={session?.user} />
             </div>
         </>
     )

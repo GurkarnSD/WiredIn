@@ -2,17 +2,11 @@
 import styles from './styles/Login.module.css'
 import Link from 'next/link'
 import { useState } from 'react';
-import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth'
-import { auth } from '@/lib/firebase/app'
-import { useRouter } from 'next/navigation';
+import { signIn, signOut } from 'next-auth/react'
 import Image from 'next/image';
 import defaultProfile from '@/assets/defaultProfilePic.png'
-import useCurrentUser from "@/lib/firebase/user"
 
-export default function Login() {
-    const user = useCurrentUser();
-
-    const router = useRouter();
+export default function Login({ user }: { user: any | null }) {
 
     const [loginForm, setLoginForm] = useState({
         email: '',
@@ -26,30 +20,15 @@ export default function Login() {
         }))
     }
 
-    const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
-    const [signInWithGoogle] = useSignInWithGoogle(auth);
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        console.log(loginForm)
+        await signIn('credentials', {
+            email: loginForm.email,
+            password: loginForm.password,
+            callbackUrl: 'http://localhost:3000/'
+        })
 
-        signInWithEmailAndPassword(loginForm.email.toLowerCase(), loginForm.password)
-            .then((userCredential) => {
-                const user = userCredential?.user;
-
-                if (user) {
-                    console.log('Login success:', user);
-                    router.push('/')
-                } else {
-                    console.log('Login error:', userCredential);
-                    // Handle login error, show error message, etc.
-                }
-            })
-            .catch((error) => {
-                console.log('Login error:', error);
-                // Handle login error, show error message, etc.
-            });
     }
 
     if (user) {
@@ -61,7 +40,7 @@ export default function Login() {
                         <Image className={styles.profilePic} src={defaultProfile} alt="" />
                         <div className={styles.displayName}>{user.displayName}</div>
                     </div>
-                    <button className={styles.logoutButton} onClick={() => auth.signOut()}>Log Out</button>
+                    <button className={styles.logoutButton} onClick={() => signOut()}>Log Out</button>
                 </form>
             </div>
         )
@@ -79,7 +58,7 @@ export default function Login() {
                     <div className={styles.dividerText}>OR</div>
                     <div className={styles.dividerLine}></div>
                 </div>
-                <button className={styles.googleButton} onClick={() => signInWithGoogle()}>Log In With&nbsp;
+                <button className={styles.googleButton} onClick={() => signIn('google')}>Log In With&nbsp;
                     <span className={styles.googleBlue}>G</span>
                     <span className={styles.googleRed}>o</span>
                     <span className={styles.googleYellow}>o</span>

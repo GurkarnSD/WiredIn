@@ -1,6 +1,4 @@
 "use client";
-import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth'
-import { auth } from '@/lib/firebase/app'
 import { useState } from 'react'
 import styles from './styles/ResetPassword.module.css'
 import Link from 'next/link'
@@ -8,12 +6,9 @@ import Link from 'next/link'
 const ResetPassword: React.FC = () => {
     const [email, setEmail] = useState('');
     const [isSuccess, setIsSuccess] = useState(false);
-    const [sendPasswordResetEmail] = useSendPasswordResetEmail(auth);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-
-        await sendPasswordResetEmail(email);
 
         setIsSuccess(true);
     }

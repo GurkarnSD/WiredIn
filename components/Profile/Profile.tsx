@@ -4,12 +4,10 @@ import ProfileExperience from "./ProfileExperience"
 import ProfileSkills from "./ProfileSkills"
 import ProfileProjects from "./ProfileProjects"
 import ProfileActivity from "./ProfileActivity"
-import useCurrentUser from "@/lib/firebase/user"
 
-export default function Profile(params: { pageUser: any }) {
+export default function Profile(params: { pageUser: any, user: any }) {
 
-    const { pageUser } = params;
-    const user = useCurrentUser();
+    const { pageUser, user } = params;
 
     return (
         <div>

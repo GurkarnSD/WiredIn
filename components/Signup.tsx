@@ -1,10 +1,7 @@
 "use client";
 import styles from './styles/Signup.module.css'
 import Link from 'next/link'
-import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
-import { auth } from '@/lib/firebase/app'
 import { useState } from 'react'
-import { UserCredential, updateProfile } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 
 const Signup: React.FC = () => {
@@ -25,17 +22,6 @@ const Signup: React.FC = () => {
     }
 
     const [error, setError] = useState('');
-    const [createUserWithEmailAndPassword, user] = useCreateUserWithEmailAndPassword(auth);
-
-    const createUserAndSetDisplayName = async (email: string, password: string, displayName: string) => {
-        const currentUser: UserCredential | undefined = await createUserWithEmailAndPassword(email, password)
-        console.log(currentUser)
-
-        if (currentUser !== undefined) {
-            await updateProfile(currentUser.user, { displayName: displayName })
-            console.log(currentUser.user.displayName)
-        }
-    }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -68,7 +54,18 @@ const Signup: React.FC = () => {
             return
         }
 
-        await createUserAndSetDisplayName(signupForm.email, signupForm.password, signupForm.username)
+        await fetch('/api/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: signupForm.username,
+                email: signupForm.email,
+                password: signupForm.password,
+            }),
+        })
+
         router.push('/login')
     }
 

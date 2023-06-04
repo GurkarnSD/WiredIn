@@ -1,11 +1,12 @@
-import Navbar from "@/components/Navbar"
 import Signup from "@/components/Signup"
 import styles from '@/styles/Signup.module.css'
+import Navbar from "@/components/Navbar"
 
 export default function SignupPage() {
 
     return (
         <>
+            {/* @ts-expect-error Async Server Component */}
             <Navbar />
             <div className={styles.container}>
                 <Signup />
