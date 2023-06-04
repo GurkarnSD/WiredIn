@@ -1,10 +1,11 @@
 "use client";
 import styles from '../styles/Profile/ProfileHeaderEditor.module.css'
-import defaultProfile from '@/assets/defaultProfilePic.png'
-import Image, { StaticImageData } from 'next/image'
+import Image from 'next/image'
 import { useState, useRef } from 'react'
 
 export default function ProfileHeaderEditor() {
+
+    const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
     const [profileForm, setProfileForm] = useState({
         title: '',
@@ -12,40 +13,13 @@ export default function ProfileHeaderEditor() {
         github: '',
     })
 
-    const [profilePic, setProfilePic] = useState<string | StaticImageData>(defaultProfile);
-    const [banner, setBanner] = useState<string | StaticImageData>(defaultProfile);
+    const [error, setError] = useState('');
 
-    const handleProfilePicUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files.length > 0) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
+    const [profilePic, setProfilePic] = useState('');
+    const [banner, setBanner] = useState('');
 
-            reader.onload = (e: ProgressEvent<FileReader>) => {
-                if (e.target && e.target.result) {
-                    const uploadedImage = e.target.result.toString();
-                    setProfilePic(uploadedImage);
-                }
-            };
-
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const handleBannerUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files.length > 0) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-
-            reader.onload = (e: ProgressEvent<FileReader>) => {
-                if (e.target && e.target.result) {
-                    const uploadedImage = e.target.result.toString();
-                    setBanner(uploadedImage);
-                }
-            };
-
-            reader.readAsDataURL(file);
-        }
-    };
+    const [profileFile, setProfileFile] = useState<File | null>(null);
+    const [bannerFile, setBannerFile] = useState<File | null>(null);
 
     const profilePicInputRef = useRef<HTMLInputElement>(null);
     const bannerInputRef = useRef<HTMLInputElement>(null);
@@ -62,6 +36,32 @@ export default function ProfileHeaderEditor() {
         }
     };
 
+    const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const file = e.target.files[0];
+            setBanner(URL.createObjectURL(file));
+            setBannerFile(file);
+
+            if (!validFileTypes.includes(file.type)) {
+                setError("File must be in JPG/PNG format")
+                return;
+            }
+        }
+    };
+
+    const handleProfilePicUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const file = e.target.files[0];
+            setProfilePic(URL.createObjectURL(file));
+            setProfileFile(file);
+
+            if (!validFileTypes.includes(file.type)) {
+                setError("File must be in JPG/PNG format")
+                return;
+            }
+        }
+    };
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setProfileForm((prev) => ({
             ...prev,
@@ -72,9 +72,12 @@ export default function ProfileHeaderEditor() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        console.log(profileForm)
-        console.log(profilePic)
-        console.log(banner)
+        const formData = new FormData();
+        formData.append('title', profileForm.title);
+        formData.append('bio', profileForm.bio);
+        formData.append('github', profileForm.github);
+        if (profileFile) formData.append('profilePic', profileFile);
+        if (bannerFile) formData.append('banner', bannerFile);
     }
 
     return (
@@ -82,34 +85,39 @@ export default function ProfileHeaderEditor() {
             <div className={styles.title}>Profile</div>
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.images}>
-                    <div onClick={handleProfilePicClick} role="button">
-                        <Image
-                            className={styles.profilePic}
-                            src={profilePic}
-                            alt=""
-                        />
-                    </div>
+                    <Image
+                        className={styles.profilePic}
+                        src={profilePic}
+                        alt=""
+                        onClick={handleProfilePicClick}
+                        width={150}
+                        height={150}
+                    />
                     <input
                         type="file"
                         style={{ display: 'none' }}
                         onChange={handleProfilePicUpload}
                         ref={profilePicInputRef}
+                        hidden
                     />
 
-                    <div onClick={handleBannerClick} role="button">
-                        <Image
-                            className={styles.banner}
-                            src={banner}
-                            alt=""
-                        />
-                    </div>
+                    <Image
+                        className={styles.banner}
+                        src={banner}
+                        alt=""
+                        onClick={handleBannerClick}
+                        width={576}
+                        height={160}
+                    />
                     <input
                         type="file"
                         style={{ display: 'none' }}
                         onChange={handleBannerUpload}
                         ref={bannerInputRef}
+                        hidden
                     />
                 </div>
+                {error && <div className={styles.error}>{error}</div>}
                 <div className={styles.inputFields}>
                     <div className={styles.inputRow}>
                         <input className={styles.input} name='title' type='text' placeholder='Title' onChange={handleChange} />

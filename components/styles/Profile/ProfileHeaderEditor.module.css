@@ -78,6 +78,7 @@
   padding: 10px;
   color: #000000;
   font-weight: 600;
+  resize: none;
 }
 
 .largeInput:focus {
@@ -94,4 +95,8 @@
   font-weight: 800;
   color: #ffffff;
   align-self: flex-end;
+}
+
+.saveButton:hover {
+  cursor: pointer;
 }

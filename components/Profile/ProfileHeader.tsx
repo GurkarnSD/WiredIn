@@ -1,8 +1,11 @@
-import styles from '../styles/Profile/ProfileHeader.module.css'
-import Image from 'next/image'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGithub } from '@fortawesome/free-brands-svg-icons'
-import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import React, { useState } from 'react';
+import Modal from '../../components/Modal';
+import ProfileHeaderEditor from './ProfileHeaderEditor';
+import styles from '../styles/Profile/ProfileHeader.module.css';
+import Image from 'next/image';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 const followUser = async (userId: string, pageUserId: string) => {
     const res = await fetch('/api/follow', {
@@ -39,6 +42,11 @@ const unfollowUser = async (userId: string, pageUserId: string) => {
 export default function ProfileHeader(params: { pageUser: any, user: any }) {
 
     const { pageUser, user } = params;
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
 
     return (
         <div className={styles.container}>
@@ -77,13 +85,19 @@ export default function ProfileHeader(params: { pageUser: any, user: any }) {
                             <div className={styles.title}>{pageUser?.title}</div>
                             <FontAwesomeIcon className={styles.icon} icon={faGithub} />
                             {user?.uid === pageUser?.uid &&
-                                <FontAwesomeIcon className={styles.iconEdit} icon={faEdit} />
+                                <FontAwesomeIcon className={styles.iconEdit} icon={faEdit} onClick={handleOpenModal} />
                             }
                         </div>
                         <div className={styles.bio}>{pageUser?.bio}</div>
                     </div>
                 </div>
             </div>
+
+            {isModalOpen && (
+                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                    <ProfileHeaderEditor />
+                </Modal>
+            )}
         </div >
     )
 }
