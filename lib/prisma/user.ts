@@ -19,8 +19,19 @@ async function init() {
 
 async function createUserPrisma(user: any): Promise<boolean> {
   try {
-    console.log("Creating user:", user);
-    const result = await prisma.user.create({ data: user });
+    console.log("Creating credentials:");
+    const authData = {
+      displayName: user.displayName,
+      email: user.email,
+      password: user.password,
+    };
+    const credentials = await prisma.credentials.create({ data: authData });
+    const userData = {
+      email: user.email,
+      displayName: user.displayName,
+      uid: credentials.uid,
+    };
+    const result = await prisma.user.create({ data: userData });
     console.log("User created:", result);
     return true;
   } catch (error) {
