@@ -54,7 +54,7 @@ const Signup: React.FC = () => {
             return
         }
 
-        await fetch('/api/users', {
+        await fetch('/api/user', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

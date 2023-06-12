@@ -5,7 +5,7 @@ let client: any;
 async function init() {
   if (client) return;
   try {
-    client = await prisma;
+    client = prisma;
     console.log("Connected to PlanetScale");
   } catch (error) {
     console.log("Error connecting to PlanetScale", error);
@@ -80,9 +80,17 @@ async function getUserPrisma(uid: string, name: string): Promise<any> {
 
 async function updateUserPrisma(user: any): Promise<any> {
   try {
+    const data = {
+      title: user.title,
+      bio: user.bio,
+      github: user.github,
+      profilePic: user.profilePic,
+      bannerPic: user.bannerPic,
+    };
+
     const result = await prisma.user.update({
       where: { uid: user.uid },
-      data: user,
+      data: data,
     });
     return result;
   } catch (error) {

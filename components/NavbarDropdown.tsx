@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faComment, faGear } from '@fortawesome/free-solid-svg-icons'
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import defaultProfile from '@/assets/defaultProfilePic.png'
 import { signOut } from 'next-auth/react';
 
 export default function NavbarDropdown({ user }: { user: any | null }) {
@@ -23,7 +22,7 @@ export default function NavbarDropdown({ user }: { user: any | null }) {
         <>
             {user ? (
                 <div className={styles.profileContainer} onClick={toggleDropdown}>
-                    <Image className={styles.profilePic} src={defaultProfile} alt="" />
+                    <Image className={styles.profilePic} src={`${process.env.S3ENDPOINT}${user.profilePic}`} alt="" width={60} height={60} />
                 </div>
             ) : (
                 <Link className={styles.link} href="/login">
@@ -37,7 +36,7 @@ export default function NavbarDropdown({ user }: { user: any | null }) {
                             <div className={styles.displayName}>{user?.displayName}</div>
                             <div className={styles.options}>
                                 <div className={styles.option}>
-                                    <Link href='/' >
+                                    <Link href={`/profile/${user.displayName}`} >
                                         <FontAwesomeIcon icon={faUser} className={styles.icon} />Profile
                                     </Link>
                                 </div>

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import imageUpload from "@/lib/aws/image";
-import axios from "axios";
 
 export async function POST(req: Request) {
   const body = await req.formData();
@@ -8,12 +7,13 @@ export async function POST(req: Request) {
 
   const { url, key } = await imageUpload(imageFile);
 
-  const formData = new FormData();
-  formData.append("image", imageFile);
+  const contentType = imageFile.type;
 
-  await axios.put(url, formData, {
+  await fetch(url, {
+    method: "PUT",
+    body: imageFile,
     headers: {
-      "Content-Type": "multipart/form-data",
+      "Content-Type": contentType,
     },
   });
 

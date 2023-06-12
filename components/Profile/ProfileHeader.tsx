@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import Link from 'next/link';
 
 const followUser = async (userId: string, pageUserId: string) => {
     const res = await fetch('/api/follow', {
@@ -43,9 +44,6 @@ export default function ProfileHeader(params: { pageUser: any, user: any }) {
 
     const { pageUser, user } = params;
 
-    console.log(pageUser)
-    console.log(user)
-
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleOpenModal = () => {
@@ -54,11 +52,9 @@ export default function ProfileHeader(params: { pageUser: any, user: any }) {
 
     return (
         <div className={styles.container}>
-            <div className={styles.banner}>
-
-            </div>
+            <Image className={styles.banner} src={`${process.env.S3ENDPOINT}${pageUser.bannerPic}`} alt={""} height={240} width={1152} />
             <div className={styles.profile}>
-                <Image className={styles.profilePicture} src={""} alt={""} />
+                <Image className={styles.profilePicture} src={`${process.env.S3ENDPOINT}${pageUser.profilePic}`} alt={""} width={224} height={224} />
 
                 <div className={styles.content}>
                     <div className={styles.contentLeft}>
@@ -66,8 +62,8 @@ export default function ProfileHeader(params: { pageUser: any, user: any }) {
                             <div className={styles.displayName}>{pageUser?.displayName}</div>
                             {user?.uid !== pageUser?.uid ? (
                                 !pageUser?.followers.some((follower: { uid: string }) => follower.uid === user?.uid) ?
-                                    <button className={styles.follow} onClick={() => followUser(user.uid, pageUser.uid)}>Follow</button>
-                                    : <button className={styles.follow} onClick={() => unfollowUser(user.uid, pageUser.uid)}>Unfollow</button>)
+                                    <button className={styles.follow} onClick={() => followUser(user.uid, pageUser?.uid)}>Follow</button>
+                                    : <button className={styles.follow} onClick={() => unfollowUser(user.uid, pageUser?.uid)}>Unfollow</button>)
                                 : null}
                         </div>
                         <div className={styles.stats}>
@@ -87,10 +83,14 @@ export default function ProfileHeader(params: { pageUser: any, user: any }) {
                     <div className={styles.contentRight}>
                         <div className={styles.row}>
                             <div className={styles.title}>{pageUser?.title}</div>
-                            <FontAwesomeIcon className={styles.icon} icon={faGithub} />
-                            {user?.uid === pageUser?.uid &&
-                                <FontAwesomeIcon className={styles.iconEdit} icon={faEdit} onClick={handleOpenModal} />
-                            }
+                            <div className={styles.icons}>
+                                <Link href={`https://github.com/${pageUser.github}`}>
+                                    <FontAwesomeIcon className={styles.icon} icon={faGithub} />
+                                </Link>
+                                {user?.uid === pageUser?.uid &&
+                                    <FontAwesomeIcon className={styles.iconEdit} icon={faEdit} onClick={handleOpenModal} />
+                                }
+                            </div>
                         </div>
                         <div className={styles.bio}>{pageUser?.bio}</div>
                     </div>
@@ -99,7 +99,7 @@ export default function ProfileHeader(params: { pageUser: any, user: any }) {
 
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                    <ProfileHeaderEditor />
+                    <ProfileHeaderEditor user={pageUser} />
                 </Modal>
             )}
         </div >

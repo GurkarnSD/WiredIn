@@ -7,7 +7,7 @@ import Navbar from '@/components/Navbar';
 export const revalidate = 0;
 
 const fetchProfileUser = async (pageUser: string) => {
-    const res = await fetch(`${process.env.API_URL}/api/users/?name=${pageUser}`)
+    const res = await fetch(`${process.env.API_URL}/api/user/?name=${pageUser}`)
 
     if (!res.ok) {
         throw new Error("Failed to fetch user profile")

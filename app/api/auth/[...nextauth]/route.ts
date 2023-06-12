@@ -38,11 +38,16 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        const userData = await prisma.user.findUnique({
+          where: { uid: user.uid },
+        });
+
         return {
           id: user.id + "",
           uid: user.uid + "",
           email: user.email,
           displayName: user.displayName,
+          profilePic: userData?.profilePic,
         };
       },
     }),
@@ -59,6 +64,7 @@ export const authOptions: NextAuthOptions = {
           ...session.user,
           uid: token.uid,
           displayName: token.displayName,
+          profilePic: token.profilePic,
         },
       };
     },
@@ -72,6 +78,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           uid: googleUser?.uid,
           displayName: googleUser?.displayName,
+          profilePic: googleUser?.profilePic,
         };
       }
 
@@ -81,6 +88,7 @@ export const authOptions: NextAuthOptions = {
           ...token,
           uid: u.uid,
           displayName: u.displayName,
+          profilePic: u.profilePic,
         };
       }
       return token;

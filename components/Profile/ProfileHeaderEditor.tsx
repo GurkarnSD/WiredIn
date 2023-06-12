@@ -1,9 +1,12 @@
 "use client";
 import styles from '../styles/Profile/ProfileHeaderEditor.module.css'
 import Image from 'next/image'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import axios from 'axios';
 
-export default function ProfileHeaderEditor() {
+export default function ProfileHeaderEditor(params: { user: any }) {
+
+    const { user } = params;
 
     const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
@@ -18,11 +21,22 @@ export default function ProfileHeaderEditor() {
     const [profilePic, setProfilePic] = useState('');
     const [banner, setBanner] = useState('');
 
-    const [profileFile, setProfileFile] = useState<File | null>(null);
-    const [bannerFile, setBannerFile] = useState<File | null>(null);
+    const [profileFile, setProfileFile] = useState<File | null>(user.profilePic);
+    const [bannerFile, setBannerFile] = useState<File | null>(user.bannerPic);
 
     const profilePicInputRef = useRef<HTMLInputElement>(null);
     const bannerInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        setProfilePic(`${process.env.S3ENDPOINT}${user.profilePic}`);
+        setBanner(`${process.env.S3ENDPOINT}${user.bannerPic}`);
+        setProfileForm({
+            title: user.title,
+            bio: user.bio,
+            github: user.github,
+        })
+    }, [user])
+
 
     const handleProfilePicClick = () => {
         if (profilePicInputRef.current) {
@@ -72,12 +86,44 @@ export default function ProfileHeaderEditor() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        const formData = new FormData();
-        formData.append('title', profileForm.title);
-        formData.append('bio', profileForm.bio);
-        formData.append('github', profileForm.github);
-        if (profileFile) formData.append('profilePic', profileFile);
-        if (bannerFile) formData.append('banner', bannerFile);
+        const data = {
+            uid: user.uid,
+            title: profileForm.title,
+            bio: profileForm.bio,
+            github: profileForm.github,
+            profilePic: profileFile,
+            bannerPic: bannerFile,
+        }
+
+        if (profileFile && profilePic !== `${process.env.S3ENDPOINT}${user.profilePic}`) {
+            const profilePicData = new FormData();
+            profilePicData.append('image', profileFile);
+            const profilePicURL = await axios.post('/api/image', profilePicData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            data['profilePic'] = profilePicURL.data.key;
+        }
+
+        if (bannerFile && banner !== `${process.env.S3ENDPOINT}${user.bannerPic}`) {
+            const bannerPicData = new FormData();
+            bannerPicData.append('image', bannerFile);
+            const bannerPicURL = await axios.post('/api/image', bannerPicData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            data['bannerPic'] = bannerPicURL.data.key;
+        }
+
+        const body = JSON.stringify(data);
+
+        await axios.put('/api/user', body, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     }
 
     return (
@@ -120,11 +166,11 @@ export default function ProfileHeaderEditor() {
                 {error && <div className={styles.error}>{error}</div>}
                 <div className={styles.inputFields}>
                     <div className={styles.inputRow}>
-                        <input className={styles.input} name='title' type='text' placeholder='Title' onChange={handleChange} />
-                        <input className={styles.input} name='github' type='text' placeholder='Github Username' onChange={handleChange} />
+                        <input className={styles.input} name='title' type='text' placeholder='Title' value={profileForm.title} onChange={handleChange} />
+                        <input className={styles.input} name='github' type='text' placeholder='Github Username' value={profileForm.github} onChange={handleChange} />
                     </div>
                     <div className={styles.inputRow}>
-                        <textarea className={styles.largeInput} name='bio' placeholder='Bio' aria-multiline onChange={handleChange} />
+                        <textarea className={styles.largeInput} name='bio' placeholder='Bio' aria-multiline value={profileForm.bio} onChange={handleChange} />
                         <button className={styles.saveButton} type='submit'>Save</button>
                     </div>
                 </div>
