@@ -1,0 +1,145 @@
+.container {
+  width: 960px;
+  height: 500px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 25px;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #000000;
+}
+
+.form {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.formGroup {
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.formGroupUpper {
+  display: flex;
+  width: 100%;
+  gap: 20px;
+}
+
+.formGroupLower {
+  display: flex;
+  width: 100%;
+}
+
+.formGroupLeft {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroupLeftUpper {
+  flex: 1;
+  display: flex;
+  gap: 20px;
+}
+
+.formGroupLeftLower {
+  margin-top: 10px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.formGroupLeft2 {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroupRight {
+  flex: 1;
+}
+
+.image {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.imageInput {
+  display: none;
+}
+
+.experienceImage {
+  width: 150px;
+  height: 150px;
+  border-radius: 10px;
+  background-color: #f4f4f4;
+  border: none;
+}
+
+.inputTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000000;
+}
+
+.desc {
+  width: 100%;
+  height: 90%;
+  background-color: #d9d9d9;
+  border: none;
+  border-radius: 10px;
+  color: #000000;
+  resize: none;
+  padding: 10px;
+}
+
+.inputContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.input {
+  height: 40px;
+  background-color: #d9d9d9;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  color: #000000;
+  font-weight: 600;
+}
+
+.imageIcon {
+  position: absolute;
+  height: 75px;
+  color: #c4c4c4;
+}
+
+.arrowIcon {
+  height: 30px;
+  color: #000000;
+}
+
+.saveButton {
+  width: 200px;
+  height: 50px;
+  background-color: #0096ff;
+  border-radius: 15px;
+  border: none;
+  font-size: 25px;
+  font-weight: 800;
+  color: #ffffff;
+  align-self: flex-end;
+}

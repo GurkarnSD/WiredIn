@@ -174,7 +174,7 @@ export default function ProfileHeaderEditor(params: { user: any }) {
                         <button className={styles.saveButton} type='submit'>Save</button>
                     </div>
                 </div>
-            </form >
-        </div >
+            </form>
+        </div>
     )
 }
