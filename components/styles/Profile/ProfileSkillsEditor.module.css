@@ -1,0 +1,197 @@
+.container {
+  width: 580px;
+  height: 360px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #000000;
+}
+
+.icon {
+  color: #000000;
+  font-size: 30px;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.saveButton {
+  width: 200px;
+  height: 50px;
+  background-color: #0096ff;
+  border-radius: 15px;
+  border: none;
+  font-size: 25px;
+  font-weight: 800;
+  color: #ffffff;
+  align-self: flex-end;
+}
+
+.addSkillMenu {
+  width: 580px;
+  height: 360px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.input {
+  height: 60px;
+  background-color: #d9d9d9;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  color: #000000;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.smallInput {
+  height: 40px;
+  width: 100px;
+  background-color: #d9d9d9;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  color: #000000;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.selectionBox {
+  margin-top: 10px;
+  height: 150px;
+  background-color: #ededed;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  color: #000000;
+  font-size: 25px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow-y: auto;
+}
+
+.selectionBox::-webkit-scrollbar {
+  width: 10px;
+}
+
+.selectionBox::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 5px;
+}
+
+.selectionBox::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.selectionBox::-webkit-scrollbar-track {
+  background-color: #d9d9d9;
+  border-radius: 5px;
+}
+
+.selectionBox {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #ededed;
+}
+
+.selectionBox::-moz-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 5px;
+}
+
+.selectionBox::-moz-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.skillFooter {
+  display: flex;
+  justify-content: space-between;
+}
+
+.text {
+  color: #000;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.addButton {
+  width: 120px;
+  height: 40px;
+  background-color: #0096ff;
+  border-radius: 10px;
+  border: none;
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  justify-self: flex-end;
+}
+
+.customCheckbox {
+  display: none;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding-left: 25px;
+  cursor: pointer;
+}
+
+.checkboxCustom {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  transition: border-color 0.3s;
+}
+
+.customCheckbox:checked + .checkboxCustom {
+  border-color: #007bff;
+  background-color: #007bff;
+}
+
+.customCheckbox:checked + .checkboxCustom::after {
+  content: "\2713";
+  display: block;
+  position: absolute;
+  left: 3px;
+  bottom: -2px;
+  color: white;
+  font-size: 24px;
+}

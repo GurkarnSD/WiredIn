@@ -1,4 +1,3 @@
-import exp from 'constants';
 import styles from '../styles/Profile/ProfileExperienceEditor.module.css'
 import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
