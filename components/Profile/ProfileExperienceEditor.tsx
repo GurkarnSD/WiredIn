@@ -1,8 +1,9 @@
 import styles from '../styles/Profile/ProfileExperienceEditor.module.css'
 import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faImage, faArrowsLeftRight } from '@fortawesome/free-solid-svg-icons';
+import { faImage, faArrowsLeftRight, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useState, useRef } from 'react';
+import Modal from '../Modal';
 
 export default function ProfileExperienceEditor(params: { user: any }) {
 
@@ -50,6 +51,12 @@ export default function ProfileExperienceEditor(params: { user: any }) {
         }))
     }
 
+    const [selectSkillsOpen, setSelectSkillsOpen] = useState(false);
+
+    const handleAddSkill = () => {
+        setSelectSkillsOpen(true);
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         console.log(expForm)
@@ -64,15 +71,20 @@ export default function ProfileExperienceEditor(params: { user: any }) {
                         <div className={styles.formGroupLeft}>
                             <div className={styles.formGroupLeftUpper}>
                                 <div className={styles.image}>
-                                    <Image
-                                        className={styles.experienceImage}
-                                        src={image}
-                                        alt=""
-                                        onClick={handleImageClick}
-                                        width={150}
-                                        height={150}
-                                    />
-                                    <FontAwesomeIcon icon={faImage} className={styles.imageIcon} onClick={handleImageClick} />
+                                    {image ?
+                                        <Image
+                                            className={styles.experienceImage}
+                                            src={image}
+                                            alt=""
+                                            onClick={handleImageClick}
+                                            width={150}
+                                            height={150}
+                                        /> :
+                                        <>
+                                            <div className={styles.experienceImage} />
+                                            <FontAwesomeIcon icon={faImage} className={styles.imageIcon} onClick={handleImageClick} />
+                                        </>
+                                    }
                                     <input
                                         type="file"
                                         className={styles.imageInput}
@@ -103,10 +115,10 @@ export default function ProfileExperienceEditor(params: { user: any }) {
                                     <input className={styles.input} name='toDate' onChange={handleChange} />
                                 </div>
                                 <div className={styles.checkboxContainer}>
-                                    <label className={styles.checkboxLabel}>
+                                    <label className={styles.smallCheckboxLabel}>
                                         <input
                                             type='checkbox'
-                                            className={styles.customCheckbox}
+                                            className={styles.smallCustomCheckbox}
                                             value={expForm.current === true ? 'true' : 'false'}
                                             checked={expForm.current}
                                             onClick={() => {
@@ -116,7 +128,7 @@ export default function ProfileExperienceEditor(params: { user: any }) {
                                                 }))
                                             }}
                                         />
-                                        <span className={styles.checkboxCustom}></span>
+                                        <span className={styles.smallCheckboxCustom}></span>
                                         <div className={styles.inputTitle}>Current</div>
                                     </label>
                                 </div>
@@ -131,11 +143,92 @@ export default function ProfileExperienceEditor(params: { user: any }) {
                 <div className={styles.formGroupLower}>
                     <div className={styles.inputContainer}>
                         <div className={styles.inputTitle}>Skills</div>
-                        <input className={styles.input} />
+                        <div className={styles.skillsInput} >
+                            <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleAddSkill} />
+                        </div>
                     </div>
                 </div>
                 <button className={styles.saveButton} type='submit'>Save</button>
             </form>
+
+            {selectSkillsOpen && (
+                <Modal isOpen={selectSkillsOpen} onClose={() => setSelectSkillsOpen(false)}>
+                    <SelectSkills />
+                </Modal>
+            )}
         </div>
+    )
+}
+
+function SelectSkills() {
+
+    const skillsList = [
+        'JavaScript', 'TypeScript', 'Python', 'Java', 'C#', 'C++', 'Ruby', 'PHP', 'Swift', 'Kotlin',
+        'React', 'Angular', 'Vue.js', 'Node.js', 'Express.js', 'Django', 'Flask', 'Ruby on Rails',
+        'GraphQL', 'REST API', 'SQL', 'NoSQL', 'MongoDB', 'Firebase', 'PostgreSQL', 'MySQL',
+        'HTML5', 'CSS3', 'Sass', 'Less', 'Webpack', 'Babel', 'Jest', 'Testing Library',
+        'Redux', 'Mobx', 'State Management', 'Responsive Design', 'UI/UX Design',
+        'Git', 'GitHub', 'CI/CD', 'Docker', 'Kubernetes',
+        'AWS', 'Azure', 'Google Cloud', 'Serverless', 'Microservices',
+        'OAuth', 'Web Security', 'PWA', 'Web Accessibility',
+        'Machine Learning', 'TensorFlow', 'PyTorch', 'NLP',
+        'Blockchain', 'Solidity', 'Cybersecurity',
+    ];
+
+    const [inputValue, setInputValue] = useState('');
+    const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+
+    const filteredSkills = skillsList.filter(skill =>
+        skill.toLowerCase().includes(inputValue.toLowerCase())
+    );
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(event.target.value);
+    };
+
+    const handleSkillSelection = (skill: string) => {
+        if (selectedSkills.includes(skill)) {
+            setSelectedSkills(selectedSkills.filter((s) => s !== skill));
+            return;
+        }
+        setSelectedSkills([...selectedSkills, skill]);
+    };
+
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        console.log(selectedSkills);
+    }
+
+    return (
+        <form className={styles.selectSkillsMenu} onSubmit={handleSubmit}>
+            <div className={styles.title}>Select Skills</div>
+            <div className={styles.inputContainer}>
+                <input
+                    className={styles.largeInput}
+                    type="text"
+                    placeholder="Search Skills"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                />
+                <div className={styles.selectionBox}>
+                    {filteredSkills.map((skill, index) => (
+                        <label key={index} className={styles.checkboxLabel}>
+                            <input
+                                type="checkbox"
+                                value={skill}
+                                checked={selectedSkills.includes(skill)}
+                                onChange={() => handleSkillSelection(skill)}
+                                className={styles.customCheckbox}
+                            />
+                            <span className={styles.checkboxCustom}></span>
+                            &nbsp;{skill}
+                        </label>
+                    ))}
+                </div>
+            </div>
+            <div className={styles.skillFooter}>
+                <button className={styles.selectButton} type='submit'>Add</button>
+            </div>
+        </form>
     )
 }
