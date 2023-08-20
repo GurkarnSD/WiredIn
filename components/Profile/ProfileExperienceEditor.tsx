@@ -14,6 +14,7 @@ export default function ProfileExperienceEditor(params: { user: any }) {
         fromDate: '',
         toDate: '',
         desc: '',
+        current: false,
     })
 
     const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
@@ -96,10 +97,28 @@ export default function ProfileExperienceEditor(params: { user: any }) {
                                     <div className={styles.inputTitle}>From</div>
                                     <input className={styles.input} name='fromDate' onChange={handleChange} />
                                 </div>
-                                <FontAwesomeIcon icon={faArrowsLeftRight} className={styles.arrowIcon} onClick={handleImageClick} />
+                                <FontAwesomeIcon icon={faArrowsLeftRight} className={styles.arrowIcon} />
                                 <div className={styles.inputContainer}>
                                     <div className={styles.inputTitle}>To</div>
                                     <input className={styles.input} name='toDate' onChange={handleChange} />
+                                </div>
+                                <div className={styles.checkboxContainer}>
+                                    <label className={styles.checkboxLabel}>
+                                        <input
+                                            type='checkbox'
+                                            className={styles.customCheckbox}
+                                            value={expForm.current === true ? 'true' : 'false'}
+                                            checked={expForm.current}
+                                            onClick={() => {
+                                                setExpForm((prev) => ({
+                                                    ...prev,
+                                                    current: !prev.current,
+                                                }))
+                                            }}
+                                        />
+                                        <span className={styles.checkboxCustom}></span>
+                                        <div className={styles.inputTitle}>Current</div>
+                                    </label>
                                 </div>
                             </div>
                         </div>

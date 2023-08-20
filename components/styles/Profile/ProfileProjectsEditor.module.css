@@ -22,6 +22,7 @@
 
 .formGroup {
   display: flex;
+  flex-direction: column;
   width: 100%;
   margin-top: 10px;
 }
@@ -29,68 +30,64 @@
 .formGroupUpper {
   display: flex;
   width: 100%;
-  gap: 20px;
+  gap: 40px;
 }
 
 .formGroupLower {
   display: flex;
   width: 100%;
+  gap: 40px;
+  margin-bottom: 20px;
 }
 
 .formGroupLeft {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.formGroupLeftUpper {
-  flex: 1;
-  display: flex;
-  gap: 20px;
-}
-
-.formGroupLeftLower {
-  margin-top: 10px;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.formGroupLeft2 {
-  flex: 2;
-  display: flex;
-  flex-direction: column;
 }
 
 .formGroupRight {
   flex: 1;
 }
 
-.image {
+.largeFormGroupLeft {
+  flex: 3;
+}
+
+.smallFormGroupRight {
+  flex: 2;
+}
+
+.dateContainer {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
+  gap: 10px;
 }
 
-.imageInput {
-  display: none;
-}
-
-.experienceImage {
-  width: 150px;
-  height: 150px;
-  border-radius: 10px;
-  background-color: #f4f4f4;
-  border: none;
+.inputContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
 }
 
 .inputTitle {
   font-size: 16px;
   font-weight: 700;
   color: #000000;
+}
+
+.input {
+  height: 40px;
+  background-color: #d9d9d9;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  color: #000000;
+  font-weight: 600;
+}
+
+.checkboxContainer {
+  font-weight: 600;
 }
 
 .desc {
@@ -104,48 +101,56 @@
   padding: 10px;
 }
 
-.inputContainer {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-}
-
-.input {
-  height: 40px;
-  background-color: #d9d9d9;
-  border: none;
-  border-radius: 5px;
-  padding: 10px;
-  color: #000000;
-  font-weight: 600;
-}
-
-.imageIcon {
-  position: absolute;
-  height: 75px;
-  color: #c4c4c4;
-}
-
 .arrowIcon {
   height: 30px;
   color: #000000;
 }
 
-.saveButton {
-  width: 200px;
-  height: 50px;
-  background-color: #0096ff;
-  border-radius: 15px;
+.selectionBox {
+  height: 150px;
+  background-color: #d9d9d9;
   border: none;
-  font-size: 25px;
-  font-weight: 800;
-  color: #ffffff;
-  align-self: flex-end;
+  border-radius: 5px;
+  padding: 10px;
+  color: #000000;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow-y: auto;
 }
 
-.checkboxContainer {
-  font-weight: 600;
+.selectionBox::-webkit-scrollbar {
+  width: 10px;
+}
+
+.selectionBox::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 5px;
+}
+
+.selectionBox::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.selectionBox::-webkit-scrollbar-track {
+  background-color: #c9c9c9;
+  border-radius: 5px;
+}
+
+.selectionBox {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #ededed;
+}
+
+.selectionBox::-moz-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 5px;
+}
+
+.selectionBox::-moz-scrollbar-thumb:hover {
+  background-color: #555;
 }
 
 .customCheckbox {
@@ -186,4 +191,16 @@
   bottom: -2px;
   color: white;
   font-size: 14px;
+}
+
+.saveButton {
+  width: 200px;
+  height: 50px;
+  background-color: #0096ff;
+  border-radius: 15px;
+  border: none;
+  font-size: 25px;
+  font-weight: 800;
+  color: #ffffff;
+  align-self: flex-end;
 }
