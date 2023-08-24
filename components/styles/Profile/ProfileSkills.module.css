@@ -34,3 +34,38 @@
 .icon:hover {
   cursor: pointer;
 }
+
+.body {
+  color: #000;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 50px;
+}
+
+.skill {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.skillName {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.skillLearned {
+  color: #909090;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.deleteIcon {
+  font-size: 30px;
+  margin-left: 20px;
+}
+
+.deleteIcon:hover {
+  cursor: pointer;
+  color: #e30000;
+}

@@ -4,11 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import Modal from '../Modal';
-import axios from 'axios';
 
-export default function ProfileSkillsEditor(params: { user: any }) {
+export default function ProfileSkillsEditor(params: { user: any, skills: any }) {
 
-    const { user } = params;
+    const { user, skills } = params;
+
+    const previousSkills = skills.map((skill: any) => skill.name);
 
     const [addSkillOpen, setAddSkillOpen] = useState(false);
 
@@ -22,20 +23,31 @@ export default function ProfileSkillsEditor(params: { user: any }) {
                 <div className={styles.title}>Skills</div>
                 <FontAwesomeIcon className={styles.icon} icon={faPlus} onClick={handleAddSkill} />
             </div>
+
+            <div className={styles.body}>
+                {skills?.map((skill: any) => (
+                    <div className={styles.skill} key={skill.skill}>
+                        <div className={styles.skillName}>{skill.name}</div>
+                    </div>
+                ))}
+            </div>
+
             <div className={styles.footer}>
                 <button className={styles.saveButton} type='submit'>Save</button>
             </div>
 
             {addSkillOpen && (
                 <Modal isOpen={addSkillOpen} onClose={() => setAddSkillOpen(false)}>
-                    <AddSkillMenu />
+                    <AddSkillMenu uid={user.uid} controlModal={setAddSkillOpen} skills={previousSkills} />
                 </Modal>
             )}
         </div>
     )
 }
 
-function AddSkillMenu() {
+function AddSkillMenu(params: { uid: string, controlModal: (toggle: boolean) => void, skills: any }) {
+
+    const { uid, controlModal, skills } = params;
 
     const skillsList = [
         'JavaScript', 'TypeScript', 'Python', 'Java', 'C#', 'C++', 'Ruby', 'PHP', 'Swift', 'Kotlin',
@@ -48,11 +60,11 @@ function AddSkillMenu() {
         'OAuth', 'Web Security', 'PWA', 'Web Accessibility',
         'Machine Learning', 'TensorFlow', 'PyTorch', 'NLP',
         'Blockchain', 'Solidity', 'Cybersecurity',
-    ];
+    ].filter(skill => !skills.includes(skill));
 
     const [inputValue, setInputValue] = useState('');
     const [selectedSkill, setSelectedSkill] = useState('');
-    const [learnedIn, setLearnedIn] = useState('');
+    const [learnedIn, setLearnedIn] = useState<Number>();
 
     const filteredSkills = skillsList.filter(skill =>
         skill.toLowerCase().includes(inputValue.toLowerCase())
@@ -63,16 +75,36 @@ function AddSkillMenu() {
     };
 
     const handleLearnedInChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setLearnedIn(event.target.value);
+        const newValue = parseInt(event.target.value, 10);
+        setLearnedIn(newValue);
     };
 
     const handleSkillSelection = (skill: string) => {
         setSelectedSkill(skill);
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        console.log(selectedSkill, learnedIn);
+
+        const skill = {
+            name: selectedSkill,
+            learnedIn: learnedIn,
+        };
+
+        const res = await fetch('/api/profile/skills', {
+            method: "POST",
+            body: JSON.stringify({
+                skill: skill,
+                user: uid
+            })
+        })
+
+        if (!res.ok) {
+            throw new Error("Failed to Add Skill")
+        }
+
+        controlModal(false);
+        return res.json()
     }
 
     return (
@@ -104,8 +136,9 @@ function AddSkillMenu() {
             </div>
             <div className={styles.skillFooter}>
                 <span className={styles.text}>Learned In&nbsp;
-                    <input className={styles.smallInput} type='text'
-                        value={learnedIn} onChange={handleLearnedInChange} />
+                    <input className={styles.smallInput} type='number' min='1920' max='2120'
+                        value={learnedIn !== undefined ? learnedIn.toString() : ''}
+                        onChange={handleLearnedInChange} />
                 </span>
                 <button className={styles.addButton} type='submit'>Add</button>
             </div>

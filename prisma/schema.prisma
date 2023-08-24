@@ -14,23 +14,36 @@ model Credentials {
   uid         String   @unique @default(uuid())
   displayName String
   email       String   @unique
-  password    String 
+  password    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  uid         String   @unique @default(uuid())
-  email       String   @unique
+  id          Int          @id @default(autoincrement())
+  uid         String       @unique @default(uuid())
+  email       String       @unique
   displayName String
   title       String?
   bio         String?
   github      String?
-  profilePic  String   @default("defaultProfile.png")
-  bannerPic   String   @default("defaultBanner.jpg")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  following   User[]   @relation("Following")
-  followers   User[]   @relation("Following")
+  profilePic  String       @default("defaultProfile.png")
+  bannerPic   String       @default("defaultBanner.jpg")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  following   User[]       @relation("Following")
+  followers   User[]       @relation("Following")
+  skills      Skill[]
+}
+
+model Skill {
+  id          Int          @id @default(autoincrement())
+  name        String
+  learnedIn   Int
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  user        User         @relation(fields: [userId], references: [uid])
+  userId      String
+
+  @@index([userId])
 }

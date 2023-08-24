@@ -195,3 +195,21 @@
   color: white;
   font-size: 24px;
 }
+
+.body {
+  height: 100%;
+  color: #000;
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto;
+}
+
+.skill {
+  display: inline-flex;
+  margin-right: 30px;
+}
+
+.skillName {
+  font-size: 22px;
+  font-weight: 600;
+}

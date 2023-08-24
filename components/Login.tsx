@@ -69,7 +69,7 @@ export default function Login({ user }: { user: any | null }) {
             </form>
             <div className={styles.additional}>
                 <Link href='/resetpassword'>Forgot Password?</Link>
-                <div>Don't Have An Account?&nbsp;<Link href='/signup' className={styles.signup}>Sign Up</Link></div>
+                <div>Don&apos;t Have An Account?&nbsp;<Link href='/signup' className={styles.signup}>Sign Up</Link></div>
             </div>
         </div>
     )

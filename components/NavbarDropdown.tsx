@@ -16,7 +16,7 @@ export default function NavbarDropdown({ user }: { user: any | null }) {
     };
 
     const dropdownRef = useRef(null);
-    handleCloseDropdown(dropdownRef, setDropdownVisible);
+    HandleCloseDropdown(dropdownRef, setDropdownVisible);
 
     return (
         <>
@@ -60,7 +60,7 @@ export default function NavbarDropdown({ user }: { user: any | null }) {
     )
 }
 
-function handleCloseDropdown(ref: React.RefObject<HTMLElement>, setDropdownVisible: React.Dispatch<React.SetStateAction<boolean>>) {
+function HandleCloseDropdown(ref: React.RefObject<HTMLElement>, setDropdownVisible: React.Dispatch<React.SetStateAction<boolean>>) {
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (ref.current && !ref.current.contains(event.target as Node)) {
