@@ -9,7 +9,7 @@ export default function ProfileSkillsEditor(params: { user: any, skills: any }) 
 
     const { user, skills } = params;
 
-    const previousSkills = skills.map((skill: any) => skill.name);
+    const currentSkills = skills.map((skill: any) => skill.name);
 
     const [addSkillOpen, setAddSkillOpen] = useState(false);
 
@@ -38,7 +38,7 @@ export default function ProfileSkillsEditor(params: { user: any, skills: any }) 
 
             {addSkillOpen && (
                 <Modal isOpen={addSkillOpen} onClose={() => setAddSkillOpen(false)}>
-                    <AddSkillMenu uid={user.uid} controlModal={setAddSkillOpen} skills={previousSkills} />
+                    <AddSkillMenu uid={user.uid} controlModal={setAddSkillOpen} skills={currentSkills} />
                 </Modal>
             )}
         </div>

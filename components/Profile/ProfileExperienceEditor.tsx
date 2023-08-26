@@ -4,19 +4,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage, faArrowsLeftRight, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useState, useRef } from 'react';
 import Modal from '../Modal';
+import axios from 'axios';
 
-export default function ProfileExperienceEditor(params: { user: any }) {
+export default function ProfileExperienceEditor(params: { user: any, skills: any, experiences: any }) {
 
-    const { user } = params;
+    const { user, skills, experiences } = params;
+
+    const currentSkills = skills.map((skill: any) => skill.name);
 
     const [expForm, setExpForm] = useState({
         title: '',
         company: '',
-        fromDate: '',
-        toDate: '',
+        start: '',
+        end: '',
         desc: '',
         current: false,
     })
+    const [selectedSkills, setSelectedSkills] = useState([]);
 
     const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
@@ -59,7 +63,44 @@ export default function ProfileExperienceEditor(params: { user: any }) {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        console.log(expForm)
+
+        const skillIds = selectedSkills.map((skill: string) => { return { id: skills.find((s: any) => s.name === skill).id } })
+
+        const experience = {
+            title: expForm.title,
+            company: expForm.company,
+            start: expForm.start + '-01T00:00:00.000Z',
+            end: expForm.end + '-01T00:00:00.000Z',
+            current: expForm.current,
+            description: expForm.desc,
+            skills: skillIds,
+            image: null,
+        }
+
+        if (imageFile) {
+            const experiencePicData = new FormData();
+            experiencePicData.append('image', imageFile);
+            const experiencePicURL = await axios.post('/api/image', experiencePicData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            experience['image'] = experiencePicURL.data.key;
+        }
+
+        const res = await fetch('/api/profile/experiences', {
+            method: "POST",
+            body: JSON.stringify({
+                experience: experience,
+                uid: user.uid,
+            })
+        })
+
+        if (!res.ok) {
+            throw new Error("Failed to Add Experience")
+        }
+
+        return res.json()
     }
 
     return (
@@ -107,12 +148,12 @@ export default function ProfileExperienceEditor(params: { user: any }) {
                             <div className={styles.formGroupLeftLower}>
                                 <div className={styles.inputContainer}>
                                     <div className={styles.inputTitle}>From</div>
-                                    <input className={styles.input} name='fromDate' onChange={handleChange} />
+                                    <input className={styles.input} type='month' name='start' onChange={handleChange} />
                                 </div>
                                 <FontAwesomeIcon icon={faArrowsLeftRight} className={styles.arrowIcon} />
                                 <div className={styles.inputContainer}>
                                     <div className={styles.inputTitle}>To</div>
-                                    <input className={styles.input} name='toDate' onChange={handleChange} />
+                                    <input className={styles.input} type='month' name='end' onChange={handleChange} />
                                 </div>
                                 <div className={styles.checkboxContainer}>
                                     <label className={styles.smallCheckboxLabel}>
@@ -143,8 +184,15 @@ export default function ProfileExperienceEditor(params: { user: any }) {
                 <div className={styles.formGroupLower}>
                     <div className={styles.inputContainer}>
                         <div className={styles.inputTitle}>Skills</div>
-                        <div className={styles.skillsInput} >
-                            <FontAwesomeIcon icon={faPlus} className={styles.icon} onClick={handleAddSkill} />
+                        <div className={styles.skillsInput}>
+                            <div className={styles.skills}>
+                                {selectedSkills.map((skill: string, index: number) => (
+                                    <div key={index} className={styles.skill}>
+                                        {skill}{index !== selectedSkills.length - 1 && ','}&nbsp;
+                                    </div>
+                                ))}
+                            </div>
+                            <FontAwesomeIcon icon={faPlus} className={styles.addSkillIcon} onClick={handleAddSkill} />
                         </div>
                     </div>
                 </div>
@@ -153,32 +201,21 @@ export default function ProfileExperienceEditor(params: { user: any }) {
 
             {selectSkillsOpen && (
                 <Modal isOpen={selectSkillsOpen} onClose={() => setSelectSkillsOpen(false)}>
-                    <SelectSkills />
+                    <SelectSkills skillsList={currentSkills} selector={setSelectedSkills} chosenSkills={selectedSkills} />
                 </Modal>
             )}
         </div>
     )
 }
 
-function SelectSkills() {
+function SelectSkills(params: { skillsList: any, selector: (skills: any) => void, chosenSkills: any }) {
 
-    const skillsList = [
-        'JavaScript', 'TypeScript', 'Python', 'Java', 'C#', 'C++', 'Ruby', 'PHP', 'Swift', 'Kotlin',
-        'React', 'Angular', 'Vue.js', 'Node.js', 'Express.js', 'Django', 'Flask', 'Ruby on Rails',
-        'GraphQL', 'REST API', 'SQL', 'NoSQL', 'MongoDB', 'Firebase', 'PostgreSQL', 'MySQL',
-        'HTML5', 'CSS3', 'Sass', 'Less', 'Webpack', 'Babel', 'Jest', 'Testing Library',
-        'Redux', 'Mobx', 'State Management', 'Responsive Design', 'UI/UX Design',
-        'Git', 'GitHub', 'CI/CD', 'Docker', 'Kubernetes',
-        'AWS', 'Azure', 'Google Cloud', 'Serverless', 'Microservices',
-        'OAuth', 'Web Security', 'PWA', 'Web Accessibility',
-        'Machine Learning', 'TensorFlow', 'PyTorch', 'NLP',
-        'Blockchain', 'Solidity', 'Cybersecurity',
-    ];
+    const { skillsList, selector, chosenSkills } = params;
 
     const [inputValue, setInputValue] = useState('');
-    const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+    const [selectedSkills, setSelectedSkills] = useState<string[]>(chosenSkills);
 
-    const filteredSkills = skillsList.filter(skill =>
+    const filteredSkills = skillsList.filter((skill: string) =>
         skill.toLowerCase().includes(inputValue.toLowerCase())
     );
 
@@ -196,7 +233,7 @@ function SelectSkills() {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        console.log(selectedSkills);
+        selector(selectedSkills);
     }
 
     return (
@@ -211,7 +248,7 @@ function SelectSkills() {
                     onChange={handleInputChange}
                 />
                 <div className={styles.selectionBox}>
-                    {filteredSkills.map((skill, index) => (
+                    {filteredSkills.map((skill: string, index: number) => (
                         <label key={index} className={styles.checkboxLabel}>
                             <input
                                 type="checkbox"
