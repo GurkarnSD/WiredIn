@@ -25,7 +25,7 @@ export async function getExperiencesPrisma(userId: string) {
     });
     return skills;
   } catch (error) {
-    throw new Error("Unable To Get Skills");
+    throw new Error("Unable To Get Experiences");
   }
 }
 
@@ -61,7 +61,7 @@ export async function createExperiencePrisma(
       },
     });
   } catch (error) {
-    throw new Error("Unable To Add Skill");
+    throw new Error("Unable To Create Experience");
   }
 }
 
@@ -73,6 +73,6 @@ export async function deleteExperiencePrisma(id: string) {
       where: { id: queryId },
     });
   } catch (error) {
-    throw new Error("Unable To Add Skill");
+    throw new Error("Unable To Delete Experience");
   }
 }

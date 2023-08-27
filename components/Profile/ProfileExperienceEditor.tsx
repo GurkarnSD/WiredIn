@@ -6,9 +6,9 @@ import { useState, useRef } from 'react';
 import Modal from '../Modal';
 import axios from 'axios';
 
-export default function ProfileExperienceEditor(params: { user: any, skills: any, experiences: any }) {
+export default function ProfileExperienceEditor(params: { user: any, skills: any }) {
 
-    const { user, skills, experiences } = params;
+    const { user, skills } = params;
 
     const currentSkills = skills.map((skill: any) => skill.name);
 

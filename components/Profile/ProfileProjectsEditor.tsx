@@ -3,16 +3,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsLeftRight } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 
-export default function ProfileProjectsEditor(params: { user: any }) {
+export default function ProfileProjectsEditor(params: { user: any, skills: any }) {
 
-    const { user } = params;
+    const { user, skills } = params;
+
+    const currentSkills = skills.map((skill: any) => skill.name);
 
     const [projForm, setProjForm] = useState({
         title: '',
         deployment: '',
-        fromDate: '',
-        toDate: '',
-        developing: false,
+        start: '',
+        end: '',
+        current: false,
         source: '',
         desc: '',
     })
@@ -28,22 +30,34 @@ export default function ProfileProjectsEditor(params: { user: any }) {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        console.log(projForm)
-        console.log(selectedSkills)
-    }
 
-    const skills = [
-        'JavaScript', 'TypeScript', 'Python', 'Java', 'C#', 'C++', 'Ruby', 'PHP', 'Swift', 'Kotlin',
-        'React', 'Angular', 'Vue.js', 'Node.js', 'Express.js', 'Django', 'Flask', 'Ruby on Rails',
-        'GraphQL', 'REST API', 'SQL', 'NoSQL', 'MongoDB', 'Firebase', 'PostgreSQL', 'MySQL',
-        'HTML5', 'CSS3', 'Sass', 'Less', 'Webpack', 'Babel', 'Jest', 'Testing Library',
-        'Redux', 'Mobx', 'State Management', 'Responsive Design', 'UI/UX Design',
-        'Git', 'GitHub', 'CI/CD', 'Docker', 'Kubernetes',
-        'AWS', 'Azure', 'Google Cloud', 'Serverless', 'Microservices',
-        'OAuth', 'Web Security', 'PWA', 'Web Accessibility',
-        'Machine Learning', 'TensorFlow', 'PyTorch', 'NLP',
-        'Blockchain', 'Solidity', 'Cybersecurity',
-    ];
+        const skillIds = selectedSkills.map((skill: string) => { return { id: skills.find((s: any) => s.name === skill).id } })
+
+        const project = {
+            title: projForm.title,
+            description: projForm.desc,
+            deployment: projForm.deployment,
+            start: projForm.start + '-01T00:00:00.000Z',
+            end: projForm.end + '-01T00:00:00.000Z',
+            current: projForm.current,
+            source: projForm.source,
+            skills: skillIds,
+        }
+
+        const res = await fetch('/api/profile/projects', {
+            method: 'POST',
+            body: JSON.stringify({
+                project: project,
+                uid: user.uid
+            })
+        })
+
+        if (!res.ok) {
+            throw new Error("Failed to Add Project")
+        }
+
+        return res.json()
+    }
 
     const handleSkillSelection = (skill: string) => {
         if (selectedSkills.includes(skill)) {
@@ -74,24 +88,24 @@ export default function ProfileProjectsEditor(params: { user: any }) {
                             <div className={styles.dateContainer}>
                                 <div className={styles.inputContainer}>
                                     <div className={styles.inputTitle}>From</div>
-                                    <input className={styles.input} name='fromDate' onChange={handleChange} />
+                                    <input className={styles.input} type='month' name='start' onChange={handleChange} />
                                 </div>
                                 <FontAwesomeIcon icon={faArrowsLeftRight} className={styles.arrowIcon} />
                                 <div className={styles.inputContainer}>
                                     <div className={styles.inputTitle}>To</div>
-                                    <input className={styles.input} name='toDate' onChange={handleChange} />
+                                    <input className={styles.input} type='month' name='end' onChange={handleChange} />
                                 </div>
                                 <div className={styles.checkboxContainer}>
                                     <label className={styles.checkboxLabel}>
                                         <input
                                             type='checkbox'
                                             className={styles.customCheckbox}
-                                            value={projForm.developing === true ? 'true' : 'false'}
-                                            checked={projForm.developing}
+                                            value={projForm.current === true ? 'true' : 'false'}
+                                            checked={projForm.current}
                                             onClick={() => {
                                                 setProjForm((prev) => ({
                                                     ...prev,
-                                                    developing: !prev.developing,
+                                                    current: !prev.current,
                                                 }))
                                             }}
                                         />
@@ -115,7 +129,7 @@ export default function ProfileProjectsEditor(params: { user: any }) {
                         <div className={styles.smallFormGroupRight}>
                             <div className={styles.inputTitle}>Skills</div>
                             <div className={styles.selectionBox}>
-                                {skills.map((skill, index) => (
+                                {currentSkills.map((skill: string, index: number) => (
                                     <label key={index} className={styles.checkboxLabel}>
                                         <input
                                             type="checkbox"

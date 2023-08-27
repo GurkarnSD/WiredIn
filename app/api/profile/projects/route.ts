@@ -1,29 +1,29 @@
 import { NextResponse } from "next/server";
 import {
-  getExperiencesPrisma,
-  createExperiencePrisma,
-  deleteExperiencePrisma,
-} from "@/lib/prisma/experiences";
+  getProjectsPrisma,
+  createProjectPrisma,
+  deleteProjectPrisma,
+} from "@/lib/prisma/projects";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const uid = searchParams.get("uid");
-  const res = await getExperiencesPrisma(uid as string);
+  const res = await getProjectsPrisma(uid as string);
 
   return NextResponse.json(res);
 }
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const res = await createExperiencePrisma(body.uid, body.experience);
+  const res = await createProjectPrisma(body.uid, body.project);
 
-  return NextResponse.json({ response: "Created Experience" });
+  return NextResponse.json({ response: "Created Project" });
 }
 
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
-  const res = await deleteExperiencePrisma(id as string);
+  const res = await deleteProjectPrisma(id as string);
 
-  return NextResponse.json({ response: "Deleted Experience" });
+  return NextResponse.json({ response: "Deleted Project" });
 }

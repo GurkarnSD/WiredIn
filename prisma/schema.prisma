@@ -35,6 +35,7 @@ model User {
   followers   User[]       @relation("Following")
   skills      Skill[]
   experiences Experience[]
+  projects    Project[]
 }
 
 model Skill {
@@ -46,6 +47,7 @@ model Skill {
   user        User         @relation(fields: [userId], references: [uid])
   userId      String
   experiences Experience[]
+  projects    Project[]
 
   @@index([userId])
 }
@@ -55,11 +57,29 @@ model Experience {
   title       String
   company     String
   image       String?
-  description String?
+  description String?   @db.VarChar(1000)
   skills      Skill[]
   start       DateTime
   end         DateTime?
   current     Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [uid])
+  userId      String
+
+  @@index([userId])
+}
+
+model Project {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?   @db.VarChar(1000)
+  deployment  String?
+  source      String?
+  start       DateTime
+  end         DateTime?
+  current     Boolean   @default(false)
+  skills      Skill[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   user        User      @relation(fields: [userId], references: [uid])

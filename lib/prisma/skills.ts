@@ -53,6 +53,6 @@ export async function deleteSkillPrisma(id: string) {
       where: { id: queryId },
     });
   } catch (error) {
-    throw new Error("Unable To Add Skill");
+    throw new Error("Unable To Delete Skill");
   }
 }
