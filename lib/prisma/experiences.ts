@@ -17,7 +17,7 @@ async function init() {
   await init();
 })();
 
-export async function getExperiencesPrisma(userId: string) {
+async function getExperiencesPrisma(userId: string) {
   try {
     const skills = await prisma.experience.findMany({
       where: { userId },
@@ -29,7 +29,7 @@ export async function getExperiencesPrisma(userId: string) {
   }
 }
 
-export async function createExperiencePrisma(
+async function createExperiencePrisma(
   userId: string,
   experience: {
     title: string;
@@ -65,7 +65,7 @@ export async function createExperiencePrisma(
   }
 }
 
-export async function deleteExperiencePrisma(id: string) {
+async function deleteExperiencePrisma(id: string) {
   try {
     const queryId = parseInt(id, 10);
 
@@ -76,3 +76,5 @@ export async function deleteExperiencePrisma(id: string) {
     throw new Error("Unable To Delete Experience");
   }
 }
+
+export { getExperiencesPrisma, createExperiencePrisma, deleteExperiencePrisma };

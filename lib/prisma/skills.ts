@@ -17,7 +17,7 @@ async function init() {
   await init();
 })();
 
-export async function getSkillsPrisma(userId: string) {
+async function getSkillsPrisma(userId: string) {
   try {
     const skills = await prisma.skill.findMany({
       where: { userId },
@@ -28,7 +28,7 @@ export async function getSkillsPrisma(userId: string) {
   }
 }
 
-export async function addSkillPrisma(
+async function addSkillPrisma(
   userId: string,
   skill: { name: string; learnedIn: number }
 ) {
@@ -45,7 +45,7 @@ export async function addSkillPrisma(
   }
 }
 
-export async function deleteSkillPrisma(id: string) {
+async function deleteSkillPrisma(id: string) {
   try {
     const queryId = parseInt(id, 10);
 
@@ -56,3 +56,5 @@ export async function deleteSkillPrisma(id: string) {
     throw new Error("Unable To Delete Skill");
   }
 }
+
+export { getSkillsPrisma, addSkillPrisma, deleteSkillPrisma };

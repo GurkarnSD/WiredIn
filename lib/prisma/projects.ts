@@ -17,7 +17,7 @@ async function init() {
   await init();
 })();
 
-export async function getProjectsPrisma(userId: string) {
+async function getProjectsPrisma(userId: string) {
   try {
     const skills = await prisma.project.findMany({
       where: { userId },
@@ -29,7 +29,7 @@ export async function getProjectsPrisma(userId: string) {
   }
 }
 
-export async function createProjectPrisma(
+async function createProjectPrisma(
   userId: string,
   project: {
     title: string;
@@ -63,7 +63,7 @@ export async function createProjectPrisma(
   }
 }
 
-export async function deleteProjectPrisma(id: string) {
+async function deleteProjectPrisma(id: string) {
   try {
     const queryId = parseInt(id, 10);
 
@@ -74,3 +74,5 @@ export async function deleteProjectPrisma(id: string) {
     throw new Error("Unable To Delete Project");
   }
 }
+
+export { getProjectsPrisma, createProjectPrisma, deleteProjectPrisma };
