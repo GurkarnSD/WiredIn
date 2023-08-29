@@ -26,6 +26,8 @@ async function getExperiencesPrisma(userId: string) {
     return skills;
   } catch (error) {
     throw new Error("Unable To Get Experiences");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -62,6 +64,8 @@ async function createExperiencePrisma(
     });
   } catch (error) {
     throw new Error("Unable To Create Experience");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -74,6 +78,8 @@ async function deleteExperiencePrisma(id: string) {
     });
   } catch (error) {
     throw new Error("Unable To Delete Experience");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 

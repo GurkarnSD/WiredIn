@@ -25,6 +25,8 @@ async function getSkillsPrisma(userId: string) {
     return skills;
   } catch (error) {
     throw new Error("Unable To Get Skills");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -42,6 +44,8 @@ async function addSkillPrisma(
     });
   } catch (error) {
     throw new Error("Unable To Add Skill");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -54,6 +58,8 @@ async function deleteSkillPrisma(id: string) {
     });
   } catch (error) {
     throw new Error("Unable To Delete Skill");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 

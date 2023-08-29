@@ -47,6 +47,8 @@ async function followUserPrisma(user: string, otherUser: string) {
     return true;
   } catch (error) {
     throw new Error("Unable To Follow User");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -69,6 +71,8 @@ async function unfollowUserPrisma(user: string, otherUser: string) {
     return true;
   } catch (error) {
     throw new Error("Unable To Unfollow User");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 

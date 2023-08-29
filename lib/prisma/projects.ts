@@ -26,6 +26,8 @@ async function getProjectsPrisma(userId: string) {
     return skills;
   } catch (error) {
     throw new Error("Unable To Get Projects");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -60,6 +62,8 @@ async function createProjectPrisma(
     });
   } catch (error) {
     throw new Error("Unable To Create Project");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -72,6 +76,8 @@ async function deleteProjectPrisma(id: string) {
     });
   } catch (error) {
     throw new Error("Unable To Delete Project");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 

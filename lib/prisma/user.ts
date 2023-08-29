@@ -37,6 +37,8 @@ async function createUserPrisma(user: any): Promise<boolean> {
   } catch (error) {
     console.log("Error creating user:", error);
     throw new Error("Unable To Create User");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -46,6 +48,8 @@ async function deleteUserPrisma(uid: string): Promise<any> {
     return result;
   } catch (error) {
     throw new Error("Unable To Delete User");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -75,6 +79,8 @@ async function getUserPrisma(uid: string, name: string): Promise<any> {
     }
   } catch (error) {
     throw new Error("Unable to find user");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -95,6 +101,8 @@ async function updateUserPrisma(user: any): Promise<any> {
     return result;
   } catch (error) {
     throw new Error("Unable To Update User");
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
