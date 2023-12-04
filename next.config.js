@@ -4,7 +4,12 @@ const nextConfig = {
     serverComponentsExternalPackages: ["@prisma/client", "bcrypt"],
   },
   images: {
-    domains: ["wiredinimages.s3.amazonaws.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
   },
   env: {
     S3ENDPOINT: process.env.NEXT_PUBLIC_S3ENDPOINT,
