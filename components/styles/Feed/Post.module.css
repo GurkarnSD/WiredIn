@@ -1,0 +1,138 @@
+.container {
+  width: 960px;
+  height: 500px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 25px;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #000000;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.inputBox {
+  width: 100%;
+  height: 325px;
+  background-color: #d9d9d9;
+  border: none;
+  border-radius: 10px;
+  color: #000000;
+  resize: none;
+  padding: 10px;
+  margin: 10px;
+}
+
+.postButton {
+  width: 200px;
+  height: 50px;
+  background-color: #0096ff;
+  border-radius: 15px;
+  border: none;
+  font-size: 25px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icon {
+  margin-right: 15px;
+  height: 30px;
+  width: 30px;
+  color: #000000;
+}
+
+.postContainer {
+  margin: 40px;
+  background-color: #ffffff;
+  width: 700px;
+  min-height: 200px;
+  border-radius: 20px;
+  padding: 10px;
+  height: fit-content;
+}
+
+.postProfile {
+  border-radius: 25px;
+}
+
+.postHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.postHeaderLeft {
+  display: flex;
+  align-items: center;
+}
+
+.postHeaderRight {
+  display: flex;
+  align-items: center;
+}
+
+.displayName {
+  color: #000000;
+  font-weight: 700;
+  font-size: 22px;
+  margin-left: 8px;
+}
+
+.profileTitle {
+  color: #959595;
+  font-weight: 400;
+  font-size: 18px;
+  margin-left: 8px;
+}
+
+.time {
+  color: #959595;
+  font-size: 18px;
+  margin-right: 16px;
+}
+
+.postBody {
+  margin: 20px 20px 20px 60px;
+}
+
+.text {
+  color: #000000;
+  font-size: 18px;
+  word-wrap: break-word;
+}
+
+.postFooter {
+  display: flex;
+  justify-content: flex-start;
+  gap: 30px;
+  margin-left: 20px;
+}
+
+.postIcon path {
+  stroke: #959595;
+  stroke-width: 30px;
+}
+
+.postIcon {
+  font-size: 16px;
+}
+
+.iconCount {
+  margin-left: 6px;
+  color: #959595;
+  font-size: 16px;
+}

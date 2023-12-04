@@ -1,0 +1,28 @@
+.container {
+  width: 770px;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.createPost {
+  width: 200px;
+  height: 60px;
+  background-color: #0096ff;
+  font-size: 25px;
+  font-weight: 800;
+  border: none;
+  border-radius: 15px;
+}
+
+.createPost:hover {
+  cursor: pointer;
+}
+
+.messages {
+  width: 100%;
+}
