@@ -38,6 +38,11 @@ async function getPostsPrisma(userId: string) {
             profilePic: true,
           },
         },
+        likes: {
+          select: {
+            uid: true,
+          },
+        },
         _count: {
           select: {
             likes: true,
@@ -91,4 +96,44 @@ async function deletePostPrisma(id: string) {
   }
 }
 
-export { getPostsPrisma, createPostPrisma, deletePostPrisma };
+async function likePostPrisma(user: string, postId: number) {
+  try {
+    await prisma.user.update({
+      where: { uid: user },
+      data: {
+        likedPosts: { connect: { id: postId } },
+      },
+    });
+
+    return true;
+  } catch (error) {
+    throw new Error("Unable To Like Post");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function unlikePostPrisma(user: string, postId: number) {
+  try {
+    await prisma.user.update({
+      where: { uid: user },
+      data: {
+        likedPosts: { disconnect: { id: postId } },
+      },
+    });
+
+    return true;
+  } catch (error) {
+    throw new Error("Unable To Like Post");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export {
+  getPostsPrisma,
+  createPostPrisma,
+  deletePostPrisma,
+  likePostPrisma,
+  unlikePostPrisma,
+};

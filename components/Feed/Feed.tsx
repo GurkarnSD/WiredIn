@@ -10,8 +10,6 @@ export default function Feed(params: { user: any, posts: [] }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { user, posts } = params;
 
-    console.log(posts)
-
     return (
         <div className={styles.container}>
             <div className={styles.header}>
@@ -20,7 +18,7 @@ export default function Feed(params: { user: any, posts: [] }) {
             <div className={styles.messages}>
                 {posts.map((post) => {
                     return (
-                        <Post data={post} />
+                        <Post data={post} uid={user.uid} />
                     );
                 })}
             </div>

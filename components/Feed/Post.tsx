@@ -3,9 +3,41 @@ import { faHeart, faComment } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import styles from "../styles/Feed/Post.module.css";
 
-export default function Post(params: { data: any }) {
+const likePost = async (userId: string, postId: number) => {
+    const res = await fetch('/api/feed/like', {
+        method: "POST",
+        body: JSON.stringify({
+            uid: userId,
+            postId: postId
+        })
+    })
 
-    const { data } = params;
+    if (!res.ok) {
+        throw new Error("Failed to like post")
+    }
+
+    return res.json()
+}
+
+const unlikePost = async (userId: string, postId: number) => {
+    const res = await fetch('/api/feed/like', {
+        method: "DELETE",
+        body: JSON.stringify({
+            uid: userId,
+            postId: postId
+        })
+    })
+
+    if (!res.ok) {
+        throw new Error("Failed to unlike post")
+    }
+
+    return res.json()
+}
+
+export default function Post(params: { data: any, uid: any }) {
+
+    const { data, uid } = params;
 
     return (
         <div className={styles.postContainer}>
@@ -26,7 +58,11 @@ export default function Post(params: { data: any }) {
             </div>
             <div className={styles.postFooter}>
                 <div>
-                    <FontAwesomeIcon className={styles.postIcon} icon={faHeart} />
+                    {data.likes.some((like: { uid: string }) => like.uid === uid) ?
+                        <FontAwesomeIcon className={`${styles.postIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikePost(uid, data.id)} />
+                        :
+                        <FontAwesomeIcon className={styles.postIcon} icon={faHeart} onClick={() => likePost(uid, data.id)} />
+                    }
                     <span className={styles.iconCount}>{data._count.likes}</span>
                 </div>
                 <div>

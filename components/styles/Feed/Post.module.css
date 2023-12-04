@@ -136,3 +136,9 @@
   color: #959595;
   font-size: 16px;
 }
+
+.liked path {
+  stroke: #d22b2b;
+  color: #d22b2b;
+  stroke-width: 30px;
+}
