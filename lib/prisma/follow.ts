@@ -30,13 +30,6 @@ async function followUserPrisma(user: string, otherUser: string) {
       !userData.following.some((following: any) => following.uid === otherUser)
     ) {
       await prisma.user.update({
-        where: { uid: otherUser },
-        data: {
-          followers: { connect: { uid: user } },
-        },
-      });
-
-      await prisma.user.update({
         where: { uid: user },
         data: {
           following: { connect: { uid: otherUser } },
@@ -54,13 +47,6 @@ async function followUserPrisma(user: string, otherUser: string) {
 
 async function unfollowUserPrisma(user: string, otherUser: string) {
   try {
-    await prisma.user.update({
-      where: { uid: otherUser },
-      data: {
-        followers: { disconnect: { uid: user } },
-      },
-    });
-
     await prisma.user.update({
       where: { uid: user },
       data: {
