@@ -1,0 +1,54 @@
+.container {
+  margin-left: 40px;
+  padding: 20px;
+  width: 400px;
+  height: 350px;
+  background-color: #fff;
+  color: #000;
+  border-radius: 15px;
+  box-shadow: 10px 10px 5px 1px #a1a1a1;
+}
+
+.userImage {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  margin-right: 10px;
+  background-color: #b9b9b9;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+}
+
+.userName {
+  font-weight: 800;
+  font-size: 40px;
+  background: linear-gradient(90deg, #ff00ff 30.43%, #0096ff 67.25%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.options {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.options > * {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.option {
+  font-size: 32px;
+  font-weight: 800;
+  color: #000;
+}
+
+.icon {
+  margin-right: 15px;
+  height: 30px;
+  width: 30px;
+}

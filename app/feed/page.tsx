@@ -4,6 +4,7 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 import Navbar from "@/components/Navbar";
 import Connect from "@/components/Feed/Connect";
 import Feed from "@/components/Feed/Feed";
+import ProfileCard from "@/components/Feed/ProfileCard";
 
 export const revalidate = 0;
 
@@ -30,6 +31,8 @@ export default async function FeedPage() {
         {/* @ts-expect-error Async Server Component */}
         <Connect user={session?.user} />
         <Feed user={session?.user} posts={posts} />
+        {/* @ts-expect-error Async Server Component */}
+        <ProfileCard user={session?.user} />
       </div>
     </>
   )

@@ -57,7 +57,7 @@
 }
 
 .postContainer {
-  margin: 40px;
+  margin: 40px 40px 40px 40px;
   background-color: #ffffff;
   width: 700px;
   min-height: 200px;
