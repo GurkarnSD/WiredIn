@@ -49,7 +49,7 @@ export default function ProfileProjects(params: { pageUser: any, user: any }) {
 
             <div className={styles.body}>
                 {projectsData?.map((project: any) => (
-                    <div className={styles.project}>
+                    <div className={styles.project} key={project}>
                         <div className={styles.projectHeader}>
                             <div className={styles.projectTitle}>{project.title}</div>
                             {project.deployment && <Link href={project.deployment}>

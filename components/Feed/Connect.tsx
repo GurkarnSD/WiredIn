@@ -1,5 +1,6 @@
 import styles from "../styles/Feed/Connect.module.css"
 import Link from "next/link"
+import Image from "next/image"
 
 const fetchRandomUsers = async (uid: string) => {
     const res = await fetch(`${process.env.API_URL}/api/users/?uid=${uid}`)
@@ -24,8 +25,8 @@ export default async function Connect(params: { user: any }) {
                     <div className={styles.title}>Connect</div>
                     <div className={styles.usersContainer}>
                         {usersData.map((user: any) => (
-                            <Link className={styles.userContainer} href={`/profile/${user.displayName}`}>
-                                <img className={styles.userImage} src={user.photoURL} />
+                            <Link className={styles.userContainer} href={`/profile/${user.displayName}`} key={user}>
+                                <Image className={styles.userImage} src={user.photoURL} alt='User Image' />
                                 <div className={styles.userInfo}>
                                     <div className={styles.userName}>{user.displayName}</div>
                                     <div className={styles.userTitle}>{user.title}</div>
