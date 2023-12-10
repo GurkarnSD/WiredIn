@@ -26,7 +26,7 @@ export default async function Connect(params: { user: any }) {
                     <div className={styles.usersContainer}>
                         {usersData.map((user: any) => (
                             <Link className={styles.userContainer} href={`/profile/${user.displayName}`} key={user}>
-                                <Image className={styles.userImage} src={user.photoURL} alt='User Image' />
+                                <Image className={styles.userImage} src={`${process.env.S3ENDPOINT}${user.profilePic}`} alt='User Image' />
                                 <div className={styles.userInfo}>
                                     <div className={styles.userName}>{user.displayName}</div>
                                     <div className={styles.userTitle}>{user.title}</div>

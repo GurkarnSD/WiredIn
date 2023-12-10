@@ -12,7 +12,7 @@ export default async function ProfileCard(params: { user: any }) {
         <>
             <div className={styles.container}>
                 <div className={styles.userInfo}>
-                    <Image className={styles.userImage} src={user.photoURL} alt='User Image' />
+                    <Image className={styles.userImage} src={`${process.env.S3ENDPOINT}${user.profilePic}`} alt='User Image' />
                     <div className={styles.userName}>{user.displayName}</div>
                 </div>
                 <div className={styles.options}>
