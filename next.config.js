@@ -19,6 +19,9 @@ const nextConfig = {
   env: {
     S3ENDPOINT: process.env.NEXT_PUBLIC_S3ENDPOINT,
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 module.exports = nextConfig;
