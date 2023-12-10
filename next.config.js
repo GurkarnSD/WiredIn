@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverComponentsExternalPackages: ["@prisma/client", "bcrypt"],
+    serverComponentsExternalPackages: [
+      "@prisma/client",
+      "bcrypt",
+      "@react-email/components",
+      "@react-email/render",
+    ],
   },
   images: {
     remotePatterns: [

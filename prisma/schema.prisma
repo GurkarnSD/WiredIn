@@ -15,8 +15,22 @@ model Credentials {
   displayName String
   email       String   @unique
   password    String
+  active      Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  ActivateToken ActivateToken[]
+}
+
+model ActivateToken {
+  id            Int          @id @default(autoincrement())
+  token         String       @unique
+  activatedAt   DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  credentials   Credentials @relation(fields: [credsId], references: [id])
+  credsId Int
+
+  @@index([credsId])
 }
 
 model User {

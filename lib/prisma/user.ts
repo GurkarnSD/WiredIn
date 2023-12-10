@@ -1,4 +1,5 @@
 import { prisma } from "./index";
+import { randomUUID } from "crypto";
 
 let client: any;
 
@@ -33,6 +34,28 @@ async function createUserPrisma(user: any): Promise<boolean> {
     };
     const result = await prisma.user.create({ data: userData });
     console.log("User created:", result);
+
+    const token = await prisma.activateToken.create({
+      data: {
+        token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
+        credsId: credentials.id,
+      },
+    });
+    console.log("Token created:", token);
+
+    const data = await fetch(`${process.env.API_URL}/api/send/activate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: user.email,
+        token: token.token,
+        user: user.displayName,
+      }),
+    });
+    console.log(data);
+
     return true;
   } catch (error) {
     console.log("Error creating user:", error);
