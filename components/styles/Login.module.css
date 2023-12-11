@@ -64,6 +64,15 @@
   outline: none;
 }
 
+.error {
+  color: #ea4335;
+  font-weight: 600;
+  font-size: 20px;
+  margin-top: -10px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
 .loginButton {
   width: 400px;
   height: 50px;

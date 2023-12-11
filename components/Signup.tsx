@@ -2,10 +2,8 @@
 import styles from './styles/Signup.module.css'
 import Link from 'next/link'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation';
 
 const Signup: React.FC = () => {
-    const router = useRouter();
 
     const [signupForm, setSignupForm] = useState({
         username: '',
@@ -22,6 +20,7 @@ const Signup: React.FC = () => {
     }
 
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -66,20 +65,20 @@ const Signup: React.FC = () => {
             }),
         })
 
-        router.push('/login')
+        setSignupForm({ username: '', email: '', password: '', confirmPassword: '' })
+        setSuccess('Check Your Email To Activate Your Account')
     }
 
     return (
         <div className={styles.signup}>
             <div className={styles.wiredIn}>WiredIn</div>
             <form className={styles.inputForm} onSubmit={handleSubmit}>
-                <input required className={styles.input} name='username' type="text" placeholder="Username" onChange={handleChange} />
-                <input required className={styles.input} name='email' type="text" placeholder="Email" onChange={handleChange} />
-                <input required className={styles.input} name='password' type="password" placeholder="Password" onChange={handleChange} />
-                <input required className={styles.input} name='confirmPassword' type="password" placeholder="Confirm Password" onChange={handleChange} />
-                {(error) && (
-                    <div className={styles.error}>{error}</div>
-                )}
+                <input required className={styles.input} name='username' type="text" placeholder="Username" value={signupForm.username} onChange={handleChange} />
+                <input required className={styles.input} name='email' type="text" placeholder="Email" value={signupForm.email} onChange={handleChange} />
+                <input required className={styles.input} name='password' type="password" placeholder="Password" value={signupForm.password} onChange={handleChange} />
+                <input required className={styles.input} name='confirmPassword' type="password" placeholder="Confirm Password" value={signupForm.confirmPassword} onChange={handleChange} />
+                {error && <div className={styles.error}>{error}</div>}
+                {success && <div className={styles.success}>{success}</div>}
                 <button className={styles.signupButton} type='submit'>Signup</button>
                 <div className={styles.divider}>
                     <div className={styles.dividerLine}></div>

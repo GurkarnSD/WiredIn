@@ -51,7 +51,7 @@ export default function NavbarDropdown({ user }: { user: any | null }) {
                                     </Link>
                                 </div>
                             </div>
-                            <div className={styles.logout} onClick={() => { signOut({ callbackUrl: 'http://localhost:3000/login' }) }}>Log Out</div>
+                            <div className={styles.logout} onClick={() => { signOut({ callbackUrl: `${process.env.API_URL}/login` }) }}>Log Out</div>
                         </div>
                     </div>
                 )}

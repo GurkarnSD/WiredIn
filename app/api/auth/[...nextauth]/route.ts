@@ -5,6 +5,7 @@ import { prisma } from "../../../../lib/prisma/index";
 import { createUserPrisma } from "@/lib/prisma/user";
 import { compare } from "bcrypt";
 import { User } from "@prisma/client";
+import { randomUUID } from "crypto";
 
 const authOptions: NextAuthOptions = {
   session: {
@@ -26,10 +27,29 @@ const authOptions: NextAuthOptions = {
         });
 
         if (!user) {
-          return null;
+          throw new Error("User not found");
         }
 
         if (!user.active) {
+          const token = await prisma.activateToken.create({
+            data: {
+              token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
+              credsId: user.id,
+            },
+          });
+
+          await fetch(`${process.env.API_URL}/api/send/activate`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: user.email,
+              token: token.token,
+              user: user.displayName,
+            }),
+          });
+
           throw new Error("User is not active");
         }
 
@@ -39,7 +59,7 @@ const authOptions: NextAuthOptions = {
         );
 
         if (!isPasswordValid) {
-          return null;
+          throw new Error("Incorrect password");
         }
 
         const userData = await prisma.user.findUnique({

@@ -130,5 +130,15 @@
 .error {
   text-align: center;
   margin-bottom: 30px;
-  color: #ff4444;
+  color: #ea4335;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.success {
+  color: #0096ff;
+  font-weight: 600;
+  font-size: 24px;
+  margin-bottom: 30px;
+  text-align: center;
 }

@@ -5,13 +5,18 @@ import { useState } from 'react';
 import { signIn, signOut } from 'next-auth/react'
 import Image from 'next/image';
 import defaultProfile from '@/assets/defaultProfilePic.png'
+import { useRouter } from 'next/navigation'
 
 export default function Login({ user }: { user: any | null }) {
+
+    const { push } = useRouter();
 
     const [loginForm, setLoginForm] = useState({
         email: '',
         password: '',
     });
+
+    const [error, setError] = useState('');
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setLoginForm((prev) => ({
@@ -23,12 +28,34 @@ export default function Login({ user }: { user: any | null }) {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        await signIn('credentials', {
+        setError('');
+
+        if (!loginForm.email || !loginForm.password) {
+            setError('Please provide both email and password');
+            return;
+        }
+
+        const response = await signIn('credentials', {
+            redirect: false,
             email: loginForm.email,
             password: loginForm.password,
-            callbackUrl: 'http://localhost:3000/'
         })
 
+        if (response && response.status == 401) {
+            switch (response.error) {
+                case 'User not found':
+                    setError('User not found')
+                    break;
+                case 'Incorrect password':
+                    setError('Incorrect password')
+                    break;
+                case 'User is not active':
+                    setError('Please check your email to activate your account')
+                    break;
+            }
+        } else {
+            push('/');
+        }
     }
 
     if (user) {
@@ -40,7 +67,7 @@ export default function Login({ user }: { user: any | null }) {
                         <Image className={styles.profilePic} src={defaultProfile} alt="" />
                         <div className={styles.displayName}>{user.displayName}</div>
                     </div>
-                    <button className={styles.logoutButton} onClick={() => signOut()}>Log Out</button>
+                    <button className={styles.logoutButton} onClick={() => signOut({ callbackUrl: `${process.env.API_URL}/login` })}>Log Out</button>
                 </form>
             </div>
         )
@@ -52,6 +79,7 @@ export default function Login({ user }: { user: any | null }) {
             <form className={styles.inputForm} onSubmit={handleSubmit}>
                 <input className={styles.input} type="text" placeholder="Email" name="email" onChange={handleChange} />
                 <input className={styles.input} type="password" placeholder="Password" name="password" onChange={handleChange} />
+                {error && <div className={styles.error}>{error}</div>}
                 <button className={styles.loginButton} type='submit'>Log In</button>
                 <div className={styles.divider}>
                     <div className={styles.dividerLine}></div>
@@ -68,7 +96,7 @@ export default function Login({ user }: { user: any | null }) {
                 </button>
             </form>
             <div className={styles.additional}>
-                <Link href='/resetpassword'>Forgot Password?</Link>
+                <Link href='/forgotpassword'>Forgot Password?</Link>
                 <div>Don&apos;t Have An Account?&nbsp;<Link href='/signup' className={styles.signup}>Sign Up</Link></div>
             </div>
         </div>

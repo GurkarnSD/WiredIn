@@ -1,4 +1,4 @@
-import ActivateTemplate from "@/emails/activate";
+import ResetTemplate from "@/emails/reset";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
@@ -9,10 +9,10 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     const data = await resend.emails.send({
-      from: "WiredIn <activation@wiredin.social>",
+      from: "WiredIn <reset@wiredin.social>",
       to: body.email,
-      subject: "Activate Your Account",
-      react: ActivateTemplate({
+      subject: "Reset Your Password",
+      react: ResetTemplate({
         token: body.token,
         siteURL: process.env.API_URL || "",
         user: body.user,

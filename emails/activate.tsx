@@ -5,7 +5,6 @@ export default function ActivateTemplate(params: { token: string, siteURL: strin
 
     const { token, siteURL, user = 'Test' } = params
 
-
     return (
         <Html style={mainStyle}>
             <Head>

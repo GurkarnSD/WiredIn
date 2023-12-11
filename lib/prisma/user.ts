@@ -43,7 +43,7 @@ async function createUserPrisma(user: any): Promise<boolean> {
     });
     console.log("Token created:", token);
 
-    const data = await fetch(`${process.env.API_URL}/api/send/activate`, {
+    await fetch(`${process.env.API_URL}/api/send/activate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -54,7 +54,6 @@ async function createUserPrisma(user: any): Promise<boolean> {
         user: user.displayName,
       }),
     });
-    console.log(data);
 
     return true;
   } catch (error) {
