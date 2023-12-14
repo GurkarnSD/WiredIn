@@ -21,6 +21,24 @@ async function init() {
 async function createUserPrisma(user: any): Promise<boolean> {
   try {
     console.log("Creating credentials:");
+    // Check if email already exists
+    const existingCredsWithEmail = await prisma.credentials.findUnique({
+      where: { email: user.email },
+    });
+
+    if (existingCredsWithEmail) {
+      throw new Error("EMAIL_IN_USE");
+    }
+
+    // Check if display name already exists
+    const existingCredsWithDisplayName = await prisma.credentials.findUnique({
+      where: { displayName: user.displayName },
+    });
+
+    if (existingCredsWithDisplayName) {
+      throw new Error("DISPLAY_NAME_IN_USE");
+    }
+
     const authData = {
       displayName: user.displayName,
       email: user.email,
@@ -56,7 +74,12 @@ async function createUserPrisma(user: any): Promise<boolean> {
     });
 
     return true;
-  } catch (error) {
+  } catch (error: any) {
+    if (error.message === "EMAIL_IN_USE") {
+      throw new Error("EMAIL_IN_USE");
+    } else if (error.message === "DISPLAY_NAME_IN_USE") {
+      throw new Error("DISPLAY_NAME_IN_USE");
+    }
     console.log("Error creating user:", error);
     throw new Error("Unable To Create User");
   } finally {

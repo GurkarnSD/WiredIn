@@ -25,8 +25,9 @@ const Signup: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        // Reset the error before trying to submit the form
+        // Reset the error and success before trying to submit the form
         if (error) setError('')
+        if (success) setSuccess('')
 
         // Check passwords match
         if (signupForm.password !== signupForm.confirmPassword) {
@@ -53,7 +54,7 @@ const Signup: React.FC = () => {
             return
         }
 
-        await fetch('/api/user', {
+        const res = await fetch('/api/user', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -65,8 +66,14 @@ const Signup: React.FC = () => {
             }),
         })
 
-        setSignupForm({ username: '', email: '', password: '', confirmPassword: '' })
-        setSuccess('Check Your Email To Activate Your Account')
+        const result = await res.json()
+
+        if (result.error) {
+            setError(result.error)
+        } else {
+            setSignupForm({ username: '', email: '', password: '', confirmPassword: '' })
+            setSuccess('Check Your Email To Activate Your Account')
+        }
     }
 
     return (

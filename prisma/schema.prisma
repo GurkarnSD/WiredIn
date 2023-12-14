@@ -12,7 +12,7 @@ datasource db {
 model Credentials {
   id          Int      @id @default(autoincrement())
   uid         String   @unique @default(uuid())
-  displayName String
+  displayName String   @unique
   email       String   @unique
   password    String
   active      Boolean  @default(false)
@@ -28,7 +28,7 @@ model ActivateToken {
   activatedAt   DateTime?
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
-  credentials   Credentials @relation(fields: [credsId], references: [id])
+  credentials   Credentials @relation(fields: [credsId], references: [id], onDelete: Cascade)
   credsId Int
 
   @@index([credsId])
@@ -40,7 +40,7 @@ model ResetToken {
   resetAt       DateTime?
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
-  credentials   Credentials @relation(fields: [credsId], references: [id])
+  credentials   Credentials @relation(fields: [credsId], references: [id], onDelete: Cascade)
   credsId Int
 
   @@index([credsId])
@@ -50,7 +50,7 @@ model User {
   id          Int          @id @default(autoincrement())
   uid         String       @unique @default(uuid())
   email       String       @unique
-  displayName String
+  displayName String       @unique
   title       String?
   bio         String?
   github      String?
@@ -73,7 +73,7 @@ model Skill {
   learnedIn   Int
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
-  user        User         @relation(fields: [userId], references: [uid])
+  user        User         @relation(fields: [userId], references: [uid], onDelete: Cascade)
   userId      String
   experiences Experience[]
   projects    Project[]
@@ -93,7 +93,7 @@ model Experience {
   current     Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  user        User      @relation(fields: [userId], references: [uid])
+  user        User      @relation(fields: [userId], references: [uid], onDelete: Cascade)
   userId      String
 
   @@index([userId])
@@ -111,7 +111,7 @@ model Project {
   skills      Skill[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  user        User      @relation(fields: [userId], references: [uid])
+  user        User      @relation(fields: [userId], references: [uid], onDelete: Cascade)
   userId      String
 
   @@index([userId])
@@ -123,7 +123,7 @@ model Post {
   image       String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  user        User      @relation(fields: [userId], references: [uid])
+  user        User      @relation(fields: [userId], references: [uid], onDelete: Cascade)
   userId      String
   likes       User[]    @relation("LikedPosts")
 
