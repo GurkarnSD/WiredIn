@@ -56,7 +56,20 @@ async function getPostsPrisma(userId: string) {
       },
     });
 
-    return posts;
+    const updatedPosts = await Promise.all(
+      posts.map(async (post) => {
+        if (post.image) {
+          const res = await fetch(
+            `${process.env.API_URL}/api/image/${post.user.profilePic}`
+          );
+          const image = await res.json();
+          return { ...post, user: { ...user, profilePic: image.url } };
+        }
+        return post;
+      })
+    );
+
+    return updatedPosts;
   } catch (error) {
     console.error(error);
     throw new Error("Unable To Get Posts");

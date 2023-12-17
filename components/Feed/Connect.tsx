@@ -1,8 +1,6 @@
-'use client';
 import styles from "../styles/Feed/Connect.module.css"
 import Link from "next/link"
 import Image from "next/image"
-import { useEffect, useState } from "react"
 import { User } from "@prisma/client"
 
 const fetchRandomUsers = async (uid: string) => {
@@ -12,44 +10,37 @@ const fetchRandomUsers = async (uid: string) => {
         throw new Error("Failed to fetch users")
     }
 
-    return res.json()
+    const data = await res.json();
+
+    const updatedUsersData = await Promise.all(
+        data.map(async (userData: any) => {
+            if (userData.profilePic) {
+                const profileURL = await fetchProfileImage(userData.profilePic);
+                return { ...userData, profilePic: profileURL };
+            }
+            return userData;
+        })
+    );
+
+    return updatedUsersData
 }
 
 const fetchProfileImage = async (profileKey: string) => {
-    const response = await fetch(`/api/image/${profileKey}`);
-    const { url: profileURL } = await response.json();
+    const res = await fetch(`${process.env.API_URL}/api/image/${profileKey}`);
+
+    if (!res.ok) {
+        throw new Error('Failed to Fetch Image Url')
+    }
+
+    const { url: profileURL } = await res.json();
     return profileURL;
 }
 
-export default function Connect(params: { user: any }) {
+export default async function Connect(params: { user: User }) {
 
     const { user } = params;
 
-    const [usersData, setUsersData] = useState<User[]>([]);
-
-    const fetchAndUpdateProfilePics = async () => {
-        try {
-            const data = await fetchRandomUsers(user.uid);
-
-            const updatedUsersData = await Promise.all(
-                data.map(async (userData: any) => {
-                    if (userData.profilePic) {
-                        const profileURL = await fetchProfileImage(userData.profilePic);
-                        return { ...userData, profilePic: profileURL };
-                    }
-                    return userData;
-                })
-            );
-
-            setUsersData(updatedUsersData);
-        } catch (error) {
-            console.error('Failed to fetch users or profile images', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchAndUpdateProfilePics();
-    }, [user.uid]);
+    const usersData = await fetchRandomUsers(user.uid);
 
     return (
         <>

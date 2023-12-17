@@ -5,8 +5,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComment } from '@fortawesome/free-solid-svg-icons'
 
 const fetchProfileImage = async (profileKey: string) => {
-    const response = await fetch(`${process.env.API_URL}/api/image/${profileKey}`);
-    const { url: profileURL } = await response.json();
+    const res = await fetch(`${process.env.API_URL}/api/image/${profileKey}`);
+
+    if (!res.ok) {
+        throw new Error('Failed to Fetch Image Url')
+    }
+
+    const { url: profileURL } = await res.json();
     return profileURL;
 }
 

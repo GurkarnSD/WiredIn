@@ -35,23 +35,15 @@ const unlikePost = async (userId: string, postId: number) => {
     return res.json()
 }
 
-const fetchProfileImage = async (profileKey: string) => {
-    const response = await fetch(`${process.env.API_URL}/api/image/${profileKey}`);
-    const { url: profileURL } = await response.json();
-    return profileURL;
-}
-
-export default async function Post(params: { data: any, uid: any }) {
+export default function Post(params: { data: any, uid: any }) {
 
     const { data, uid } = params;
-
-    const profilePic = await fetchProfileImage(data.user.profilePic)
 
     return (
         <div className={styles.postContainer}>
             <div className={styles.postHeader}>
                 <div className={styles.postHeaderLeft}>
-                    <Image className={styles.postProfile} src={profilePic} alt={""} height={50} width={50} />
+                    <Image className={styles.postProfile} src={data.user.profilePic} alt={""} height={50} width={50} />
                     <div className={styles.postInfo}>
                         <div className={styles.displayName}>{data.user.displayName}</div>
                         <div className={styles.profileTitle}>{data.user.title}</div>
