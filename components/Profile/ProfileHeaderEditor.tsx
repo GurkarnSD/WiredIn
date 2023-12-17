@@ -21,8 +21,8 @@ export default function ProfileHeaderEditor(params: { user: any, userImages: { b
     const [profilePic, setProfilePic] = useState('');
     const [banner, setBanner] = useState('');
 
-    const [profileFile, setProfileFile] = useState<File | null>(user.profilePic);
-    const [bannerFile, setBannerFile] = useState<File | null>(user.bannerPic);
+    const [profileFile, setProfileFile] = useState<File | null>(null);
+    const [bannerFile, setBannerFile] = useState<File | null>(null);
 
     const profilePicInputRef = useRef<HTMLInputElement>(null);
     const bannerInputRef = useRef<HTMLInputElement>(null);
@@ -91,8 +91,8 @@ export default function ProfileHeaderEditor(params: { user: any, userImages: { b
             title: profileForm.title,
             bio: profileForm.bio,
             github: profileForm.github,
-            profilePic: profileFile,
-            bannerPic: bannerFile,
+            profilePic: user.profilePic,
+            bannerPic: user.bannerPic,
         }
 
         if (profileFile && profilePic !== `${process.env.S3ENDPOINT}${user.profilePic}`) {
