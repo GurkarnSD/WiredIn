@@ -7,7 +7,23 @@ import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { signOut } from 'next-auth/react';
 
+const fetchProfileImage = async (profileKey: string) => {
+    const response = await fetch(`/api/image/${profileKey}`);
+    const { url: profileURL } = await response.json();
+    return profileURL;
+}
+
 export default function NavbarDropdown({ user }: { user: any | null }) {
+
+    const [profilePic, setProfilePic] = useState('')
+
+    useEffect(() => {
+        const fetchImage = async () => {
+            const image = await fetchProfileImage(user.profilePic);
+            setProfilePic(image);
+        };
+        if (user) fetchImage();
+    }, [user?.profilePic]);
 
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
@@ -22,7 +38,7 @@ export default function NavbarDropdown({ user }: { user: any | null }) {
         <>
             {user ? (
                 <div className={styles.profileContainer} onClick={toggleDropdown}>
-                    <Image className={styles.profilePic} src={`${process.env.S3ENDPOINT}${user.profilePic}`} alt="" width={60} height={60} />
+                    <Image className={styles.profilePic} src={profilePic} alt="" width={60} height={60} />
                 </div>
             ) : (
                 <Link className={styles.link} href="/login">

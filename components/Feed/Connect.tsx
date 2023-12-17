@@ -1,6 +1,9 @@
+'use client';
 import styles from "../styles/Feed/Connect.module.css"
 import Link from "next/link"
 import Image from "next/image"
+import { useEffect, useState } from "react"
+import { User } from "@prisma/client"
 
 const fetchRandomUsers = async (uid: string) => {
     const res = await fetch(`${process.env.API_URL}/api/users/?uid=${uid}`)
@@ -12,11 +15,41 @@ const fetchRandomUsers = async (uid: string) => {
     return res.json()
 }
 
-export default async function Connect(params: { user: any }) {
+const fetchProfileImage = async (profileKey: string) => {
+    const response = await fetch(`/api/image/${profileKey}`);
+    const { url: profileURL } = await response.json();
+    return profileURL;
+}
+
+export default function Connect(params: { user: any }) {
 
     const { user } = params;
 
-    const usersData = await fetchRandomUsers(user.uid);
+    const [usersData, setUsersData] = useState<User[]>([]);
+
+    const fetchAndUpdateProfilePics = async () => {
+        try {
+            const data = await fetchRandomUsers(user.uid);
+
+            const updatedUsersData = await Promise.all(
+                data.map(async (userData: any) => {
+                    if (userData.profilePic) {
+                        const profileURL = await fetchProfileImage(userData.profilePic);
+                        return { ...userData, profilePic: profileURL };
+                    }
+                    return userData;
+                })
+            );
+
+            setUsersData(updatedUsersData);
+        } catch (error) {
+            console.error('Failed to fetch users or profile images', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAndUpdateProfilePics();
+    }, [user.uid]);
 
     return (
         <>
@@ -26,7 +59,7 @@ export default async function Connect(params: { user: any }) {
                     <div className={styles.usersContainer}>
                         {usersData.map((user: any) => (
                             <Link className={styles.userContainer} href={`/profile/${user.displayName}`} key={user}>
-                                <Image className={styles.userImage} src={`${process.env.S3ENDPOINT}${user.profilePic}`} alt='User Image' />
+                                <Image className={styles.userImage} src={user.profilePic} alt='User Image' width={65} height={65} />
                                 <div className={styles.userInfo}>
                                     <div className={styles.userName}>{user.displayName}</div>
                                     <div className={styles.userTitle}>{user.title}</div>

@@ -19,9 +19,9 @@ export default function ProfileProjects(params: { pageUser: any, user: any }) {
 
     const { pageUser, user } = params;
 
-    const { data: skillsData, error: skillsError } = useSWR(`/api/profile/skills/?uid=${user.uid}`, fetcher)
+    const { data: skillsData, error: skillsError } = useSWR(`/api/profile/skills/?uid=${pageUser.uid}`, fetcher)
 
-    const { data: projectsData, error: projectsError } = useSWR(`/api/profile/projects/?uid=${user.uid}`, fetcher)
+    const { data: projectsData, error: projectsError } = useSWR(`/api/profile/projects/?uid=${pageUser.uid}`, fetcher)
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditProjects, setIsEditProjects] = useState(false);

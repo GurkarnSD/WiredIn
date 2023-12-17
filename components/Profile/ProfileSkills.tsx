@@ -18,7 +18,7 @@ export default function ProfileSkills(params: { pageUser: any, user: any }) {
 
     const { pageUser, user } = params;
 
-    const { data, error } = useSWR(`/api/profile/skills/?uid=${user.uid}`, fetcher)
+    const { data, error } = useSWR(`/api/profile/skills/?uid=${pageUser.uid}`, fetcher)
 
     const skills = data;
 

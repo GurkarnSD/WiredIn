@@ -4,9 +4,9 @@ import Image from 'next/image'
 import { useState, useRef, useEffect } from 'react'
 import axios from 'axios';
 
-export default function ProfileHeaderEditor(params: { user: any }) {
+export default function ProfileHeaderEditor(params: { user: any, userImages: { bannerURL: string, profileURL: string } }) {
 
-    const { user } = params;
+    const { user, userImages } = params;
 
     const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
@@ -28,8 +28,8 @@ export default function ProfileHeaderEditor(params: { user: any }) {
     const bannerInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        setProfilePic(`${process.env.S3ENDPOINT}${user.profilePic}`);
-        setBanner(`${process.env.S3ENDPOINT}${user.bannerPic}`);
+        setProfilePic(userImages.profileURL);
+        setBanner(userImages.bannerURL);
         setProfileForm({
             title: user.title,
             bio: user.bio,
@@ -98,6 +98,8 @@ export default function ProfileHeaderEditor(params: { user: any }) {
         if (profileFile && profilePic !== `${process.env.S3ENDPOINT}${user.profilePic}`) {
             const profilePicData = new FormData();
             profilePicData.append('image', profileFile);
+            profilePicData.append('type', profileFile.type)
+            profilePicData.append('uid', user.uid);
             const profilePicURL = await axios.post('/api/image', profilePicData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -109,6 +111,8 @@ export default function ProfileHeaderEditor(params: { user: any }) {
         if (bannerFile && banner !== `${process.env.S3ENDPOINT}${user.bannerPic}`) {
             const bannerPicData = new FormData();
             bannerPicData.append('image', bannerFile);
+            bannerPicData.append('type', bannerFile.type);
+            bannerPicData.append('uid', user.uid);
             const bannerPicURL = await axios.post('/api/image', bannerPicData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from '../../components/Modal';
 import ProfileHeaderEditor from './ProfileHeaderEditor';
 import styles from '../styles/Profile/ProfileHeader.module.css';
@@ -40,21 +40,45 @@ const unfollowUser = async (userId: string, pageUserId: string) => {
     return res.json()
 }
 
+const fetchHeaderImages = async (bannerKey: string, profileKey: string) => {
+    const response1 = await fetch(`/api/image/${bannerKey}`);
+    const { url: bannerURL } = await response1.json();
+
+    const response2 = await fetch(`/api/image/${profileKey}`);
+    const { url: profileURL } = await response2.json();
+
+    return { bannerURL, profileURL };
+}
+
 export default function ProfileHeader(params: { pageUser: any, user: any }) {
 
     const { pageUser, user } = params;
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const [headerImages, setHeaderImages] = useState({
+        bannerURL: '',
+        profileURL: '',
+    });
+
     const handleOpenModal = () => {
         setIsModalOpen(true);
     };
 
+    useEffect(() => {
+        const fetchImages = async () => {
+            const images = await fetchHeaderImages(pageUser.bannerPic, pageUser.profilePic);
+            setHeaderImages(images);
+        };
+
+        fetchImages();
+    }, [pageUser.bannerPic, pageUser.profilePic]);
+
     return (
         <div className={styles.container}>
-            <Image className={styles.banner} src={`${process.env.S3ENDPOINT}${pageUser.bannerPic}`} alt={""} height={240} width={1152} />
+            <Image className={styles.banner} src={headerImages.bannerURL} alt={""} height={240} width={1152} />
             <div className={styles.profile}>
-                <Image className={styles.profilePicture} src={`${process.env.S3ENDPOINT}${pageUser.profilePic}`} alt={""} width={224} height={224} />
+                <Image className={styles.profilePicture} src={headerImages.profileURL} alt={""} width={224} height={224} />
 
                 <div className={styles.content}>
                     <div className={styles.contentLeft}>
@@ -99,7 +123,7 @@ export default function ProfileHeader(params: { pageUser: any, user: any }) {
 
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                    <ProfileHeaderEditor user={pageUser} />
+                    <ProfileHeaderEditor user={pageUser} userImages={headerImages}/>
                 </Modal>
             )}
         </div >

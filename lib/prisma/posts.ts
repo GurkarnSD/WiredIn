@@ -29,7 +29,12 @@ async function getPostsPrisma(userId: string) {
     }
 
     const posts = await prisma.post.findMany({
-      where: { userId: { in: user.following.map((user) => user.uid) } },
+      where: {
+        OR: [
+          { userId: { in: user.following.map((user) => user.uid) } },
+          { userId: user.uid },
+        ],
+      },
       include: {
         user: {
           select: {

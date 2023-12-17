@@ -19,9 +19,9 @@ export default function ProfileExperience(params: { pageUser: any, user: any }) 
 
     const { pageUser, user } = params;
 
-    const { data: skillsData, error: skillsError } = useSWR(`/api/profile/skills/?uid=${user.uid}`, fetcher)
+    const { data: skillsData, error: skillsError } = useSWR(`/api/profile/skills/?uid=${pageUser.uid}`, fetcher)
 
-    const { data: experiencesData, error: experiencesError } = useSWR(`/api/profile/experiences/?uid=${user.uid}`, fetcher)
+    const { data: experiencesData, error: experiencesError } = useSWR(`/api/profile/experiences/?uid=${pageUser.uid}`, fetcher)
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditExperiences, setIsEditExperiences] = useState(false);
@@ -55,7 +55,7 @@ export default function ProfileExperience(params: { pageUser: any, user: any }) 
                                 {experience.image &&
                                     <Image
                                         className={styles.experienceImage}
-                                        src={`${process.env.NEXT_PUBLIC_S3ENDPOINT}${experience.image}`}
+                                        src={experience.image}
                                         alt={experience.company}
                                         width={150}
                                         height={150}
@@ -65,12 +65,14 @@ export default function ProfileExperience(params: { pageUser: any, user: any }) 
                                     <div className={styles.experienceTitle}>{experience.title}</div>
                                     <div className={styles.experienceCompany}>{experience.company}</div>
                                     <div className={styles.experienceDate}>{new Date(experience.start).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })} - {experience.current ? "Present" : new Date(experience.end).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}</div>
-                                    <div className={styles.skills}>
-                                        <div>Skills:&nbsp;</div>
-                                        {skillsData?.map((skill: any, index: number) => (
-                                            <div className={styles.skill} key={skill.id}>{skill.name}{index !== skillsData.length - 1 && ','}&nbsp;</div>
-                                        ))}
-                                    </div>
+                                    {experience.skills.length > 0 &&
+                                        <div className={styles.skills}>
+                                            <div>Skills:&nbsp;</div>
+                                            {skillsData?.map((skill: any, index: number) => (
+                                                <div className={styles.skill} key={skill.id}>{skill.name}{index !== skillsData.length - 1 && ','}&nbsp;</div>
+                                            ))}
+                                        </div>
+                                    }
                                 </div>
                             </div>
                             {experience.description &&

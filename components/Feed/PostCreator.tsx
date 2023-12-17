@@ -48,6 +48,8 @@ export default function PostCreator(params: { user: any }) {
         if (imageFile) {
             const postPicData = new FormData();
             postPicData.append('image', imageFile);
+            postPicData.append('uid', user.uid);
+            postPicData.append('type', imageFile.type);
             const postPicURL = await axios.post('/api/image', postPicData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'

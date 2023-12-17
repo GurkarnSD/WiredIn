@@ -54,8 +54,8 @@ model User {
   title       String?
   bio         String?
   github      String?
-  profilePic  String       @default("defaultProfile.png")
-  bannerPic   String       @default("defaultBanner.jpg")
+  profilePic  String       @default("default/Profile.png")
+  bannerPic   String       @default("default/Banner.jpg")
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   following   User[]       @relation("Following")

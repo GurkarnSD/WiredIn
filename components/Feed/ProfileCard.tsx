@@ -4,15 +4,23 @@ import Image from "next/image"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComment } from '@fortawesome/free-solid-svg-icons'
 
+const fetchProfileImage = async (profileKey: string) => {
+    const response = await fetch(`${process.env.API_URL}/api/image/${profileKey}`);
+    const { url: profileURL } = await response.json();
+    return profileURL;
+}
+
 export default async function ProfileCard(params: { user: any }) {
 
     const { user } = params;
+
+    const profilePic = await fetchProfileImage(user.profilePic)
 
     return (
         <>
             <div className={styles.container}>
                 <div className={styles.userInfo}>
-                    <Image className={styles.userImage} src={`${process.env.S3ENDPOINT}${user.profilePic}`} alt='User Image' />
+                    <Image className={styles.userImage} src={profilePic} alt='User Image' width={65} height={65} />
                     <div className={styles.userName}>{user.displayName}</div>
                 </div>
                 <div className={styles.options}>

@@ -80,6 +80,8 @@ export default function ProfileExperienceEditor(params: { user: any, skills: any
         if (imageFile) {
             const experiencePicData = new FormData();
             experiencePicData.append('image', imageFile);
+            experiencePicData.append('type', imageFile.type)
+            experiencePicData.append('uid', user.uid);
             const experiencePicURL = await axios.post('/api/image', experiencePicData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'

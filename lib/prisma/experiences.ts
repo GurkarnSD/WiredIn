@@ -19,11 +19,25 @@ async function init() {
 
 async function getExperiencesPrisma(userId: string) {
   try {
-    const skills = await prisma.experience.findMany({
+    const experiences = await prisma.experience.findMany({
       where: { userId },
       include: { skills: true },
     });
-    return skills;
+
+    const updatedExperiences = await Promise.all(
+      experiences.map(async (experience) => {
+        if (experience.image) {
+          const res = await fetch(
+            `${process.env.API_URL}/api/image/${experience.image}`
+          );
+          const image = await res.json();
+          return { ...experience, image: image.url };
+        }
+        return experience;
+      })
+    );
+
+    return updatedExperiences;
   } catch (error) {
     throw new Error("Unable To Get Experiences");
   } finally {

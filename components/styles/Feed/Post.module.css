@@ -106,6 +106,7 @@
 }
 
 .postBody {
+  min-height: 50px;
   margin: 20px 20px 20px 60px;
 }
 
