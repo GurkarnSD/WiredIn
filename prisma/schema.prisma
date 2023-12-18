@@ -118,14 +118,23 @@ model Project {
 }
 
 model Post {
-  id          Int       @id @default(autoincrement())
-  text        String    @db.VarChar(1200)
-  image       String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  user        User      @relation(fields: [userId], references: [uid], onDelete: Cascade)
-  userId      String
-  likes       User[]    @relation("LikedPosts")
+  id        Int      @id @default(autoincrement())
+  text      String   @db.VarChar(1200)
+  images    Image[]  @relation("PostImages")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [uid], onDelete: Cascade)
+  userId    String
+  likes     User[]   @relation("LikedPosts")
 
   @@index([userId])
+}
+
+model Image {
+  id     Int    @id @default(autoincrement())
+  key    String
+  postId Int
+  post   Post   @relation("PostImages", fields: [postId], references: [id])
+
+  @@index([postId])
 }

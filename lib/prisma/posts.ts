@@ -43,6 +43,7 @@ async function getPostsPrisma(userId: string) {
             profilePic: true,
           },
         },
+        images: true,
         likes: {
           select: {
             uid: true,
@@ -58,11 +59,28 @@ async function getPostsPrisma(userId: string) {
 
     const updatedPosts = await Promise.all(
       posts.map(async (post) => {
-        if (post.image) {
+        if (post.user.profilePic) {
           const res = await fetch(
             `${process.env.API_URL}/api/image/${post.user.profilePic}`
           );
           const image = await res.json();
+
+          if (post.images.length > 0) {
+            const imageUrls = await Promise.all(
+              post.images.map(async (image) => {
+                const res = await fetch(
+                  `${process.env.API_URL}/api/image/${image.key}`
+                );
+                const data = await res.json();
+                return data.url;
+              })
+            );
+            return {
+              ...post,
+              user: { ...user, profilePic: image.url },
+              images: imageUrls,
+            };
+          }
           return { ...post, user: { ...user, profilePic: image.url } };
         }
         return post;
@@ -82,17 +100,31 @@ async function createPostPrisma(
   userId: string,
   post: {
     text: string;
-    image: string;
+    images: string[];
   }
 ) {
   try {
-    await prisma.post.create({
+    const createdPost = await prisma.post.create({
       data: {
         text: post.text,
-        ...(post.image ? { image: post.image } : {}),
         user: { connect: { uid: userId } },
       },
     });
+
+    if (post.images.length > 0) {
+      post.images.map(async (image) => {
+        try {
+          await prisma.image.create({
+            data: {
+              key: image,
+              postId: createdPost.id,
+            },
+          });
+        } catch (error) {
+          throw new Error("Unable To Create Image");
+        }
+      });
+    }
   } catch (error) {
     throw new Error("Unable To Create Post");
   } finally {

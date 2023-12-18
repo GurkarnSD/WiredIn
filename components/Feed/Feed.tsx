@@ -18,7 +18,7 @@ export default function Feed(params: { user: any, posts: [] }) {
             <div className={styles.messages}>
                 {posts.map((post) => {
                     return (
-                        <Post data={post} uid={user.uid} key={post} />
+                        <Post key={post} data={post} uid={user.uid} />
                     );
                 })}
             </div>
