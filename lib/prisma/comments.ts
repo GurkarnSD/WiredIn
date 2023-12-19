@@ -1,0 +1,103 @@
+import { prisma } from "./index";
+
+let client: any;
+
+async function init() {
+  if (client) return;
+  try {
+    client = prisma;
+    console.log("Connected to PlanetScale");
+  } catch (error) {
+    console.log("Error connecting to PlanetScale", error);
+    throw new Error("Could not initialize PlanetScale connection");
+  }
+}
+
+(async () => {
+  await init();
+})();
+
+async function getCommentsPrisma(postId: string) {
+  let imageCache: Record<string, string> = {};
+  try {
+    const comments = await prisma.comment.findMany({
+      where: { postId: postId },
+      include: { user: { select: { displayName: true, profilePic: true } } },
+    });
+
+    if (!comments) {
+      throw new Error("Comments Not Found");
+    }
+
+    const updatedComments = await Promise.all(
+      comments.map(async (comment) => {
+        if (comment.user.profilePic) {
+          if (imageCache[comment.user.profilePic]) {
+            return {
+              ...comment,
+              user: {
+                ...comment.user,
+                profilePic: imageCache[comment.user.profilePic],
+              },
+            };
+          } else {
+            const res = await fetch(
+              `${process.env.API_URL}/api/image/${comment.user.profilePic}`
+            );
+            const image = await res.json();
+            imageCache[comment.user.profilePic] = image.url;
+
+            return {
+              ...comment,
+              user: { ...comment.user, profilePic: image.url },
+            };
+          }
+        }
+        return comment;
+      })
+    );
+
+    return updatedComments;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Unable To Get Comments");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function createCommentPrisma(
+  userId: string,
+  postId: string,
+  comment: string
+) {
+  try {
+    await prisma.comment.create({
+      data: {
+        text: comment,
+        userId: userId,
+        postId: postId,
+      },
+    });
+  } catch (error) {
+    throw new Error("Unable To Create Comment");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function deleteCommentPrisma(id: string) {
+  try {
+    const queryId = parseInt(id, 10);
+
+    await prisma.comment.delete({
+      where: { id: queryId },
+    });
+  } catch (error) {
+    throw new Error("Unable To Delete Comment");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export { getCommentsPrisma, createCommentPrisma, deleteCommentPrisma };

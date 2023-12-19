@@ -3,7 +3,8 @@ import { faHeart, faComment } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import styles from "../styles/Feed/Post.module.css";
 import Modal from '../Modal';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
+import Comments from "./Comments";
 
 const likePost = async (userId: string, postId: number) => {
     const res = await fetch('/api/feed/like', {
@@ -79,18 +80,20 @@ export default function Post(params: { data: any, uid: any }) {
 
     const [liked, setLiked] = useState(data.likes.some((like: { uid: string }) => like.uid === uid))
     const [numLikes, setNumLikes] = useState(data._count.likes);
+    const numComments = data._count.comments;
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [commentsModalOpen, setCommentsModalOpen] = useState(false);
+    const [imageModalOpen, setImageModalOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const openImageModal = (imageUrl: string) => {
         setSelectedImage(imageUrl);
-        setIsModalOpen(true);
+        setImageModalOpen(true);
     };
 
     const closeImageModal = () => {
         setSelectedImage(null);
-        setIsModalOpen(false);
+        setImageModalOpen(false);
     };
 
     const likePostHook = async (userId: string, postId: number) => {
@@ -143,8 +146,8 @@ export default function Post(params: { data: any, uid: any }) {
                                     );
                                 })}
                             </div>
-                            {isModalOpen && selectedImage && (
-                                <Modal isOpen={isModalOpen} onClose={closeImageModal} closeIcon>
+                            {imageModalOpen && selectedImage && (
+                                <Modal isOpen={imageModalOpen} onClose={closeImageModal} closeIcon>
                                     <div className={styles.modalImageContainer}>
                                         <Image className={styles.modalImage} src={selectedImage} alt={''} width={0} height={0} sizes="100vw" />
                                     </div>
@@ -158,17 +161,22 @@ export default function Post(params: { data: any, uid: any }) {
             <div className={styles.postFooter}>
                 <div>
                     {liked ?
-                        <FontAwesomeIcon className={`${styles.postIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikePostHook(uid, data.id)} />
+                        <FontAwesomeIcon className={`${styles.postIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikePostHook(uid, data.uid)} />
                         :
-                        <FontAwesomeIcon className={styles.postIcon} icon={faHeart} onClick={() => likePostHook(uid, data.id)} />
+                        <FontAwesomeIcon className={styles.postIcon} icon={faHeart} onClick={() => likePostHook(uid, data.uid)} />
                     }
                     <span className={styles.iconCount}>{numLikes}</span>
                 </div>
                 <div>
-                    <FontAwesomeIcon className={styles.postIcon} icon={faComment} />
-                    <span className={styles.iconCount}></span>
+                    <FontAwesomeIcon className={styles.postIcon} icon={faComment} onClick={() => setCommentsModalOpen(true)} />
+                    <span className={styles.iconCount}>{numComments}</span>
                 </div>
             </div>
+            {commentsModalOpen &&
+                <Modal isOpen={commentsModalOpen} onClose={() => setCommentsModalOpen(false)} closeIcon disableClickOff>
+                    <Comments postId={data.uid} user={data.user} />
+                </Modal>
+            }
         </div>
     )
 }

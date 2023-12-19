@@ -65,6 +65,7 @@ model User {
   projects    Project[]
   posts       Post[]
   likedPosts  Post[]       @relation("LikedPosts")
+  comments    Comment[]    @relation("PostComments")
 }
 
 model Skill {
@@ -119,6 +120,7 @@ model Project {
 
 model Post {
   id        Int      @id @default(autoincrement())
+  uid       String   @unique @default(uuid())
   text      String   @db.VarChar(1200)
   images    Image[]  @relation("PostImages")
   createdAt DateTime @default(now())
@@ -126,15 +128,30 @@ model Post {
   user      User     @relation(fields: [userId], references: [uid], onDelete: Cascade)
   userId    String
   likes     User[]   @relation("LikedPosts")
+  comments  Comment[] @relation("PostComments")
 
   @@index([userId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  text      String   @db.VarChar(1200)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation("PostComments", fields: [userId], references: [uid], onDelete: Cascade)
+  userId    String
+  post      Post     @relation("PostComments", fields: [postId], references: [uid], onDelete: Cascade)
+  postId    String
+
+  @@index([userId])
+  @@index([postId])
 }
 
 model Image {
   id     Int    @id @default(autoincrement())
   key    String
-  postId Int
-  post   Post   @relation("PostImages", fields: [postId], references: [id])
+  postId String
+  post   Post   @relation("PostImages", fields: [postId], references: [uid])
 
   @@index([postId])
 }

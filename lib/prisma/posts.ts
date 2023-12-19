@@ -52,18 +52,28 @@ async function getPostsPrisma(userId: string) {
         _count: {
           select: {
             likes: true,
+            comments: true,
           },
         },
       },
     });
 
+    let imageCache: Record<string, string> = {};
+
     const updatedPosts = await Promise.all(
       posts.map(async (post) => {
         if (post.user.profilePic) {
-          const res = await fetch(
-            `${process.env.API_URL}/api/image/${post.user.profilePic}`
-          );
-          const image = await res.json();
+          let profilePicUrl;
+          if (imageCache[post.user.profilePic]) {
+            profilePicUrl = imageCache[post.user.profilePic];
+          } else {
+            const res = await fetch(
+              `${process.env.API_URL}/api/image/${post.user.profilePic}`
+            );
+            const image = await res.json();
+            profilePicUrl = image.url;
+            imageCache[post.user.profilePic] = profilePicUrl;
+          }
 
           if (post.images.length > 0) {
             const imageUrls = await Promise.all(
@@ -77,11 +87,11 @@ async function getPostsPrisma(userId: string) {
             );
             return {
               ...post,
-              user: { ...user, profilePic: image.url },
+              user: { ...user, profilePic: profilePicUrl },
               images: imageUrls,
             };
           }
-          return { ...post, user: { ...user, profilePic: image.url } };
+          return { ...post, user: { ...user, profilePic: profilePicUrl } };
         }
         return post;
       })
@@ -117,7 +127,7 @@ async function createPostPrisma(
           await prisma.image.create({
             data: {
               key: image,
-              postId: createdPost.id,
+              postId: createdPost.uid,
             },
           });
         } catch (error) {
@@ -132,12 +142,10 @@ async function createPostPrisma(
   }
 }
 
-async function deletePostPrisma(id: string) {
+async function deletePostPrisma(uid: string) {
   try {
-    const queryId = parseInt(id, 10);
-
     await prisma.post.delete({
-      where: { id: queryId },
+      where: { uid },
     });
   } catch (error) {
     throw new Error("Unable To Delete Post");
@@ -146,12 +154,12 @@ async function deletePostPrisma(id: string) {
   }
 }
 
-async function likePostPrisma(user: string, postId: number) {
+async function likePostPrisma(user: string, postId: string) {
   try {
     await prisma.user.update({
       where: { uid: user },
       data: {
-        likedPosts: { connect: { id: postId } },
+        likedPosts: { connect: { uid: postId } },
       },
     });
 
@@ -163,12 +171,12 @@ async function likePostPrisma(user: string, postId: number) {
   }
 }
 
-async function unlikePostPrisma(user: string, postId: number) {
+async function unlikePostPrisma(user: string, postId: string) {
   try {
     await prisma.user.update({
       where: { uid: user },
       data: {
-        likedPosts: { disconnect: { id: postId } },
+        likedPosts: { disconnect: { uid: postId } },
       },
     });
 
