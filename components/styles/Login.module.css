@@ -89,6 +89,9 @@
 }
 
 .logoutButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 400px;
   height: 50px;
   background-color: #ff4444;

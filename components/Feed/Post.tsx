@@ -77,6 +77,9 @@ export default function Post(params: { data: any, uid: any }) {
 
     const { data, uid } = params;
 
+    const [liked, setLiked] = useState(data.likes.some((like: { uid: string }) => like.uid === uid))
+    const [numLikes, setNumLikes] = useState(data._count.likes);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -89,6 +92,26 @@ export default function Post(params: { data: any, uid: any }) {
         setSelectedImage(null);
         setIsModalOpen(false);
     };
+
+    const likePostHook = async (userId: string, postId: number) => {
+        try {
+            await likePost(userId, postId);
+            setLiked(true);
+            setNumLikes(numLikes + 1);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const unlikePostHook = async (userId: string, postId: number) => {
+        try {
+            await unlikePost(userId, postId);
+            setLiked(false);
+            setNumLikes(numLikes - 1);
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <div className={styles.postContainer}>
@@ -121,7 +144,7 @@ export default function Post(params: { data: any, uid: any }) {
                                 })}
                             </div>
                             {isModalOpen && selectedImage && (
-                                <Modal isOpen={isModalOpen} onClose={closeImageModal}>
+                                <Modal isOpen={isModalOpen} onClose={closeImageModal} closeIcon>
                                     <div className={styles.modalImageContainer}>
                                         <Image className={styles.modalImage} src={selectedImage} alt={''} width={0} height={0} sizes="100vw" />
                                     </div>
@@ -134,12 +157,12 @@ export default function Post(params: { data: any, uid: any }) {
             </div>
             <div className={styles.postFooter}>
                 <div>
-                    {data.likes.some((like: { uid: string }) => like.uid === uid) ?
-                        <FontAwesomeIcon className={`${styles.postIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikePost(uid, data.id)} />
+                    {liked ?
+                        <FontAwesomeIcon className={`${styles.postIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikePostHook(uid, data.id)} />
                         :
-                        <FontAwesomeIcon className={styles.postIcon} icon={faHeart} onClick={() => likePost(uid, data.id)} />
+                        <FontAwesomeIcon className={styles.postIcon} icon={faHeart} onClick={() => likePostHook(uid, data.id)} />
                     }
-                    <span className={styles.iconCount}>{data._count.likes}</span>
+                    <span className={styles.iconCount}>{numLikes}</span>
                 </div>
                 <div>
                     <FontAwesomeIcon className={styles.postIcon} icon={faComment} />

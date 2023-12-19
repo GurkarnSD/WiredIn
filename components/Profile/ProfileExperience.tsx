@@ -93,7 +93,7 @@ export default function ProfileExperience(params: { pageUser: any, user: any }) 
             </div>
 
             {isModalOpen && (
-                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
                     <ProfileExperienceEditor user={pageUser} skills={skillsData} />
                 </Modal>
             )}

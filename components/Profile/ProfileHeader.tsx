@@ -122,8 +122,8 @@ export default function ProfileHeader(params: { pageUser: any, user: any }) {
             </div>
 
             {isModalOpen && (
-                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                    <ProfileHeaderEditor user={pageUser} userImages={headerImages}/>
+                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
+                    <ProfileHeaderEditor user={pageUser} userImages={headerImages} />
                 </Modal>
             )}
         </div >

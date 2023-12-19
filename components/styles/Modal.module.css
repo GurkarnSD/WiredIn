@@ -6,6 +6,7 @@
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   overflow: hidden;
@@ -18,4 +19,19 @@
   max-height: 90vh;
   overflow: auto;
   position: relative;
+}
+
+.icons {
+  position: absolute;
+  top: 100px;
+  left: 100px;
+}
+
+.icon {
+  color: #ffffff;
+  font-size: 50px;
+}
+
+.icon:hover {
+  cursor: pointer;
 }

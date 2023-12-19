@@ -32,12 +32,13 @@ export default function NavbarDropdown({ user }: { user: any | null }) {
     };
 
     const dropdownRef = useRef(null);
-    HandleCloseDropdown(dropdownRef, setDropdownVisible);
+    const profileRef = useRef(null);
+    HandleCloseDropdown(dropdownRef, profileRef, setDropdownVisible);
 
     return (
         <>
             {user ? (
-                <div className={styles.profileContainer} onClick={toggleDropdown}>
+                <div className={styles.profileContainer} onClick={toggleDropdown} ref={profileRef}>
                     <Image className={styles.profilePic} src={profilePic} alt="" width={60} height={60} />
                 </div>
             ) : (
@@ -45,8 +46,8 @@ export default function NavbarDropdown({ user }: { user: any | null }) {
                     Login
                 </Link>
             )}
-            <div className={styles.dropdownContainer} ref={dropdownRef}>
-                {dropdownVisible && (
+            {dropdownVisible && (
+                <div className={styles.dropdownContainer} ref={dropdownRef}>
                     <div className={styles.container}>
                         <div className={styles.NavbarDropdown}>
                             <div className={styles.displayName}>{user?.displayName}</div>
@@ -67,26 +68,20 @@ export default function NavbarDropdown({ user }: { user: any | null }) {
                                     </Link>
                                 </div>
                             </div>
-                            <div className={styles.logout} onClick={() => { signOut({ callbackUrl: `${process.env.API_URL}/login` }) }}>Log Out</div>
+                            <text className={styles.logout} onClick={() => { signOut({ callbackUrl: `${process.env.API_URL}/login` }) }}>Log Out</text>
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </>
     )
 }
 
-function HandleCloseDropdown(ref: React.RefObject<HTMLElement>, setDropdownVisible: React.Dispatch<React.SetStateAction<boolean>>) {
+function HandleCloseDropdown(dropdownRef: React.RefObject<HTMLElement>, profileRef: React.RefObject<HTMLElement>, setDropdownVisible: React.Dispatch<React.SetStateAction<boolean>>) {
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
-            if (ref.current && !ref.current.contains(event.target as Node)) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) && profileRef.current && !profileRef.current.contains(event.target as Node)) {
                 setDropdownVisible(false);
-            }
-
-            if (ref.current && ref.current.contains(event.target as Node)) {
-                setTimeout(() => {
-                    setDropdownVisible(false);
-                }, 100);
             }
         }
 
@@ -95,5 +90,5 @@ function HandleCloseDropdown(ref: React.RefObject<HTMLElement>, setDropdownVisib
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [ref]);
+    }, [dropdownRef, profileRef]);
 }

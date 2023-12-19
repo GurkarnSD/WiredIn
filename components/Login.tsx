@@ -67,7 +67,7 @@ export default function Login({ user }: { user: any | null }) {
                         <Image className={styles.profilePic} src={defaultProfile} alt="" />
                         <div className={styles.displayName}>{user.displayName}</div>
                     </div>
-                    <button className={styles.logoutButton} onClick={() => signOut({ callbackUrl: `${process.env.API_URL}/login` })}>Log Out</button>
+                    <div className={styles.logoutButton} onClick={() => signOut({ callbackUrl: `${process.env.API_URL}/login` })}>Log Out</div>
                 </form>
             </div>
         )

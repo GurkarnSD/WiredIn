@@ -59,7 +59,7 @@ export default function ProfileSkills(params: { pageUser: any, user: any }) {
             </div>
 
             {isModalOpen && (
-                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
                     <ProfileSkillsEditor user={pageUser} skills={skills} />
                 </Modal>
             )}

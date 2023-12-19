@@ -14,6 +14,7 @@ export default function PostCreator(params: { user: any }) {
 
     const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
     const maxImages = 4;
+    const maxChars = 1200;
 
     const [error, setError] = useState('');
     const [images, setImages] = useState<string[]>([]);
@@ -81,6 +82,16 @@ export default function PostCreator(params: { user: any }) {
             images: string[];
         }
 
+        if (input.length == 0 && imageFiles.length == 0) {
+            setError('Cannot Submit Empty Post');
+            return;
+        }
+
+        if (input.length > maxChars) {
+            setError('Character Limit Exceeded');
+            return;
+        }
+
         const post: Post = {
             text: input,
             images: [],
@@ -124,9 +135,7 @@ export default function PostCreator(params: { user: any }) {
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
         setCharCount(event.target.value.length);
-        if (charCount < 1200) {
-            setInput(event.target.value);
-        }
+        setInput(event.target.value);
     };
 
     const calculateImageGrid = () => {
@@ -167,7 +176,10 @@ export default function PostCreator(params: { user: any }) {
 
     return (
         <div className={styles.container}>
-            <div className={styles.title}>New Post</div>
+            <div className={styles.postCreatorHeader}>
+                <div className={styles.title}>New Post</div>
+                <div className={`${styles.charCount} ${charCount > maxChars && styles.overMaxChars}`}>{charCount}/{maxChars}</div>
+            </div>
             <form className={styles.form} onSubmit={handleSubmit}>
                 {images.length > 0 &&
                     <div className={`${styles.imagesContainer} ${styles[calculateImageGrid()]}`}>

@@ -70,6 +70,12 @@
   border-radius: 25px;
 }
 
+.postCreatorHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
 .postHeader {
   display: flex;
   justify-content: space-between;
@@ -249,4 +255,14 @@
   width: 100%;
   display: flex;
   justify-content: center;
+}
+
+.charCount {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000000;
+}
+
+.overMaxChars {
+  color: red;
 }
