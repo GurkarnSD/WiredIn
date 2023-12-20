@@ -1,10 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faComment } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faComment, faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import styles from "../styles/Feed/Post.module.css";
 import Modal from '../Modal';
 import { useState } from 'react';
 import Comments from "./Comments";
+import { useRouter } from "next/navigation";
 
 const likePost = async (userId: string, postId: number) => {
     const res = await fetch('/api/feed/like', {
@@ -85,6 +86,7 @@ export default function Post(params: { data: any, uid: any }) {
     const [commentsModalOpen, setCommentsModalOpen] = useState(false);
     const [imageModalOpen, setImageModalOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const router = useRouter();
 
     const openImageModal = (imageUrl: string) => {
         setSelectedImage(imageUrl);
@@ -117,12 +119,12 @@ export default function Post(params: { data: any, uid: any }) {
     }
 
     return (
-        <div className={styles.postContainer}>
+        <div className={styles.postContainer} onClick={() => router.push(`/post/${data.uid}`)}>
             <div className={styles.postHeader}>
                 <div className={styles.postHeaderLeft}>
-                    <Image className={styles.postProfile} src={data.user.profilePic} alt={""} height={50} width={50} />
+                    <Image className={styles.postProfile} src={data.user.profilePic} alt={""} height={50} width={50} onClick={(e) => { e.stopPropagation(); router.push(`/profile/${data.user.displayName}`) }} />
                     <div className={styles.postInfo}>
-                        <div className={styles.displayName}>{data.user.displayName}</div>
+                        <div className={styles.displayName} onClick={(e) => { e.stopPropagation(); router.push(`/profile/${data.user.displayName}`) }}>{data.user.displayName}</div>
                         <div className={styles.profileTitle}>{data.user.title}</div>
                     </div>
                 </div>
@@ -130,7 +132,7 @@ export default function Post(params: { data: any, uid: any }) {
                     <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(data.createdAt)}</div>
                 </div>
             </div>
-            <div className={styles.postBody}>
+            <div className={styles.postBody} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.images}>
                     {data.images.length > 0 &&
                         <div className={`${styles.imagesContainer} ${styles[calculateImageGrid(data.images)]}`}>
@@ -158,7 +160,7 @@ export default function Post(params: { data: any, uid: any }) {
                 </div>
                 <div className={styles.text}>{data.text}</div>
             </div>
-            <div className={styles.postFooter}>
+            <div className={styles.postFooter} onClick={(e) => e.stopPropagation()}>
                 <div>
                     {liked ?
                         <FontAwesomeIcon className={`${styles.postIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikePostHook(uid, data.uid)} />
@@ -171,13 +173,16 @@ export default function Post(params: { data: any, uid: any }) {
                     <FontAwesomeIcon className={styles.postIcon} icon={faComment} onClick={() => setCommentsModalOpen(true)} />
                     <span className={styles.iconCount}>{numComments}</span>
                 </div>
+                <FontAwesomeIcon className={styles.moreIcon} icon={faEllipsisVertical} />
             </div>
             {commentsModalOpen &&
-                <Modal isOpen={commentsModalOpen} onClose={() => setCommentsModalOpen(false)} closeIcon disableClickOff>
-                    <Comments postId={data.uid} user={data.user} />
-                </Modal>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <Modal isOpen={commentsModalOpen} onClose={() => setCommentsModalOpen(false)} closeIcon disableClickOff>
+                        <Comments postId={data.uid} user={data.user} />
+                    </Modal>
+                </div>
             }
-        </div>
+        </div >
     )
 }
 

@@ -106,6 +106,110 @@ async function getPostsPrisma(userId: string) {
   }
 }
 
+async function getPostPrisma(postId: string) {
+  try {
+    const post = await prisma.post.findFirst({
+      where: { uid: postId },
+      include: {
+        user: {
+          select: {
+            title: true,
+            displayName: true,
+            profilePic: true,
+          },
+        },
+        images: true,
+        likes: {
+          select: {
+            uid: true,
+          },
+        },
+        comments: {
+          include: {
+            user: {
+              select: {
+                title: true,
+                displayName: true,
+                profilePic: true,
+              },
+            },
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
+      },
+    });
+
+    if (!post) {
+      throw new Error("Post Not Found");
+    }
+
+    if (post.user.profilePic) {
+      const res = await fetch(
+        `${process.env.API_URL}/api/image/${post.user.profilePic}`
+      );
+      const image = await res.json();
+      let imageCache: Record<string, string> = {};
+      imageCache[post.user.profilePic] = image.url;
+      const profilePicUrl = image.url;
+
+      const updatedComments = await Promise.all(
+        post.comments.map(async (comment) => {
+          let commentProfilePicUrl;
+          if (comment.user.profilePic) {
+            if (imageCache[comment.user.profilePic]) {
+              commentProfilePicUrl = imageCache[comment.user.profilePic];
+            } else {
+              const res = await fetch(
+                `${process.env.API_URL}/api/image/${comment.user.profilePic}`
+              );
+              const image = await res.json();
+              commentProfilePicUrl = image.url;
+              imageCache[comment.user.profilePic] = commentProfilePicUrl;
+            }
+          }
+          return {
+            ...comment,
+            user: { ...comment.user, profilePic: commentProfilePicUrl },
+          };
+        })
+      );
+
+      if (post.images.length > 0) {
+        const imageUrls = await Promise.all(
+          post.images.map(async (image) => {
+            const res = await fetch(
+              `${process.env.API_URL}/api/image/${image.key}`
+            );
+            const data = await res.json();
+            return data.url;
+          })
+        );
+        return {
+          ...post,
+          user: { ...post.user, profilePic: profilePicUrl },
+          images: imageUrls,
+          comments: updatedComments,
+        };
+      }
+      return {
+        ...post,
+        user: { ...post.user, profilePic: profilePicUrl },
+        comments: updatedComments,
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error("Unable To Get Post");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function createPostPrisma(
   userId: string,
   post: {
@@ -190,6 +294,7 @@ async function unlikePostPrisma(user: string, postId: string) {
 
 export {
   getPostsPrisma,
+  getPostPrisma,
   createPostPrisma,
   deletePostPrisma,
   likePostPrisma,
