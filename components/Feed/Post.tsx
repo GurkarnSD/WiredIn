@@ -133,6 +133,7 @@ export default function Post(params: { data: any, uid: any }) {
                 </div>
             </div>
             <div className={styles.postBody} onClick={(e) => e.stopPropagation()}>
+                <div className={styles.text}>{data.text}</div>
                 <div className={styles.images}>
                     {data.images.length > 0 &&
                         <div className={`${styles.imagesContainer} ${styles[calculateImageGrid(data.images)]}`}>
@@ -158,7 +159,6 @@ export default function Post(params: { data: any, uid: any }) {
                         </div>
                     }
                 </div>
-                <div className={styles.text}>{data.text}</div>
             </div>
             <div className={styles.postFooter} onClick={(e) => e.stopPropagation()}>
                 <div>
@@ -176,7 +176,7 @@ export default function Post(params: { data: any, uid: any }) {
                 <FontAwesomeIcon className={styles.moreIcon} icon={faEllipsisVertical} />
             </div>
             {commentsModalOpen &&
-                <div onClick={(e) => e.stopPropagation()}>
+                <div className={styles.comments} onClick={(e) => e.stopPropagation()}>
                     <Modal isOpen={commentsModalOpen} onClose={() => setCommentsModalOpen(false)} closeIcon disableClickOff>
                         <Comments postId={data.uid} user={data.user} />
                     </Modal>

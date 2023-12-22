@@ -22,7 +22,19 @@ async function getCommentsPrisma(postId: string) {
   try {
     const comments = await prisma.comment.findMany({
       where: { postId: postId },
-      include: { user: { select: { displayName: true, profilePic: true } } },
+      include: {
+        user: {
+          select: {
+            displayName: true,
+            profilePic: true,
+          },
+        },
+        _count: {
+          select: {
+            responses: true,
+          },
+        },
+      },
     });
 
     if (!comments) {

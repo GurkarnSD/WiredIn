@@ -1,7 +1,7 @@
 import styles from '../styles/Feed/Comments.module.css'
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { faPaperPlane, faAngleDown, faAngleUp, faReply, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
 
 const fetchComments = async (uid: string) => {
@@ -16,10 +16,64 @@ const fetchComments = async (uid: string) => {
     return comments
 }
 
+const fetchResponses = async (id: number) => {
+    const res = await fetch(`/api/feed/responses/?id=${id}`)
+
+    if (!res.ok) {
+        throw new Error("Failed to fetch responses")
+    }
+
+    const responses = await res.json()
+
+    return responses
+}
+
 export default function Comments(params: { postId: string, user: any }) {
+
+    type Comment = {
+        id: number;
+        text: string;
+        createdAt: string;
+        user: {
+            displayName: string;
+            profilePic: string;
+        };
+        _count: {
+            responses: number;
+        };
+    };
+
+    type Response = {
+        id: number;
+        text: string;
+        createdAt: string;
+        user: {
+            displayName: string;
+            profilePic: string;
+        };
+    };
 
     const { user, postId } = params;
     const [comments, setComments] = useState([]);
+    const [responses, setResponses] = useState<Record<number, Response[]>>({});
+    const [openResponses, setOpenResponses] = useState<Record<number, boolean>>({});
+
+    const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
+
+    const toggleResponses = async (commentId: number) => {
+        if (!responses[commentId]) {
+            const newResponses = await fetchResponses(commentId);
+            setResponses((prev) => ({
+                ...prev,
+                [commentId]: newResponses,
+            }));
+        }
+
+        setOpenResponses((prev) => ({
+            ...prev,
+            [commentId]: !prev[commentId],
+        }));
+    };
 
     useEffect(() => {
         const getComments = async () => {
@@ -44,22 +98,42 @@ export default function Comments(params: { postId: string, user: any }) {
             return;
         }
 
-        const res = await fetch('/api/feed/comments', {
-            method: 'POST',
-            body: JSON.stringify({
-                uid: user.uid,
-                postId: postId,
-                text: input,
-            }),
-        });
+        if (selectedComment) {
+            const res = await fetch('/api/feed/responses', {
+                method: 'POST',
+                body: JSON.stringify({
+                    uid: user.uid,
+                    commentId: selectedComment.id,
+                    text: input,
+                }),
+            });
 
-        if (!res.ok) {
-            throw new Error('Failed to Comment');
+            if (!res.ok) {
+                throw new Error('Failed to Respond');
+            }
+
+            setInput('');
+            setCharCount(0);
+            setSelectedComment(null);
+            return res.json();
+        } else {
+            const res = await fetch('/api/feed/comments', {
+                method: 'POST',
+                body: JSON.stringify({
+                    uid: user.uid,
+                    postId: postId,
+                    text: input,
+                }),
+            });
+
+            if (!res.ok) {
+                throw new Error('Failed to Comment');
+            }
+
+            setInput('');
+            setCharCount(0);
+            return res.json();
         }
-
-        setInput('');
-        setCharCount(0);
-        return res.json();
     };
 
     return (
@@ -74,22 +148,82 @@ export default function Comments(params: { postId: string, user: any }) {
                         displayName: string;
                         profilePic: string;
                     };
+                    _count: {
+                        responses: number;
+                    };
                 }) => (
                     <div className={styles.comment} key={comment.id}>
                         <div className={styles.commentHeader}>
-                            <Image className={styles.profilePic} src={comment.user.profilePic} width={50} height={50} alt='Profile Pic' />
+                            <Image className={styles.profilePic} src={comment.user.profilePic} width={40} height={40} alt='Profile Pic' />
                             <div className={styles.commenterName}>{comment.user.displayName}</div>
                             <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(comment.createdAt)}</div>
                         </div>
-                        <div className={styles.commentText}>{comment.text}</div>
+                        <div className={styles.commentContent}>
+                            <div className={styles.commentText}>{comment.text}</div>
+                            <FontAwesomeIcon className={styles.replyIcon} icon={faReply} onClick={() => setSelectedComment(comment)} />
+                        </div>
+                        {comment._count.responses > 0 && openResponses[comment.id] ?
+                            <div className={styles.replyControl} onClick={() => toggleResponses(comment.id)}>
+                                <FontAwesomeIcon className={styles.responsesIcon} icon={faAngleDown} />
+                                <div className={styles.replyText}>Hide Replies</div>
+                            </div>
+                            : comment._count.responses > 0 &&
+                            <div className={styles.replyControl} onClick={() => toggleResponses(comment.id)}>
+                                <FontAwesomeIcon className={styles.responsesIcon} icon={faAngleUp} />
+                                <div className={styles.replyText}>View Replies</div>
+                            </div>
+                        }
+
+                        {openResponses[comment.id] && responses[comment.id] &&
+                            <div className={styles.responses}>
+                                {responses[comment.id].map((response: {
+                                    id: number;
+                                    text: string;
+                                    createdAt: string;
+                                    user: {
+                                        displayName: string;
+                                        profilePic: string;
+                                    };
+                                }) => (
+                                    <div className={styles.response} key={response.id}>
+                                        <div className={styles.commentHeader}>
+                                            <Image className={styles.responsePic} src={response.user.profilePic} width={25} height={25} alt='Profile Pic' />
+                                            <div className={styles.responseName}>{response.user.displayName}</div>
+                                            <div className={styles.responseTime} suppressHydrationWarning={true}>{formatTimeDifference(response.createdAt)}</div>
+                                        </div>
+                                        <div className={styles.responseText}>{response.text}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        }
                     </div>
                 ))}
             </div>
             <div className={styles.commentFooter}>
-                <Image className={styles.profilePic} src={user.profilePic} width={50} height={50} alt='Profile Pic' />
-                <input className={styles.addComment} placeholder='Post a comment...' name='input' value={input} onChange={handleInputChange} />
-                <div className={`${styles.charCount} ${charCount > maxChars && styles.overMaxChars}`}>{charCount}/{maxChars}</div>
-                <FontAwesomeIcon className={styles.sendComment} icon={faPaperPlane} onClick={handleSubmit} />
+                {selectedComment &&
+                    <>
+                        <div className={styles.selectedHeader}>
+                            <FontAwesomeIcon className={styles.closeIcon} icon={faCircleXmark} onClick={() => setSelectedComment(null)} />
+                            Replying To
+                        </div>
+                        <div className={styles.selectedComment}>
+                            <div className={styles.commentHeader}>
+                                <Image className={styles.profilePic} src={selectedComment.user.profilePic} width={40} height={40} alt='Profile Pic' />
+                                <div className={styles.commenterName}>{selectedComment.user.displayName}</div>
+                                <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(selectedComment.createdAt)}</div>
+                            </div>
+                            <div className={styles.commentContent}>
+                                <div className={styles.commentText}>{selectedComment.text}</div>
+                            </div>
+                        </div>
+                    </>
+                }
+                <div className={styles.commentInput}>
+                    <Image className={styles.profilePic} src={user.profilePic} width={50} height={50} alt='Profile Pic' />
+                    <input className={styles.addComment} placeholder={selectedComment ? 'Post a response...' : 'Post a comment...'} name='input' value={input} onChange={handleInputChange} />
+                    <div className={`${styles.charCount} ${charCount > maxChars && styles.overMaxChars}`}>{charCount}/{maxChars}</div>
+                    <FontAwesomeIcon className={styles.sendComment} icon={faPaperPlane} onClick={handleSubmit} />
+                </div>
             </div>
         </div>
     )

@@ -17,7 +17,7 @@ export async function POST(req: Request) {
   const body = await req.json();
   const res = await createCommentPrisma(body.uid, body.postId, body.text);
 
-  return NextResponse.json({ response: "Created Post" });
+  return NextResponse.json({ response: "Created Comment" });
 }
 
 export async function DELETE(req: Request) {
@@ -25,5 +25,5 @@ export async function DELETE(req: Request) {
   const id = searchParams.get("uid");
   const res = await deleteCommentPrisma(id as string);
 
-  return NextResponse.json({ response: "Deleted Post" });
+  return NextResponse.json({ response: "Deleted Comment" });
 }

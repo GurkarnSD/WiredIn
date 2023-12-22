@@ -28,7 +28,7 @@ model ActivateToken {
   activatedAt   DateTime?
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
-  credentials   Credentials @relation(fields: [credsId], references: [id], onDelete: Cascade)
+  credentials   Credentials  @relation(fields: [credsId], references: [id], onDelete: Cascade)
   credsId Int
 
   @@index([credsId])
@@ -40,7 +40,7 @@ model ResetToken {
   resetAt       DateTime?
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
-  credentials   Credentials @relation(fields: [credsId], references: [id], onDelete: Cascade)
+  credentials   Credentials  @relation(fields: [credsId], references: [id], onDelete: Cascade)
   credsId Int
 
   @@index([credsId])
@@ -66,6 +66,7 @@ model User {
   posts       Post[]
   likedPosts  Post[]       @relation("LikedPosts")
   comments    Comment[]    @relation("PostComments")
+  responses   Response[]   @relation("CommentResponses")
 }
 
 model Skill {
@@ -119,29 +120,30 @@ model Project {
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  uid       String   @unique @default(uuid())
-  text      String   @db.VarChar(1200)
-  images    Image[]  @relation("PostImages")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [uid], onDelete: Cascade)
+  id        Int       @id @default(autoincrement())
+  uid       String    @unique @default(uuid())
+  text      String    @db.VarChar(1200)
+  images    Image[]   @relation("PostImages")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [uid], onDelete: Cascade)
   userId    String
-  likes     User[]   @relation("LikedPosts")
+  likes     User[]    @relation("LikedPosts")
   comments  Comment[] @relation("PostComments")
 
   @@index([userId])
 }
 
 model Comment {
-  id        Int      @id @default(autoincrement())
-  text      String   @db.VarChar(1200)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation("PostComments", fields: [userId], references: [uid], onDelete: Cascade)
+  id        Int        @id @default(autoincrement())
+  text      String     @db.VarChar(1200)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  user      User       @relation("PostComments", fields: [userId], references: [uid], onDelete: Cascade)
   userId    String
-  post      Post     @relation("PostComments", fields: [postId], references: [uid], onDelete: Cascade)
+  post      Post       @relation("PostComments", fields: [postId], references: [uid], onDelete: Cascade)
   postId    String
+  responses Response[] @relation("CommentResponses")
 
   @@index([userId])
   @@index([postId])
@@ -154,4 +156,18 @@ model Image {
   post   Post   @relation("PostImages", fields: [postId], references: [uid])
 
   @@index([postId])
+}
+
+model Response {
+  id        Int      @id @default(autoincrement())
+  text      String   @db.VarChar(1200)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation("CommentResponses", fields: [userId], references: [uid], onDelete: Cascade)
+  userId    String
+  comment   Comment  @relation("CommentResponses", fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int
+
+  @@index([userId])
+  @@index([commentId])
 }

@@ -133,6 +133,11 @@ async function getPostPrisma(postId: string) {
                 profilePic: true,
               },
             },
+            _count: {
+              select: {
+                responses: true,
+              },
+            },
           },
         },
         _count: {
