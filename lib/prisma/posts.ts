@@ -133,8 +133,14 @@ async function getPostPrisma(postId: string) {
                 profilePic: true,
               },
             },
+            likes: {
+              select: {
+                uid: true,
+              },
+            },
             _count: {
               select: {
+                likes: true,
                 responses: true,
               },
             },
@@ -291,7 +297,7 @@ async function unlikePostPrisma(user: string, postId: string) {
 
     return true;
   } catch (error) {
-    throw new Error("Unable To Like Post");
+    throw new Error("Unable To Unlike Post");
   } finally {
     await prisma.$disconnect();
   }

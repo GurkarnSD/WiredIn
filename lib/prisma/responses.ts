@@ -22,7 +22,19 @@ async function getResponsesPrisma(commentId: number) {
   try {
     const responses = await prisma.response.findMany({
       where: { commentId: commentId },
-      include: { user: { select: { displayName: true, profilePic: true } } },
+      include: {
+        user: { select: { displayName: true, profilePic: true } },
+        likes: {
+          select: {
+            uid: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+          },
+        },
+      },
     });
 
     if (!responses) {
@@ -98,4 +110,44 @@ async function deleteResponsePrisma(id: number) {
   }
 }
 
-export { getResponsesPrisma, createResponsePrisma, deleteResponsePrisma };
+async function likeResponsePrisma(user: string, responseId: number) {
+  try {
+    await prisma.user.update({
+      where: { uid: user },
+      data: {
+        likedResponses: { connect: { id: responseId } },
+      },
+    });
+
+    return true;
+  } catch (error) {
+    throw new Error("Unable To Like Response");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function unlikeResponsePrisma(user: string, responseId: number) {
+  try {
+    await prisma.user.update({
+      where: { uid: user },
+      data: {
+        likedResponses: { disconnect: { id: responseId } },
+      },
+    });
+
+    return true;
+  } catch (error) {
+    throw new Error("Unable To Unlike Response");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export {
+  getResponsesPrisma,
+  createResponsePrisma,
+  deleteResponsePrisma,
+  likeResponsePrisma,
+  unlikeResponsePrisma,
+};

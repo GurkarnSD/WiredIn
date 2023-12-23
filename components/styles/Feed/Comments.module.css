@@ -42,11 +42,10 @@
   gap: 10px;
 }
 
-.commentFooter {
+.commentsFooter {
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
 .commentInput {
@@ -138,9 +137,9 @@
 }
 
 .replyIcon {
-  margin-left: auto;
   font-size: 16px;
   color: #000000;
+  margin-left: 12px;
 }
 
 .replyText {
@@ -149,12 +148,16 @@
   font-weight: 600;
 }
 
+.commentFooter {
+  display: flex;
+  margin-top: 10px;
+  gap: 10px;
+}
+
 .replyControl {
   display: flex;
   align-items: center;
-  gap: 2px;
-  margin-left: 50px;
-  margin-top: 5px;
+  gap: 5px;
 }
 
 .responses {
@@ -208,4 +211,52 @@
   margin-right: 5px;
   color: #ffffff;
   font-size: 14px;
+}
+
+.commentIcon path {
+  stroke: #959595;
+  stroke-width: 30px;
+}
+
+.commentIcon {
+  font-size: 16px;
+}
+
+.iconCount {
+  margin-left: 6px;
+  color: #959595;
+  font-size: 16px;
+}
+
+.commentControls {
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+}
+
+.likeComment {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.responseIcon path {
+  stroke: #959595;
+  stroke-width: 30px;
+}
+
+.responseIcon {
+  font-size: 14px;
+}
+
+.responseIconCount {
+  margin-left: 6px;
+  color: #959595;
+  font-size: 14px;
+}
+
+.liked path {
+  stroke: #d22b2b;
+  color: #d22b2b;
+  stroke-width: 30px;
 }

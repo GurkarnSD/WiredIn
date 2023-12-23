@@ -67,6 +67,8 @@ model User {
   likedPosts  Post[]       @relation("LikedPosts")
   comments    Comment[]    @relation("PostComments")
   responses   Response[]   @relation("CommentResponses")
+  likedComments Comment[]  @relation("CommentLikes")
+  likedResponses Response[] @relation("ResponseLikes")
 }
 
 model Skill {
@@ -144,6 +146,7 @@ model Comment {
   post      Post       @relation("PostComments", fields: [postId], references: [uid], onDelete: Cascade)
   postId    String
   responses Response[] @relation("CommentResponses")
+  likes     User[]     @relation("CommentLikes")
 
   @@index([userId])
   @@index([postId])
@@ -167,6 +170,7 @@ model Response {
   userId    String
   comment   Comment  @relation("CommentResponses", fields: [commentId], references: [id], onDelete: Cascade)
   commentId Int
+  likes     User[]   @relation("ResponseLikes")
 
   @@index([userId])
   @@index([commentId])

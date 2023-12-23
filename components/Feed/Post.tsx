@@ -7,8 +7,8 @@ import { useState } from 'react';
 import Comments from "./Comments";
 import { useRouter } from "next/navigation";
 
-const likePost = async (userId: string, postId: number) => {
-    const res = await fetch('/api/feed/like', {
+const likePost = async (userId: string, postId: string) => {
+    const res = await fetch('/api/feed/like/post', {
         method: "POST",
         body: JSON.stringify({
             uid: userId,
@@ -23,8 +23,8 @@ const likePost = async (userId: string, postId: number) => {
     return res.json()
 }
 
-const unlikePost = async (userId: string, postId: number) => {
-    const res = await fetch('/api/feed/like', {
+const unlikePost = async (userId: string, postId: string) => {
+    const res = await fetch('/api/feed/like/post', {
         method: "DELETE",
         body: JSON.stringify({
             uid: userId,
@@ -98,7 +98,7 @@ export default function Post(params: { data: any, uid: any }) {
         setImageModalOpen(false);
     };
 
-    const likePostHook = async (userId: string, postId: number) => {
+    const likePostHook = async (userId: string, postId: string) => {
         try {
             await likePost(userId, postId);
             setLiked(true);
@@ -108,7 +108,7 @@ export default function Post(params: { data: any, uid: any }) {
         }
     }
 
-    const unlikePostHook = async (userId: string, postId: number) => {
+    const unlikePostHook = async (userId: string, postId: string) => {
         try {
             await unlikePost(userId, postId);
             setLiked(false);

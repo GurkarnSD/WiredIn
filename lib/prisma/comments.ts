@@ -29,8 +29,14 @@ async function getCommentsPrisma(postId: string) {
             profilePic: true,
           },
         },
+        likes: {
+          select: {
+            uid: true,
+          },
+        },
         _count: {
           select: {
+            likes: true,
             responses: true,
           },
         },
@@ -112,4 +118,44 @@ async function deleteCommentPrisma(id: string) {
   }
 }
 
-export { getCommentsPrisma, createCommentPrisma, deleteCommentPrisma };
+async function likeCommentPrisma(user: string, commentId: number) {
+  try {
+    await prisma.user.update({
+      where: { uid: user },
+      data: {
+        likedComments: { connect: { id: commentId } },
+      },
+    });
+
+    return true;
+  } catch (error) {
+    throw new Error("Unable To Like Comment");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function unlikeCommentPrisma(user: string, commentId: number) {
+  try {
+    await prisma.user.update({
+      where: { uid: user },
+      data: {
+        likedComments: { disconnect: { id: commentId } },
+      },
+    });
+
+    return true;
+  } catch (error) {
+    throw new Error("Unable To Unlike Comment");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export {
+  getCommentsPrisma,
+  createCommentPrisma,
+  deleteCommentPrisma,
+  likeCommentPrisma,
+  unlikeCommentPrisma,
+};
