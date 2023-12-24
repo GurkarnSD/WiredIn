@@ -23,7 +23,7 @@ async function getResponsesPrisma(commentId: number) {
     const responses = await prisma.response.findMany({
       where: { commentId: commentId },
       include: {
-        user: { select: { displayName: true, profilePic: true } },
+        user: { select: { uid: true, displayName: true, profilePic: true } },
         likes: {
           select: {
             uid: true,

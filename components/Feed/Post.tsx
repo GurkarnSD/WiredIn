@@ -1,10 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faComment, faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faComment, faEllipsisVertical, faTrash, faPencil, faFlag } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import styles from "../styles/Feed/Post.module.css";
 import Modal from '../Modal';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Comments from "./Comments";
+import ConfirmationPopup from "../ConfirmationPopup";
 import { useRouter } from "next/navigation";
 
 const likePost = async (userId: string, postId: string) => {
@@ -75,18 +76,22 @@ const calculateImageClass = (images: string[], index: number) => {
     }
 }
 
-export default function Post(params: { data: any, uid: any }) {
+export default function Post(params: { data: any, user: any }) {
 
-    const { data, uid } = params;
+    const { data, user } = params;
 
-    const [liked, setLiked] = useState(data.likes.some((like: { uid: string }) => like.uid === uid))
+    const [liked, setLiked] = useState(data.likes.some((like: { uid: string }) => like.uid === user.uid))
     const [numLikes, setNumLikes] = useState(data._count.likes);
     const numComments = data._count.comments;
 
     const [commentsModalOpen, setCommentsModalOpen] = useState(false);
     const [imageModalOpen, setImageModalOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [showPostSettings, setShowPostSettings] = useState(false);
     const router = useRouter();
+
+    const settingsRef = useRef(null);
+    HandleCloseSettings(settingsRef, setShowPostSettings);
 
     const openImageModal = (imageUrl: string) => {
         setSelectedImage(imageUrl);
@@ -163,9 +168,9 @@ export default function Post(params: { data: any, uid: any }) {
             <div className={styles.postFooter} onClick={(e) => e.stopPropagation()}>
                 <div>
                     {liked ?
-                        <FontAwesomeIcon className={`${styles.postIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikePostHook(uid, data.uid)} />
+                        <FontAwesomeIcon className={`${styles.postIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikePostHook(user.uid, data.uid)} />
                         :
-                        <FontAwesomeIcon className={styles.postIcon} icon={faHeart} onClick={() => likePostHook(uid, data.uid)} />
+                        <FontAwesomeIcon className={styles.postIcon} icon={faHeart} onClick={() => likePostHook(user.uid, data.uid)} />
                     }
                     <span className={styles.iconCount}>{numLikes}</span>
                 </div>
@@ -173,17 +178,77 @@ export default function Post(params: { data: any, uid: any }) {
                     <FontAwesomeIcon className={styles.postIcon} icon={faComment} onClick={() => setCommentsModalOpen(true)} />
                     <span className={styles.iconCount}>{numComments}</span>
                 </div>
-                <FontAwesomeIcon className={styles.moreIcon} icon={faEllipsisVertical} />
+                <div className={styles.postOptions} ref={settingsRef}>
+                    <FontAwesomeIcon className={styles.moreIcon} icon={faEllipsisVertical} onClick={() => setShowPostSettings(!showPostSettings)} />
+                    {showPostSettings && <PostSettings uid={user.uid} postInfo={{ uid: data.user.uid, postId: data.uid }} />}
+                </div>
             </div>
             {commentsModalOpen &&
                 <div className={styles.comments} onClick={(e) => e.stopPropagation()}>
                     <Modal isOpen={commentsModalOpen} onClose={() => setCommentsModalOpen(false)} closeIcon disableClickOff>
-                        <Comments postId={data.uid} user={data.user} />
+                        <Comments postId={data.uid} user={user} />
                     </Modal>
                 </div>
             }
         </div >
     )
+}
+
+const deletePost = async (postId: string) => {
+    const res = await fetch(`/api/feed/posts?uid=${postId}`, { method: "DELETE" })
+
+    if (!res.ok) {
+        throw new Error("Failed to delete post")
+    }
+
+    return res.json()
+}
+
+const PostSettings = (params: { uid: string, postInfo: { uid: string, postId: string } }) => {
+
+    const { uid, postInfo } = params;
+    const [confirmationPopup, setConfirmationPopup] = useState(false);
+
+    const deletePostHook = async (postId: string) => {
+        try {
+            await deletePost(postId);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    return (
+        <div className={styles.settings}>
+            <FontAwesomeIcon className={styles.settingsOption} icon={faFlag} />
+            {postInfo.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faPencil} />}
+            {postInfo.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faTrash} onClick={() => setConfirmationPopup(true)} />}
+            {confirmationPopup &&
+                <ConfirmationPopup
+                    showPopup={confirmationPopup}
+                    setShowPopup={setConfirmationPopup}
+                    onConfirm={() => deletePostHook(postInfo.postId)}
+                    onCancel={() => setConfirmationPopup(false)}
+                    message='delete your post'
+                />
+            }
+        </div>
+    )
+}
+
+function HandleCloseSettings(settingsRef: React.RefObject<HTMLElement>, setVisible: React.Dispatch<React.SetStateAction<boolean>>) {
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
+                setVisible(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [settingsRef]);
 }
 
 function formatTimeDifference(createdAt: string): string {

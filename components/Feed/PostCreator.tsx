@@ -175,10 +175,10 @@ export default function PostCreator(params: { user: any }) {
     }
 
     return (
-        <div className={styles.container}>
+        <div className={styles.creatorContainer}>
             <div className={styles.postCreatorHeader}>
                 <div className={styles.title}>New Post</div>
-                <div className={`${styles.charCount} ${charCount > maxChars && styles.overMaxChars}`}>{charCount}/{maxChars}</div>
+                
             </div>
             <form className={styles.form} onSubmit={handleSubmit}>
                 {images.length > 0 &&
@@ -206,6 +206,7 @@ export default function PostCreator(params: { user: any }) {
                         )}
                     </div>
                 }
+                <div className={`${styles.charCount} ${charCount > maxChars && styles.overMaxChars}`}>{charCount}/{maxChars}</div>
                 <textarea className={styles.inputBox} aria-multiline name='input' placeholder='Tell everyone what they need to know...' onChange={handleInputChange} />
                 <div className={styles.footer}>
                     <span>

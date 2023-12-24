@@ -38,6 +38,7 @@ async function getPostsPrisma(userId: string) {
       include: {
         user: {
           select: {
+            uid: true,
             title: true,
             displayName: true,
             profilePic: true,
@@ -87,11 +88,11 @@ async function getPostsPrisma(userId: string) {
             );
             return {
               ...post,
-              user: { ...user, profilePic: profilePicUrl },
+              user: { ...post.user, profilePic: profilePicUrl },
               images: imageUrls,
             };
           }
-          return { ...post, user: { ...user, profilePic: profilePicUrl } };
+          return { ...post, user: { ...post.user, profilePic: profilePicUrl } };
         }
         return post;
       })
@@ -113,6 +114,7 @@ async function getPostPrisma(postId: string) {
       include: {
         user: {
           select: {
+            uid: true,
             title: true,
             displayName: true,
             profilePic: true,

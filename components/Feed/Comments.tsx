@@ -1,8 +1,9 @@
 import styles from '../styles/Feed/Comments.module.css'
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPaperPlane, faAngleDown, faAngleUp, faReply, faCircleXmark, faHeart } from '@fortawesome/free-solid-svg-icons'
+import { faPaperPlane, faAngleDown, faAngleUp, faReply, faCircleXmark, faHeart, faTrash, faFlag, faPencil, faEllipsis, faXmark, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
+import ConfirmationPopup from '../ConfirmationPopup';
 
 const fetchComments = async (uid: string) => {
     const res = await fetch(`/api/feed/comments/?uid=${uid}`)
@@ -99,6 +100,7 @@ export default function Comments(params: { postId: string, user: any }) {
         text: string;
         createdAt: Date;
         user: {
+            uid: string;
             displayName: string;
             profilePic: string;
         };
@@ -116,6 +118,7 @@ export default function Comments(params: { postId: string, user: any }) {
         commentId: number;
         likes: { uid: string }[];
         user: {
+            uid: string;
             displayName: string;
             profilePic: string;
         };
@@ -304,6 +307,9 @@ export default function Comments(params: { postId: string, user: any }) {
         }
     }
 
+    const [showCommentSettings, setShowCommentSettings] = useState<Record<number, boolean>>({});
+    const [showResponseSettings, setShowResponseSettings] = useState<Record<number, boolean>>({});
+
     return (
         <div className={styles.container}>
             <div className={styles.title}>Comments</div>
@@ -341,6 +347,11 @@ export default function Comments(params: { postId: string, user: any }) {
                                     <div className={styles.replyText}>View Replies</div>
                                 </div>
                             }
+                            {showCommentSettings[comment.id] ?
+                                <CommentSettings close={() => setShowCommentSettings({ ...showCommentSettings, [comment.id]: false })} uid={user.uid} commentInfo={{ uid: comment.user.uid, commentId: comment.id }} />
+                                :
+                                <FontAwesomeIcon className={styles.settingsIcon} icon={faEllipsis} onClick={() => setShowCommentSettings({ ...showCommentSettings, [comment.id]: true })} />
+                            }
                         </div>
 
                         {openResponses[comment.id] && responses[comment.id] &&
@@ -352,6 +363,11 @@ export default function Comments(params: { postId: string, user: any }) {
                                             <Image className={styles.responsePic} src={response.user.profilePic} width={25} height={25} alt='Profile Pic' />
                                             <div className={styles.responseName}>{response.user.displayName}</div>
                                             <div className={styles.responseTime} suppressHydrationWarning={true}>{formatTimeDifference(response.createdAt)}</div>
+                                            {showResponseSettings[response.id] ?
+                                                <ResponseSettings close={() => setShowResponseSettings({ ...showResponseSettings, [response.id]: false })} uid={user.uid} responseInfo={{ uid: response.user.uid, responseId: response.id }} />
+                                                :
+                                                <FontAwesomeIcon className={styles.responseSettingsIcon} icon={faEllipsisVertical} onClick={() => setShowResponseSettings({ ...showResponseSettings, [response.id]: true })} />
+                                            }
                                         </div>
                                         <div className={styles.commentContent}>
                                             <div className={styles.responseText}>{response.text}</div>
@@ -400,6 +416,90 @@ export default function Comments(params: { postId: string, user: any }) {
                 </div>
             </div>
         </div >
+    )
+}
+
+const deleteComment = async (commentId: number) => {
+    const res = await fetch(`/api/feed/comments?id=${commentId}`, { method: "DELETE" })
+
+    if (!res.ok) {
+        throw new Error("Failed to delete comment")
+    }
+
+    return res.json()
+}
+
+const CommentSettings = (params: { close: () => void, uid: string, commentInfo: { uid: string, commentId: number } }) => {
+
+    const { uid, commentInfo, close } = params;
+    const [confirmationPopup, setConfirmationPopup] = useState(false);
+
+    const deleteCommentHook = async (commentId: number) => {
+        try {
+            await deleteComment(commentId);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    return (
+        <div className={styles.settings}>
+            <FontAwesomeIcon className={styles.closeSettings} icon={faXmark} onClick={close} />
+            <FontAwesomeIcon className={styles.settingsOption} icon={faFlag} />
+            {commentInfo.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faPencil} />}
+            {commentInfo.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faTrash} onClick={() => setConfirmationPopup(true)} />}
+            {confirmationPopup &&
+                <ConfirmationPopup
+                    showPopup={confirmationPopup}
+                    setShowPopup={setConfirmationPopup}
+                    onConfirm={() => deleteCommentHook(commentInfo.commentId)}
+                    onCancel={() => setConfirmationPopup(false)}
+                    message='delete your comment'
+                />
+            }
+        </div>
+    )
+}
+
+const deleteResponse = async (responseId: number) => {
+    const res = await fetch(`/api/feed/responses?id=${responseId}`, { method: "DELETE" })
+
+    if (!res.ok) {
+        throw new Error("Failed to delete post")
+    }
+
+    return res.json()
+}
+
+const ResponseSettings = (params: { close: () => void, uid: string, responseInfo: { uid: string, responseId: number } }) => {
+
+    const { uid, responseInfo, close } = params;
+    const [confirmationPopup, setConfirmationPopup] = useState(false);
+
+    const deleteResponseHook = async (responseId: number) => {
+        try {
+            await deleteResponse(responseId);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    return (
+        <div className={styles.responseSettings}>
+            <FontAwesomeIcon className={styles.responseCloseSettings} icon={faXmark} onClick={close} />
+            <FontAwesomeIcon className={styles.responseSettingsOption} icon={faFlag} />
+            {responseInfo.uid === uid && <FontAwesomeIcon className={styles.responseSettingsOption} icon={faPencil} />}
+            {responseInfo.uid === uid && <FontAwesomeIcon className={styles.responseSettingsOption} icon={faTrash} onClick={() => setConfirmationPopup(true)} />}
+            {confirmationPopup &&
+                <ConfirmationPopup
+                    showPopup={confirmationPopup}
+                    setShowPopup={setConfirmationPopup}
+                    onConfirm={() => deleteResponseHook(responseInfo.responseId)}
+                    onCancel={() => setConfirmationPopup(false)}
+                    message='delete your response'
+                />
+            }
+        </div>
     )
 }
 

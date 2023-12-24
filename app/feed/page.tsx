@@ -18,10 +18,24 @@ const fetchPosts = async (uid: string) => {
   return res.json()
 }
 
+const fetchProfileImage = async (profileKey: string) => {
+  const res = await fetch(`${process.env.API_URL}/api/image/${profileKey}`);
+
+  if (!res.ok) {
+    throw new Error('Failed to Fetch Image Url')
+  }
+
+  const { url: profileURL } = await res.json();
+  return profileURL;
+}
+
 export default async function FeedPage() {
 
-  const session = await getServerSession(authOptions);
+  var session = await getServerSession(authOptions);
   const posts = await fetchPosts(session?.user?.uid)
+
+  const profilePic = await fetchProfileImage(session?.user?.profilePic);
+  session = { ...session, user: { ...session?.user, profilePic } };
 
   return (
     <>
@@ -31,7 +45,6 @@ export default async function FeedPage() {
         {/* @ts-expect-error Async Server Component */}
         <Connect user={session?.user} />
         <Feed user={session?.user} posts={posts} />
-        {/* @ts-expect-error Async Server Component */}
         <ProfileCard user={session?.user} />
       </div>
     </>

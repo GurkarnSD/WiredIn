@@ -25,6 +25,7 @@ async function getCommentsPrisma(postId: string) {
       include: {
         user: {
           select: {
+            uid: true,
             displayName: true,
             profilePic: true,
           },
@@ -104,12 +105,10 @@ async function createCommentPrisma(
   }
 }
 
-async function deleteCommentPrisma(id: string) {
+async function deleteCommentPrisma(id: number) {
   try {
-    const queryId = parseInt(id, 10);
-
     await prisma.comment.delete({
-      where: { id: queryId },
+      where: { id: id },
     });
   } catch (error) {
     throw new Error("Unable To Delete Comment");

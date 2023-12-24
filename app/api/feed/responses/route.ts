@@ -22,8 +22,8 @@ export async function POST(req: Request) {
 
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
-  const res = await deleteResponsePrisma(id as unknown as number);
+  const id = Number(searchParams.get("id"));
+  const res = await deleteResponsePrisma(id);
 
   return NextResponse.json({ response: "Deleted Response" });
 }

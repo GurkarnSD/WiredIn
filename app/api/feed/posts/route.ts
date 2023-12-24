@@ -22,8 +22,8 @@ export async function POST(req: Request) {
 
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
-  const res = await deletePostPrisma(id as string);
+  const uid = searchParams.get("uid");
+  const res = await deletePostPrisma(uid as string);
 
   return NextResponse.json({ response: "Deleted Post" });
 }

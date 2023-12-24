@@ -152,6 +152,7 @@
   display: flex;
   margin-top: 10px;
   gap: 10px;
+  align-items: center;
 }
 
 .replyControl {
@@ -259,4 +260,70 @@
   stroke: #d22b2b;
   color: #d22b2b;
   stroke-width: 30px;
+}
+
+.settings {
+  background-color: #000000;
+  min-width: 55px;
+  height: 30px;
+  border-radius: 10px;
+  gap: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: auto;
+}
+
+.responseSettings {
+  background-color: #000000;
+  min-width: 40px;
+  height: 25px;
+  border-radius: 10px;
+  gap: 8px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.closeSettings {
+  color: #ffffff;
+  font-size: 18px;
+}
+
+.settingsOption {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.settingsOption path {
+  stroke: #000000;
+  stroke-width: 5px;
+}
+
+.responseCloseSettings {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.responseSettingsOption {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.responseSettingsOption path {
+  stroke: #000000;
+  stroke-width: 5px;
+}
+
+.settingsIcon {
+  margin-left: auto;
+  color: #000000;
+  font-size: 14px;
+}
+
+.responseSettingsIcon {
+  color: #000000;
+  font-size: 12px;
 }

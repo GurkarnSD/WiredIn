@@ -156,7 +156,7 @@ model Image {
   id     Int    @id @default(autoincrement())
   key    String
   postId String
-  post   Post   @relation("PostImages", fields: [postId], references: [uid])
+  post   Post   @relation("PostImages", fields: [postId], references: [uid], onDelete: Cascade)
 
   @@index([postId])
 }
