@@ -17,21 +17,26 @@ export default async function Navbar() {
                     </Link>
                 </div>
                 <div className={styles.links}>
-                    <Link className={styles.link} href="/feed">
-                        Feed
-                    </Link>
-                    <Link className={styles.link} href="/forums">
-                        Forums
-                    </Link>
-                    <Link className={styles.link} href="/contracts">
-                        Contracts
-                    </Link>
-                    <Link className={styles.link} href="/jobs">
-                        Jobs
-                    </Link>
+                    {session &&
+                        <>
+                            <Link className={styles.link} href="/feed">
+                                Feed
+                            </Link>
+                            <Link className={styles.link} href="/forums">
+                                Forums
+                            </Link>
+                            <Link className={styles.link} href="/contracts">
+                                Contracts
+                            </Link>
+                            <Link className={styles.link} href="/jobs">
+                                Jobs
+                            </Link>
+                        </>
+                    }
                     <NavbarDropdown user={session?.user} />
                 </div>
-            </div>
+
+            </div >
         </>
     )
 }
