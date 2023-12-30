@@ -69,6 +69,8 @@ model User {
   responses   Response[]   @relation("CommentResponses")
   likedComments Comment[]  @relation("CommentLikes")
   likedResponses Response[] @relation("ResponseLikes")
+  messages   Message[]    @relation("UserMessages")
+  chatRooms  ChatRoom[]   @relation("ChatRoomUsers")
 }
 
 model Skill {
@@ -174,4 +176,39 @@ model Response {
 
   @@index([userId])
   @@index([commentId])
+}
+
+model ChatRoom {
+  id        Int      @id @default(autoincrement())
+  uid       String   @unique @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users     User[]   @relation("ChatRoomUsers")
+  messages  Message[] @relation("ChatRoomMessages")
+
+  @@index([uid])
+}
+
+model Message {
+  id        Int        @id @default(autoincrement())
+  text      String     @db.VarChar(1200)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  user      User       @relation("UserMessages", fields: [userId], references: [uid], onDelete: Cascade)
+  userId    String
+  chatRoom  ChatRoom   @relation("ChatRoomMessages", fields: [chatRoomId], references: [uid], onDelete: Cascade)
+  chatRoomId String
+  attachments Attachment[]
+
+  @@index([userId])
+  @@index([chatRoomId])
+}
+
+model Attachment {
+  id        Int        @id @default(autoincrement())
+  key       String
+  message   Message    @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  messageId Int
+
+  @@index([messageId])
 }

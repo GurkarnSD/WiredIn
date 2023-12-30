@@ -40,6 +40,22 @@ const unfollowUser = async (userId: string, pageUserId: string) => {
     return res.json()
 }
 
+const messageUser = async (userId: string, pageUserId: string) => {
+    const res = await fetch('/api/chatroom', {
+        method: "POST",
+        body: JSON.stringify({
+            userId1: userId,
+            userId2: pageUserId
+        })
+    })
+
+    if (!res.ok) {
+        throw new Error("Failed to Find Chatroom")
+    }
+
+    return res.json()
+}
+
 const fetchHeaderImages = async (bannerKey: string, profileKey: string) => {
     const response1 = await fetch(`/api/image/${bannerKey}`);
     const { url: bannerURL } = await response1.json();
@@ -89,6 +105,7 @@ export default function ProfileHeader(params: { pageUser: any, user: any }) {
                                     <button className={styles.follow} onClick={() => followUser(user.uid, pageUser?.uid)}>Follow</button>
                                     : <button className={styles.follow} onClick={() => unfollowUser(user.uid, pageUser?.uid)}>Unfollow</button>)
                                 : null}
+                            <Link className={styles.message} onClick={() => messageUser(user.uid, pageUser?.uid)} href={'/messages'}>Message</Link>
                         </div>
                         <div className={styles.stats}>
                             <div className={styles.stat}>

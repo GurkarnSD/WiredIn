@@ -17,7 +17,7 @@ export default function ProfileCard(params: { user: any }) {
                 </div>
                 <div className={styles.options}>
                     <div className={styles.option}>
-                        <Link href='/'>
+                        <Link href='/messages'>
                             <FontAwesomeIcon icon={faComment} className={styles.icon} />Messages
                         </Link>
                     </div>

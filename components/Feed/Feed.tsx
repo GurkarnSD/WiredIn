@@ -15,7 +15,7 @@ export default function Feed(params: { user: any, posts: [] }) {
             <div className={styles.header}>
                 <button className={styles.createPost} onClick={() => { setIsModalOpen(true) }}>Create Post</button>
             </div>
-            <div className={styles.messages}>
+            <div className={styles.posts}>
                 {posts.map((post) => {
                     return (
                         <Post key={post} data={post} user={user} />

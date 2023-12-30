@@ -58,7 +58,7 @@ export default function NavbarDropdown({ user }: { user: any | null }) {
                                     </Link>
                                 </div>
                                 <div className={styles.option}>
-                                    <Link href='/'>
+                                    <Link href='/messages'>
                                         <FontAwesomeIcon icon={faComment} className={styles.icon} />Messages
                                     </Link>
                                 </div>

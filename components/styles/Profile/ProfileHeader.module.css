@@ -74,9 +74,22 @@
   border: none;
   font-size: 18px;
   font-weight: 800;
+  cursor: pointer;
 }
 
-.follow:hover {
+.message {
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 35px;
+  border-radius: 8px;
+  background-color: #4fdfff;
+  color: #000000;
+  border: none;
+  font-size: 18px;
+  font-weight: 800;
   cursor: pointer;
 }
 
