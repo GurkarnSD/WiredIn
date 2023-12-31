@@ -23,8 +23,28 @@ async function getMessagesPrisma(chatRoomId: string) {
       where: {
         chatRoomId: chatRoomId,
       },
+      include: {
+        attachments: true,
+      },
     });
-    return messages;
+
+    const updatedMessages = await Promise.all(
+      messages.map(async (message) => {
+        const attachments = await Promise.all(
+          message.attachments.map(async (attachment) => {
+            const res = await fetch(
+              `${process.env.API_URL}/api/image/${attachment.key}`
+            );
+            const image = await res.json();
+            return image.url;
+          })
+        );
+        message.attachments = attachments;
+        return message;
+      })
+    );
+
+    return updatedMessages;
   } catch (error) {
     throw new Error("Unable To Get Messages");
   } finally {
@@ -35,18 +55,48 @@ async function getMessagesPrisma(chatRoomId: string) {
 async function createMessagePrisma(
   chatRoomId: string,
   userId: string,
-  message: string
+  message: string,
+  attachments: string[]
 ) {
   try {
-    const result = await prisma.message.create({
+    const createdMessage = await prisma.message.create({
       data: {
         text: message,
         chatRoomId: chatRoomId,
         userId: userId,
       },
+      include: {
+        attachments: true,
+      },
     });
 
-    return result;
+    if (attachments.length > 0) {
+      attachments.map(async (attachment) => {
+        try {
+          await prisma.attachment.create({
+            data: {
+              key: attachment,
+              messageId: createdMessage.id,
+            },
+          });
+        } catch (error) {
+          throw new Error("Unable To Create Attachment");
+        }
+      });
+    }
+
+    createdMessage.attachments = await Promise.all(
+      attachments.map(async (attachment) => {
+        const res = await fetch(
+          `${process.env.API_URL}/api/image/${attachment}`
+        );
+        const image = await res.json();
+        attachment = image.url;
+        return attachment;
+      })
+    );
+
+    return createdMessage;
   } catch (error) {
     throw new Error("Unable To Create Message");
   } finally {

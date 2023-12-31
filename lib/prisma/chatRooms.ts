@@ -17,6 +17,34 @@ async function init() {
   await init();
 })();
 
+async function authChatRoomPrisma(userId: string, channelUID: string) {
+  try {
+    const chatRooms = await prisma.chatRoom.findFirst({
+      where: {
+        AND: [
+          {
+            users: {
+              some: {
+                uid: userId,
+              },
+            },
+          },
+          {
+            uid: channelUID,
+          },
+        ],
+      },
+    });
+
+    if (chatRooms) return true;
+    return false;
+  } catch (error) {
+    throw new Error("Unable To Get ChatRooms");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function getChatRoomsPrisma(userId: string) {
   try {
     const chatRooms = await prisma.chatRoom.findMany({
@@ -137,4 +165,9 @@ async function deleteChatRoomPrisma(chatRoomId: string) {
   }
 }
 
-export { getChatRoomsPrisma, findChatRoomPrisma, deleteChatRoomPrisma };
+export {
+  authChatRoomPrisma,
+  getChatRoomsPrisma,
+  findChatRoomPrisma,
+  deleteChatRoomPrisma,
+};

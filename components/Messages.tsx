@@ -1,13 +1,15 @@
 'use client';
 import styles from "./styles/Messages.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faComment, faImage } from '@fortawesome/free-solid-svg-icons'
+import { faComment, faImage, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useState, useEffect, useRef } from "react"
 import { pusherClient } from "@/lib/pusher";
 import Image from "next/image";
 import useSWR from 'swr';
 const fetcher = (url: string) => fetch(url).then(r => r.json());
 import { format, parseISO, isWithinInterval, subDays, isThisYear } from 'date-fns';
+import Modal from "./Modal";
+import axios from "axios";
 
 const fetchChatMessages = async (chatRoomId: string) => {
     const response = await fetch(`/api/message?chatRoomId=${chatRoomId}`);
@@ -28,21 +30,15 @@ export default function Messages(params: { user: any }) {
     const [numOnlineUsers, setNumOnlineUsers] = useState(0);
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [mountedChat, setMountedChat] = useState(false);
-
-    const lastMessageRef = useRef<HTMLDivElement | null>(null);
-    const messagesContainerRef = useRef<HTMLDivElement | null>(null);
     const [groupedChat, setGroupedChat] = useState({});
 
-    useEffect(() => {
-        if (lastMessageRef.current && messagesContainerRef.current) {
-            const isAtBottom =
-                messagesContainerRef.current.scrollTop + messagesContainerRef.current.clientHeight + 500 >=
-                lastMessageRef.current.offsetTop;
+    const ref = useRef();
 
-            if (isAtBottom) {
-                lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
+    useEffect(() => {
+        ref.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "end",
+        });
     }, [chat]);
 
     useEffect(() => {
@@ -72,6 +68,7 @@ export default function Messages(params: { user: any }) {
 
         setGroupedChat(newGroupedChat);
     }, [chat]);
+
     useEffect(() => {
         if (chatRoom) {
             var channel = pusherClient.subscribe(`presence-${chatRoom.uid}`);
@@ -117,26 +114,117 @@ export default function Messages(params: { user: any }) {
         }
     }, [chatRoom])
 
+
+    const handleImageClick = () => {
+        if (imageInputRef.current) {
+            imageInputRef.current.click();
+        }
+    };
+
+    const removeImage = (imageUrl: string) => {
+        var index = images.indexOf(imageUrl);
+        if (index > -1) {
+            const newImages = [...images];
+            newImages.splice(index, 1);
+            setImages(newImages);
+            const newImageFiles = [...imageFiles];
+            newImageFiles.splice(index, 1);
+            setImageFiles(newImageFiles);
+            setError('');
+        }
+    }
+
     const handleInputChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
         setMessage(event.target.value);
     };
 
+    const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    const maxImages = 5;
+
+    const [error, setError] = useState('');
+    const [images, setImages] = useState<string[]>([]);
+    const [imageFiles, setImageFiles] = useState<File[]>([]);
+    const imageInputRef = useRef<HTMLInputElement>(null);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    const openImageModal = (imageUrl: string) => {
+        setSelectedImage(imageUrl);
+        setIsModalOpen(true);
+    };
+
+    const closeImageModal = () => {
+        setSelectedImage(null);
+        setIsModalOpen(false);
+    };
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+
+            if (images.length >= maxImages) {
+                setError(`You can only upload ${maxImages} images at a time.`);
+                return;
+            }
+
+            const newImageFiles = Array.from(e.target.files);
+            const invalidFiles = newImageFiles.filter(
+                (file) => !validFileTypes.includes(file.type)
+            );
+
+            if (invalidFiles.length > 0) {
+                setError('Files must be in JPG/PNG format');
+                return;
+            }
+
+            if (e.target) {
+                e.target.value = '';
+            }
+
+            setError('');
+            setImageFiles([...imageFiles, ...newImageFiles]);
+            setImages([...images, ...newImageFiles.map((file) => URL.createObjectURL(file))]);
+        }
+    };
+
     const handleSubmit = async () => {
         if (chatRoom) {
+
+            let attachments: string[] = [];
+
+            if (imageFiles.length > 0) {
+                const imageUploadPromises: Promise<string>[] = imageFiles.map(async (file) => {
+                    const postPicData = new FormData();
+                    postPicData.append('image', file);
+                    postPicData.append('uid', user.uid);
+                    postPicData.append('type', file.type);
+
+                    const response = await axios.post('/api/image', postPicData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+
+                    return response.data.key;
+                });
+
+                attachments = await Promise.all(imageUploadPromises);
+            }
+
             const res = await fetch('/api/message', {
                 method: 'POST',
-                body: JSON.stringify({ chatRoomId: chatRoom.uid, senderId: user.uid, message: message }),
+                body: JSON.stringify({ chatRoomId: chatRoom.uid, senderId: user.uid, message: message, attachments }),
             });
 
             if (res.ok) {
                 setMessage('');
+                setImageFiles([]);
+                setImages([]);
             }
         }
     }
-
-
 
     return (
         <div className={styles.messages}>
@@ -171,27 +259,64 @@ export default function Messages(params: { user: any }) {
                         </div>
                     </div>
                 }
-                <div className={styles.messengerBody} ref={messagesContainerRef}>
+                <div className={styles.messengerBody}>
                     {Object.entries(groupedChat).map(([date, messages], index) => (
                         <div key={index}>
                             <div className={styles.date}>{date}</div>
                             {messages.map((message, i) => (
-                                <div key={i} className={message.userId === user.uid ? styles.sentMessage : styles.receivedMessage} ref={i === messages.length - 1 ? lastMessageRef : null}>
-                                    <div className={message.userId === user.uid ? styles.sentText : styles.receivedText}>{message.text}</div>
+                                <div key={i} className={message.userId === user.uid ? styles.sentMessage : styles.receivedMessage} >
+                                    {message.attachments && message.attachments.length > 0 && (
+                                        <div className={styles.attachments}>
+                                            {message.attachments.map((attachment: string, index: number) => (
+                                                <div key={index} className={message.userId === user.uid ? styles.sentAttachmentContainer : styles.receivedAttachmentContainer} onClick={() => openImageModal(attachment)}>
+                                                    <Image className={styles.attachment} src={attachment} alt={''} width={0} height={0} unoptimized />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {message.text !== '' && <div className={message.userId === user.uid ? styles.sentText : styles.receivedText}>{message.text}</div>}
                                     <div className={message.userId === user.uid ? styles.sentTime : styles.receivedTime}>{message.time}</div>
                                 </div>
                             ))}
                         </div>
                     ))}
+                    <div ref={ref} />
                 </div>
                 <div className={styles.messengerFooter}>
+                    <div className={styles.images}>
+                        {images.map((image, index) => {
+                            return (
+                                <div key={index} className={styles.imageContainer} onClick={() => openImageModal(image)}>
+                                    <Image className={styles.image} src={image} alt={''} width={0} height={0} />
+                                    <FontAwesomeIcon icon={faXmark} className={styles.removeImageIcon} onClick={(event) => { event.stopPropagation(); removeImage(image); }} />
+                                </div>
+                            );
+                        })}
+                    </div>
+                    {isModalOpen && selectedImage && (
+                        <Modal isOpen={isModalOpen} onClose={closeImageModal}>
+                            <div className={styles.modalImageContainer}>
+                                <Image className={styles.modalImage} src={selectedImage} alt={''} width={0} height={0} sizes="100vw" />
+                            </div>
+                        </Modal>
+                    )}
+                    {error && <div className={styles.error}>{error}</div>}
                     <textarea className={styles.messageInput} aria-multiline name='input' value={message} placeholder="Type a message..." onChange={handleInputChange} />
                     <div className={styles.inputControls}>
-                        <FontAwesomeIcon className={styles.attachmentButton} icon={faImage} />
+                        <span>
+                            <FontAwesomeIcon className={styles.attachmentButton} icon={faImage} onClick={handleImageClick} />
+                            <input
+                                type="file"
+                                className={styles.imageInput}
+                                onChange={handleImageUpload}
+                                ref={imageInputRef}
+                                hidden
+                            />
+                        </span>
                         <button className={styles.sendButton} onClick={() => handleSubmit()}>Send</button>
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     )
 }

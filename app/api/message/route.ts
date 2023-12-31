@@ -16,8 +16,14 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { chatRoomId, senderId, message } = body;
-  const res = await createMessagePrisma(chatRoomId, senderId, message);
+  const { chatRoomId, senderId, message, attachments } = body;
+
+  const res = await createMessagePrisma(
+    chatRoomId,
+    senderId,
+    message,
+    attachments
+  );
 
   await pusherServer.trigger(`presence-${chatRoomId}`, "incoming-message", res);
 
