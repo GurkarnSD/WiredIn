@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
-  const res = await deleteChatRoomPrisma(id as string);
+  await deleteChatRoomPrisma(id as string);
 
   return NextResponse.json({ response: "Deleted ChatRoom" });
 }

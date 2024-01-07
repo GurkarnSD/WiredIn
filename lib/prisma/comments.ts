@@ -1,6 +1,7 @@
+import { PrismaClient } from "@prisma/client";
 import { prisma } from "./index";
 
-let client: any;
+let client: PrismaClient | undefined;
 
 async function init() {
   if (client) return;
@@ -18,7 +19,7 @@ async function init() {
 })();
 
 async function getCommentsPrisma(postId: string) {
-  let imageCache: Record<string, string> = {};
+  const imageCache: Record<string, string> = {};
   try {
     const comments = await prisma.comment.findMany({
       where: { postId: postId },

@@ -3,10 +3,11 @@ import styles from '@/styles/Login.module.css'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import Navbar from "@/components/Navbar"
+import { UserSession } from "@/types"
 
 export default async function LoginPage() {
 
-    const session = await getServerSession(authOptions);
+    const session = (await getServerSession(authOptions)) as UserSession;
 
     return (
         <>

@@ -19,7 +19,7 @@ export default async function imageUploadUrl(userUID: string, type: string) {
   const ext = type.split("/")[1];
   const key = `${userUID}/${uuidv4()}.${ext}`;
 
-  const { url, error } = await createPresignedUrl(key);
+  const { url } = await createPresignedUrl(key);
 
   return { url, key };
 }

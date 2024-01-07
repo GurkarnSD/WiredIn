@@ -1,6 +1,7 @@
+import { PrismaClient } from "@prisma/client";
 import { prisma } from "./index";
 
-let client: any;
+let client: PrismaClient | undefined;
 
 async function init() {
   if (client) return;
@@ -45,6 +46,10 @@ async function getExperiencesPrisma(userId: string) {
   }
 }
 
+type SkillWhereUniqueInput = {
+  id: number;
+};
+
 async function createExperiencePrisma(
   userId: string,
   experience: {
@@ -52,7 +57,7 @@ async function createExperiencePrisma(
     company: string;
     image: string;
     description: string;
-    skills: any;
+    skills: SkillWhereUniqueInput[];
     current: boolean;
     start: string;
     end: string;

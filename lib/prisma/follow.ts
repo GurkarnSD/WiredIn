@@ -1,7 +1,9 @@
+import { UserProfile } from "@/types";
 import { prisma } from "./index";
-import { getUserPrisma, updateUserPrisma } from "./user";
+import { getUserPrisma } from "./user";
+import { PrismaClient } from "@prisma/client";
 
-let client: any;
+let client: PrismaClient | undefined;
 
 async function init() {
   if (client) return;
@@ -26,8 +28,12 @@ async function followUserPrisma(user: string, otherUser: string) {
     const otherUserData = await getUserPrisma(otherUser, "");
 
     if (
-      !otherUserData.followers.some((follower: any) => follower.uid === user) ||
-      !userData.following.some((following: any) => following.uid === otherUser)
+      !otherUserData.followers.some(
+        (follower: UserProfile) => follower.uid === user
+      ) ||
+      !userData.following.some(
+        (following: UserProfile) => following.uid === otherUser
+      )
     ) {
       await prisma.user.update({
         where: { uid: user },

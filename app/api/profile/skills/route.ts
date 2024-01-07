@@ -15,7 +15,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const res = await addSkillPrisma(body.user, body.skill);
+  await addSkillPrisma(body.user, body.skill);
 
   return NextResponse.json({ response: "Added Skill" });
 }
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
-  const res = await deleteSkillPrisma(id as string);
+  await deleteSkillPrisma(id as string);
 
   return NextResponse.json({ response: "Deleted Skill" });
 }

@@ -5,12 +5,13 @@ import { faImage, faArrowsLeftRight, faPlus } from '@fortawesome/free-solid-svg-
 import { useState, useRef } from 'react';
 import Modal from '../Modal';
 import axios from 'axios';
+import { User, UserSkill } from '@/types';
 
-export default function ProfileExperienceEditor(params: { user: any, skills: any }) {
+export default function ProfileExperienceEditor(params: { user: User, skills: UserSkill[] }) {
 
     const { user, skills } = params;
 
-    const currentSkills = skills.map((skill: any) => skill.name);
+    const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
     const [expForm, setExpForm] = useState({
         title: '',
@@ -20,7 +21,7 @@ export default function ProfileExperienceEditor(params: { user: any, skills: any
         desc: '',
         current: false,
     })
-    const [selectedSkills, setSelectedSkills] = useState([]);
+    const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
 
     const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
@@ -64,7 +65,12 @@ export default function ProfileExperienceEditor(params: { user: any, skills: any
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        const skillIds = selectedSkills.map((skill: string) => { return { id: skills.find((s: any) => s.name === skill).id } })
+        const skillIds = selectedSkills.map((skill: string) => {
+            const foundSkill = skills.find((s: UserSkill) => s.name === skill);
+            if (foundSkill) {
+                return { id: foundSkill.id };
+            }
+        });
 
         const experience = {
             title: expForm.title,
@@ -210,7 +216,7 @@ export default function ProfileExperienceEditor(params: { user: any, skills: any
     )
 }
 
-function SelectSkills(params: { skillsList: any, selector: (skills: any) => void, chosenSkills: any }) {
+function SelectSkills(params: { skillsList: string[], selector: (skills: string[]) => void, chosenSkills: string[] }) {
 
     const { skillsList, selector, chosenSkills } = params;
 

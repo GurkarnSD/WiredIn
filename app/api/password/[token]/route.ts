@@ -9,13 +9,18 @@ export async function POST(
 ) {
   const body = await req.json();
 
+  const { token: forgot } = params;
+
+  if (forgot !== "forgot") {
+    return NextResponse.json({ response: "bad" });
+  }
+
   const user = await prisma.credentials.findFirst({
     where: { email: body.email },
   });
 
   if (!user) {
-    // Return Early
-    return NextResponse.json({ response: "ok" });
+    return NextResponse.json({ response: "bad" });
   }
 
   const token = await prisma.resetToken.create({

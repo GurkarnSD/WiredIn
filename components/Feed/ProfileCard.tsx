@@ -3,8 +3,9 @@ import Link from 'next/link'
 import Image from "next/image"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComment } from '@fortawesome/free-solid-svg-icons'
+import { User } from "@/types"
 
-export default function ProfileCard(params: { user: any }) {
+export default function ProfileCard(params: { user: User }) {
 
     const { user } = params;
 

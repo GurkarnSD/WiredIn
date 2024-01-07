@@ -3,10 +3,11 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { authChatRoomPrisma } from "@/lib/prisma/chatRooms";
+import { UserSession } from "@/types";
 
 export async function POST(req: Request) {
   const body = await req.text();
-  const session = await getServerSession(authOptions);
+  const session = (await getServerSession(authOptions)) as UserSession;
 
   const [socketId, channelName] = body
     .split("&")

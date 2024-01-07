@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
+import { User, UserProfile } from '@/types';
 
 const followUser = async (userId: string, pageUserId: string) => {
     const res = await fetch('/api/follow', {
@@ -66,7 +67,7 @@ const fetchHeaderImages = async (bannerKey: string, profileKey: string) => {
     return { bannerURL, profileURL };
 }
 
-export default function ProfileHeader(params: { pageUser: any, user: any }) {
+export default function ProfileHeader(params: { pageUser: UserProfile, user: User }) {
 
     const { pageUser, user } = params;
 
@@ -101,7 +102,7 @@ export default function ProfileHeader(params: { pageUser: any, user: any }) {
                         <div className={styles.header}>
                             <div className={styles.displayName}>{pageUser?.displayName}</div>
                             {user?.uid !== pageUser?.uid ? (
-                                !pageUser?.followers.some((follower: { uid: string }) => follower.uid === user?.uid) ?
+                                !pageUser?.followers?.some((follower: { uid: string }) => follower.uid === user?.uid) ?
                                     <button className={styles.follow} onClick={() => followUser(user.uid, pageUser?.uid)}>Follow</button>
                                     : <button className={styles.follow} onClick={() => unfollowUser(user.uid, pageUser?.uid)}>Unfollow</button>)
                                 : null}
@@ -109,11 +110,11 @@ export default function ProfileHeader(params: { pageUser: any, user: any }) {
                         </div>
                         <div className={styles.stats}>
                             <div className={styles.stat}>
-                                <div className={styles.statNumber}>{pageUser?.following.length}</div>
+                                <div className={styles.statNumber}>{pageUser?.following?.length}</div>
                                 &nbsp;Following
                             </div>
                             <div className={styles.stat}>
-                                <div className={styles.statNumber}>{pageUser?.followers.length}</div>
+                                <div className={styles.statNumber}>{pageUser?.followers?.length}</div>
                                 &nbsp;Followers
                             </div>
                         </div>

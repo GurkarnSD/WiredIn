@@ -1,6 +1,7 @@
+import { UserProfile } from '@/types';
 import styles from '../styles/Profile/ProfileActivity.module.css'
 
-export default function ProfileActivity(params: { pageUser: any }) {
+export default function ProfileActivity(params: { pageUser: UserProfile }) {
 
     const { pageUser } = params;
 

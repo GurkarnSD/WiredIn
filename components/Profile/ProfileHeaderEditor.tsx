@@ -3,8 +3,9 @@ import styles from '../styles/Profile/ProfileHeaderEditor.module.css'
 import Image from 'next/image'
 import { useState, useRef, useEffect } from 'react'
 import axios from 'axios';
+import { UserProfile } from '@/types';
 
-export default function ProfileHeaderEditor(params: { user: any, userImages: { bannerURL: string, profileURL: string } }) {
+export default function ProfileHeaderEditor(params: { user: UserProfile, userImages: { bannerURL: string, profileURL: string } }) {
 
     const { user, userImages } = params;
 
@@ -31,9 +32,9 @@ export default function ProfileHeaderEditor(params: { user: any, userImages: { b
         setProfilePic(userImages.profileURL);
         setBanner(userImages.bannerURL);
         setProfileForm({
-            title: user.title,
-            bio: user.bio,
-            github: user.github,
+            title: user.title || '',
+            bio: user.bio || '',
+            github: user.github || '',
         })
     }, [user])
 

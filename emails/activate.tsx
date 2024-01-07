@@ -1,4 +1,4 @@
-import { Html, Head, Container, Link, Section, Row, Column, Text, Font } from "@react-email/components";
+import { Html, Head, Link, Section, Row, Column, Text, Font } from "@react-email/components";
 import * as React from "react";
 
 export default function ActivateTemplate(params: { token: string, siteURL: string, user: string }) {

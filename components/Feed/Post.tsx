@@ -7,6 +7,7 @@ import { useState, useRef, useEffect } from 'react';
 import Comments from "./Comments";
 import ConfirmationPopup from "../ConfirmationPopup";
 import { useRouter } from "next/navigation";
+import { User, UserPost } from "@/types";
 
 const likePost = async (userId: string, postId: string) => {
     const res = await fetch('/api/feed/like/post', {
@@ -76,11 +77,18 @@ const calculateImageClass = (images: string[], index: number) => {
     }
 }
 
-export default function Post(params: { data: any, user: any }) {
+type UserPostWithStats = UserPost & {
+    _count: {
+        likes: number;
+        comments: number;
+    };
+};
+
+export default function Post(params: { data: UserPostWithStats, user: User }) {
 
     const { data, user } = params;
 
-    const [liked, setLiked] = useState(data.likes.some((like: { uid: string }) => like.uid === user.uid))
+    const [liked, setLiked] = useState(data.likes?.some((like: { uid: string }) => like.uid === user.uid))
     const [numLikes, setNumLikes] = useState(data._count.likes);
     const numComments = data._count.comments;
 
@@ -251,7 +259,7 @@ function HandleCloseSettings(settingsRef: React.RefObject<HTMLElement>, setVisib
     }, [settingsRef]);
 }
 
-function formatTimeDifference(createdAt: string): string {
+function formatTimeDifference(createdAt: Date): string {
     const currentDateTime = new Date();
     const createdDateTime = new Date(createdAt);
 

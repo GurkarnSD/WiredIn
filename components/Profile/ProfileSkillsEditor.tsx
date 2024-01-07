@@ -4,12 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import Modal from '../Modal';
+import { UserProfile, UserSkill } from '@/types';
 
-export default function ProfileSkillsEditor(params: { user: any, skills: any }) {
+export default function ProfileSkillsEditor(params: { user: UserProfile, skills: UserSkill[] }) {
 
     const { user, skills } = params;
 
-    const currentSkills = skills.map((skill: any) => skill.name);
+    const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
     const [addSkillOpen, setAddSkillOpen] = useState(false);
 
@@ -25,8 +26,8 @@ export default function ProfileSkillsEditor(params: { user: any, skills: any }) 
             </div>
 
             <div className={styles.body}>
-                {skills?.map((skill: any) => (
-                    <div className={styles.skill} key={skill.skill}>
+                {skills?.map((skill: UserSkill) => (
+                    <div className={styles.skill} key={skill.id}>
                         <div className={styles.skillName}>{skill.name}</div>
                     </div>
                 ))}
@@ -45,7 +46,7 @@ export default function ProfileSkillsEditor(params: { user: any, skills: any }) 
     )
 }
 
-function AddSkillMenu(params: { uid: string, controlModal: (toggle: boolean) => void, skills: any }) {
+function AddSkillMenu(params: { uid: string, controlModal: (toggle: boolean) => void, skills: string[] }) {
 
     const { uid, controlModal, skills } = params;
 
@@ -64,7 +65,7 @@ function AddSkillMenu(params: { uid: string, controlModal: (toggle: boolean) => 
 
     const [inputValue, setInputValue] = useState('');
     const [selectedSkill, setSelectedSkill] = useState('');
-    const [learnedIn, setLearnedIn] = useState<Number>();
+    const [learnedIn, setLearnedIn] = useState<number>();
 
     const filteredSkills = skillsList.filter(skill =>
         skill.toLowerCase().includes(inputValue.toLowerCase())

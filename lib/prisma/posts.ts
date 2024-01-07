@@ -1,6 +1,7 @@
+import { PrismaClient } from "@prisma/client";
 import { prisma } from "./index";
 
-let client: any;
+let client: PrismaClient | undefined;
 
 async function init() {
   if (client) return;
@@ -59,7 +60,7 @@ async function getPostsPrisma(userId: string) {
       },
     });
 
-    let imageCache: Record<string, string> = {};
+    const imageCache: Record<string, string> = {};
 
     const updatedPosts = await Promise.all(
       posts.map(async (post) => {
@@ -166,7 +167,7 @@ async function getPostPrisma(postId: string) {
         `${process.env.API_URL}/api/image/${post.user.profilePic}`
       );
       const image = await res.json();
-      let imageCache: Record<string, string> = {};
+      const imageCache: Record<string, string> = {};
       imageCache[post.user.profilePic] = image.url;
       const profilePicUrl = image.url;
 

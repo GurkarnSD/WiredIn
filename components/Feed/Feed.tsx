@@ -4,8 +4,9 @@ import { useState } from 'react';
 import Modal from "../Modal";
 import PostCreator from "./PostCreator";
 import Post from "./Post";
+import { User } from "@/types";
 
-export default function Feed(params: { user: any, posts: [] }) {
+export default function Feed(params: { user: User, posts: [] }) {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { user, posts } = params;

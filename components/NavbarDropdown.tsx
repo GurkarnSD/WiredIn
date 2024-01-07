@@ -6,6 +6,7 @@ import { faUser, faComment, faGear } from '@fortawesome/free-solid-svg-icons'
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { signOut } from 'next-auth/react';
+import { User } from '@/types';
 
 const fetchProfileImage = async (profileKey: string) => {
     const response = await fetch(`/api/image/${profileKey}`);
@@ -13,16 +14,16 @@ const fetchProfileImage = async (profileKey: string) => {
     return profileURL;
 }
 
-export default function NavbarDropdown({ user }: { user: any | null }) {
+export default function NavbarDropdown({ user }: { user: User | null }) {
 
     const [profilePic, setProfilePic] = useState('')
 
     useEffect(() => {
-        const fetchImage = async () => {
+        const fetchImage = async (user: User) => {
             const image = await fetchProfileImage(user.profilePic);
             setProfilePic(image);
         };
-        if (user) fetchImage();
+        if (user) fetchImage(user);
     }, [user?.profilePic]);
 
     const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -46,7 +47,7 @@ export default function NavbarDropdown({ user }: { user: any | null }) {
                     Login
                 </Link>
             )}
-            {dropdownVisible && (
+            {dropdownVisible && user && (
                 <div className={styles.dropdownContainer} ref={dropdownRef}>
                     <div className={styles.container}>
                         <div className={styles.NavbarDropdown}>

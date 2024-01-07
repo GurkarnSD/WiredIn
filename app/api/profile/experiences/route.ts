@@ -15,7 +15,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const res = await createExperiencePrisma(body.uid, body.experience);
+  await createExperiencePrisma(body.uid, body.experience);
 
   return NextResponse.json({ response: "Created Experience" });
 }
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
-  const res = await deleteExperiencePrisma(id as string);
+  await deleteExperiencePrisma(id as string);
 
   return NextResponse.json({ response: "Deleted Experience" });
 }

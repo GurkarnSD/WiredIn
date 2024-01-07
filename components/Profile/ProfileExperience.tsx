@@ -6,22 +6,23 @@ import ProfileExperienceEditor from './ProfileExperienceEditor';
 import Modal from '../Modal';
 import useSWR from 'swr';
 import Image from 'next/image';
+import { User, UserProfile, UserSkill, WorkExperience } from '@/types';
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-const deleteExperience = async (id: string) => {
+const deleteExperience = async (id: number) => {
     const res = await fetch(`/api/profile/experiences/?id=${id}`, { method: 'DELETE' })
 
     return res.json();
 }
 
-export default function ProfileExperience(params: { pageUser: any, user: any }) {
+export default function ProfileExperience(params: { pageUser: UserProfile, user: User }) {
 
     const { pageUser, user } = params;
 
-    const { data: skillsData, error: skillsError } = useSWR(`/api/profile/skills/?uid=${pageUser.uid}`, fetcher)
+    const { data: skillsData } = useSWR(`/api/profile/skills/?uid=${pageUser.uid}`, fetcher)
 
-    const { data: experiencesData, error: experiencesError } = useSWR(`/api/profile/experiences/?uid=${pageUser.uid}`, fetcher)
+    const { data: experiencesData } = useSWR(`/api/profile/experiences/?uid=${pageUser.uid}`, fetcher)
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditExperiences, setIsEditExperiences] = useState(false);
@@ -48,7 +49,7 @@ export default function ProfileExperience(params: { pageUser: any, user: any }) 
             </div>
 
             <div className={styles.body}>
-                {experiencesData?.map((experience: any, index: number) => (
+                {experiencesData?.map((experience: WorkExperience, index: number) => (
                     <div className={styles.experience} key={experience.id}>
                         <div className={styles.experienceHeader}>
                             <div className={styles.experienceLeft}>
@@ -65,10 +66,10 @@ export default function ProfileExperience(params: { pageUser: any, user: any }) 
                                     <div className={styles.experienceTitle}>{experience.title}</div>
                                     <div className={styles.experienceCompany}>{experience.company}</div>
                                     <div className={styles.experienceDate}>{new Date(experience.start).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })} - {experience.current ? "Present" : new Date(experience.end).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}</div>
-                                    {experience.skills.length > 0 &&
+                                    {experience.skills && experience.skills.length > 0 &&
                                         <div className={styles.skills}>
                                             <div>Skills:&nbsp;</div>
-                                            {skillsData?.map((skill: any, index: number) => (
+                                            {skillsData?.map((skill: UserSkill, index: number) => (
                                                 <div className={styles.skill} key={skill.id}>{skill.name}{index !== skillsData.length - 1 && ','}&nbsp;</div>
                                             ))}
                                         </div>

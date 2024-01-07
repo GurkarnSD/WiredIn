@@ -5,8 +5,9 @@ import Image from "next/image";
 import styles from "./styles/Post.module.css";
 import Modal from './Modal';
 import { useState, useEffect } from 'react';
+import { CommentResponse, PostComment, User, UserPost } from "@/types";
 
-const likePost = async (userId: string, postId: number) => {
+const likePost = async (userId: string, postId: string) => {
     const res = await fetch('/api/feed/like/post', {
         method: "POST",
         body: JSON.stringify({
@@ -22,7 +23,7 @@ const likePost = async (userId: string, postId: number) => {
     return res.json()
 }
 
-const unlikePost = async (userId: string, postId: number) => {
+const unlikePost = async (userId: string, postId: string) => {
     const res = await fetch('/api/feed/like/post', {
         method: "DELETE",
         body: JSON.stringify({
@@ -156,48 +157,39 @@ const unlikeResponse = async (userId: string, responseId: number) => {
     return res.json()
 }
 
-export default function Post(params: { post: any, session: any }) {
+type PostWithStats = UserPost & {
+    likes: { uid: string }[];
+    _count: {
+        likes: number;
+        comments: number;
+    };
+    comments: PostCommentWithStats[];
+};
 
-    const { post, session } = params;
+type PostCommentWithStats = PostComment & {
+    likes: { uid: string }[];
+    _count: {
+        likes: number;
+        responses: number;
+    };
+};
 
-    const user = session?.user;
+type CommentResponseWithStats = CommentResponse & {
+    likes: { uid: string }[];
+    _count: {
+        likes: number;
+    };
+};
 
+export default function Post(params: { post: PostWithStats, user: User }) {
+
+    const { post, user } = params;
     const [profilePic, setProfilePic] = useState('');
 
-    type ReducedComment = {
-        id: number;
-        text: string;
-        createdAt: Date;
-        user: {
-            displayName: string;
-            profilePic: string;
-        };
-        _count: {
-            responses: number;
-        };
-    };
-
-    type Response = {
-        id: number;
-        text: string;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-        commentId: number;
-        likes: { uid: string }[];
-        user: {
-            displayName: string;
-            profilePic: string;
-        };
-        _count: {
-            likes: number;
-        };
-    }
-
-    const [responses, setResponses] = useState<Record<number, Response[]>>({});
+    const [responses, setResponses] = useState<Record<number, CommentResponseWithStats[]>>({});
     const [openResponses, setOpenResponses] = useState<Record<number, boolean>>({});
 
-    const [selectedComment, setSelectedComment] = useState<ReducedComment | null>(null);
+    const [selectedComment, setSelectedComment] = useState<PostCommentWithStats | null>(null);
 
     const toggleResponses = async (commentId: number) => {
         if (!responses[commentId]) {
@@ -291,7 +283,7 @@ export default function Post(params: { post: any, session: any }) {
         setImageModalOpen(false);
     };
 
-    const likePostHook = async (userId: string, postId: number) => {
+    const likePostHook = async (userId: string, postId: string) => {
         try {
             await likePost(userId, postId);
             setLiked(true);
@@ -301,7 +293,7 @@ export default function Post(params: { post: any, session: any }) {
         }
     }
 
-    const unlikePostHook = async (userId: string, postId: number) => {
+    const unlikePostHook = async (userId: string, postId: string) => {
         try {
             await unlikePost(userId, postId);
             setLiked(false);
@@ -318,7 +310,7 @@ export default function Post(params: { post: any, session: any }) {
         const newLiked: Record<number, boolean> = {};
         const newNumLikes: Record<number, number> = {};
 
-        post.comments.forEach((comment: any) => {
+        post.comments.forEach((comment: PostCommentWithStats) => {
             newLiked[comment.id] = comment.likes.some((like: { uid: string }) => like.uid === user.uid);
             newNumLikes[comment.id] = comment._count.likes;
         });
@@ -366,8 +358,8 @@ export default function Post(params: { post: any, session: any }) {
         const newLiked: Record<number, boolean> = {};
         const newNumLikes: Record<number, number> = {};
 
-        Object.values(responses).forEach((responseArray: Response[]) => {
-            responseArray.forEach((response: Response) => {
+        Object.values(responses).forEach((responseArray: CommentResponseWithStats[]) => {
+            responseArray.forEach((response: CommentResponseWithStats) => {
                 newLiked[response.id] = response.likes.some((like: { uid: string }) => like.uid === user.uid);
                 newNumLikes[response.id] = response._count.likes;
             });
@@ -467,7 +459,7 @@ export default function Post(params: { post: any, session: any }) {
                     </div>
                 </div>
                 <div className={styles.commentBody}>
-                    {post.comments.map((comment: ReducedComment) => (
+                    {post.comments.map((comment: PostCommentWithStats) => (
                         <div className={styles.comment} key={comment.id}>
                             <div className={styles.commentHeader}>
                                 <Image className={styles.profilePic} src={comment.user.profilePic} width={40} height={40} alt='Profile Pic' />
@@ -504,7 +496,7 @@ export default function Post(params: { post: any, session: any }) {
 
                             {openResponses[comment.id] && responses[comment.id] &&
                                 <div className={styles.responses}>
-                                    {responses[comment.id].map((response: Response) =>
+                                    {responses[comment.id].map((response: CommentResponseWithStats) =>
                                     (
                                         <div className={styles.response} key={response.id}>
                                             <div className={styles.commentHeader}>

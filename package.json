@@ -26,7 +26,6 @@
     "bcrypt": "^5.1.1",
     "create-email": "^0.0.19",
     "date-fns": "^3.0.6",
-    "eslint": "8.41.0",
     "eslint-config-next": "^13.5.6",
     "next": "^14.0.3",
     "next-auth": "^4.24.5",
@@ -45,8 +44,9 @@
   "devDependencies": {
     "@types/node": "^20.10.3",
     "encoding": "^0.1.13",
+    "eslint": "^8.56.0",
     "prisma": "^5.7.1",
     "ts-node": "^10.9.1",
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.3"
   }
 }

@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane, faAngleDown, faAngleUp, faReply, faCircleXmark, faHeart, faTrash, faFlag, faPencil, faEllipsis, faXmark, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
 import ConfirmationPopup from '../ConfirmationPopup';
+import { PostComment, CommentResponse, User } from '@/types';
 
 const fetchComments = async (uid: string) => {
     const res = await fetch(`/api/feed/comments/?uid=${uid}`)
@@ -93,45 +94,29 @@ const unlikeResponse = async (userId: string, responseId: number) => {
     return res.json()
 }
 
-export default function Comments(params: { postId: string, user: any }) {
-
-    type ReducedComment = {
-        id: number;
-        text: string;
-        createdAt: Date;
-        user: {
-            uid: string;
-            displayName: string;
-            profilePic: string;
-        };
-        _count: {
-            responses: number;
-        };
+type PostCommentWithStats = PostComment & {
+    likes: { uid: string }[];
+    _count: {
+        likes: number;
+        responses: number;
     };
+};
 
-    type Response = {
-        id: number;
-        text: string;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-        commentId: number;
-        likes: { uid: string }[];
-        user: {
-            uid: string;
-            displayName: string;
-            profilePic: string;
-        };
-        _count: {
-            likes: number;
-        };
-    }
+type CommentResponseWithStats = CommentResponse & {
+    likes: { uid: string }[];
+    _count: {
+        likes: number;
+    };
+};
+
+
+export default function Comments(params: { postId: string, user: User }) {
 
     const { user, postId } = params;
     const [comments, setComments] = useState([]);
-    const [responses, setResponses] = useState<Record<number, Response[]>>({});
+    const [responses, setResponses] = useState<Record<number, CommentResponseWithStats[]>>({});
     const [openResponses, setOpenResponses] = useState<Record<number, boolean>>({});
-    const [selectedComment, setSelectedComment] = useState<ReducedComment | null>(null);
+    const [selectedComment, setSelectedComment] = useState<PostCommentWithStats | null>(null);
 
     const toggleResponses = async (commentId: number) => {
         if (!responses[commentId]) {
@@ -216,7 +201,7 @@ export default function Comments(params: { postId: string, user: any }) {
         const newLiked: Record<number, boolean> = {};
         const newNumLikes: Record<number, number> = {};
 
-        comments.forEach((comment: any) => {
+        comments.forEach((comment: PostCommentWithStats) => {
             newLiked[comment.id] = comment.likes.some((like: { uid: string }) => like.uid === user.uid);
             newNumLikes[comment.id] = comment._count.likes;
         });
@@ -264,8 +249,8 @@ export default function Comments(params: { postId: string, user: any }) {
         const newLiked: Record<number, boolean> = {};
         const newNumLikes: Record<number, number> = {};
 
-        Object.values(responses).forEach((responseArray: Response[]) => {
-            responseArray.forEach((response: Response) => {
+        Object.values(responses).forEach((responseArray: CommentResponseWithStats[]) => {
+            responseArray.forEach((response: CommentResponseWithStats) => {
                 newLiked[response.id] = response.likes.some((like: { uid: string }) => like.uid === user.uid);
                 newNumLikes[response.id] = response._count.likes;
             });
@@ -314,7 +299,7 @@ export default function Comments(params: { postId: string, user: any }) {
         <div className={styles.container}>
             <div className={styles.title}>Comments</div>
             <div className={styles.commentBody}>
-                {comments.map((comment: ReducedComment) => (
+                {comments.map((comment: PostCommentWithStats) => (
                     <div className={styles.comment} key={comment.id}>
                         <div className={styles.commentHeader}>
                             <Image className={styles.profilePic} src={comment.user.profilePic} width={40} height={40} alt='Profile Pic' />
@@ -356,7 +341,7 @@ export default function Comments(params: { postId: string, user: any }) {
 
                         {openResponses[comment.id] && responses[comment.id] &&
                             <div className={styles.responses}>
-                                {responses[comment.id].map((response: Response) =>
+                                {responses[comment.id].map((response: CommentResponseWithStats) =>
                                 (
                                     <div className={styles.response} key={response.id}>
                                         <div className={styles.commentHeader}>

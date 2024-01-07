@@ -1,6 +1,8 @@
+import { PrismaClient } from "@prisma/client";
 import { prisma } from "./index";
+import { UserProfile } from "@/types";
 
-let client: any;
+let client: PrismaClient | undefined;
 
 async function init() {
   if (client) return;
@@ -17,16 +19,16 @@ async function init() {
   await init();
 })();
 
-async function getRandomUsersPrisma(uid: string): Promise<any> {
+async function getRandomUsersPrisma(uid: string): Promise<UserProfile[]> {
   console.log("Fetching random users");
 
   try {
-    const randomUsers = await prisma.$queryRaw`
+    const randomUsers = (await prisma.$queryRaw`
       SELECT * FROM User
       WHERE uid != ${uid}
       ORDER BY RAND()
       LIMIT 3;
-    `;
+    `) as UserProfile[];
 
     return randomUsers;
   } catch (error) {

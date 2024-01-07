@@ -5,20 +5,21 @@ import { useState } from 'react'
 import ProfileSkillsEditor from './ProfileSkillsEditor';
 import Modal from '../Modal';
 import useSWR from 'swr';
+import { User, UserProfile, UserSkill } from '@/types';
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-const deleteSkill = async (id: string) => {
+const deleteSkill = async (id: number) => {
     const res = await fetch(`/api/profile/skills/?id=${id}`, { method: 'DELETE' })
 
     return res.json();
 }
 
-export default function ProfileSkills(params: { pageUser: any, user: any }) {
+export default function ProfileSkills(params: { pageUser: UserProfile, user: User }) {
 
     const { pageUser, user } = params;
 
-    const { data, error } = useSWR(`/api/profile/skills/?uid=${pageUser.uid}`, fetcher)
+    const { data } = useSWR(`/api/profile/skills/?uid=${pageUser.uid}`, fetcher)
 
     const skills = data;
 
@@ -47,8 +48,8 @@ export default function ProfileSkills(params: { pageUser: any, user: any }) {
             </div>
 
             <div className={styles.body}>
-                {skills?.map((skill: any) => (
-                    <div className={styles.skill} key={skill.skill}>
+                {skills?.map((skill: UserSkill) => (
+                    <div className={styles.skill} key={skill.id}>
                         <div>
                             <div className={styles.skillName}>{skill.name}</div>
                             <div className={styles.skillLearned}>Learned In {skill.learnedIn}</div>

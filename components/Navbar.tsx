@@ -3,10 +3,11 @@ import Link from 'next/link'
 import NavbarDropdown from '@/components/NavbarDropdown'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { UserSession } from '@/types'
 
 export default async function Navbar() {
 
-    const session = await getServerSession(authOptions);
+    const session = (await getServerSession(authOptions)) as UserSession;
 
     return (
         <>

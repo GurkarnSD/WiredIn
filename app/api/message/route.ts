@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
   const id = Number(searchParams.get("id"));
-  const res = await deleteMessagePrisma(id);
+  await deleteMessagePrisma(id);
 
   return NextResponse.json({ response: "Deleted Message" });
 }

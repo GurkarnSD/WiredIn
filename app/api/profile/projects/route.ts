@@ -15,7 +15,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const res = await createProjectPrisma(body.uid, body.project);
+  await createProjectPrisma(body.uid, body.project);
 
   return NextResponse.json({ response: "Created Project" });
 }
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
-  const res = await deleteProjectPrisma(id as string);
+  await deleteProjectPrisma(id as string);
 
   return NextResponse.json({ response: "Deleted Project" });
 }

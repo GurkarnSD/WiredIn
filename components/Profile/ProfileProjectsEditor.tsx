@@ -2,12 +2,13 @@ import styles from '../styles/Profile/ProfileProjectsEditor.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsLeftRight } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
+import { UserProfile, UserSkill } from '@/types';
 
-export default function ProfileProjectsEditor(params: { user: any, skills: any }) {
+export default function ProfileProjectsEditor(params: { user: UserProfile, skills: UserSkill[] }) {
 
     const { user, skills } = params;
 
-    const currentSkills = skills.map((skill: any) => skill.name);
+    const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
     const [projForm, setProjForm] = useState({
         title: '',
@@ -19,7 +20,6 @@ export default function ProfileProjectsEditor(params: { user: any, skills: any }
         desc: '',
     })
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-    const [error, setError] = useState('');
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setProjForm((prev) => ({
@@ -31,7 +31,12 @@ export default function ProfileProjectsEditor(params: { user: any, skills: any }
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        const skillIds = selectedSkills.map((skill: string) => { return { id: skills.find((s: any) => s.name === skill).id } })
+        const skillIds = selectedSkills.map((skill: string) => {
+            const foundSkill = skills.find((s: UserSkill) => s.name === skill);
+            if (foundSkill) {
+                return { id: foundSkill.id };
+            }
+        });
 
         const project = {
             title: projForm.title,

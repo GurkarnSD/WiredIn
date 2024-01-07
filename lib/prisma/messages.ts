@@ -1,6 +1,8 @@
+import { PrismaClient } from "@prisma/client";
 import { prisma } from "./index";
+import { ChatMessage } from "@/types";
 
-let client: any;
+let client: PrismaClient | undefined;
 
 async function init() {
   if (client) return;
@@ -85,7 +87,10 @@ async function createMessagePrisma(
       });
     }
 
-    createdMessage.attachments = await Promise.all(
+    const createdMessageWithAttachments =
+      createdMessage as unknown as ChatMessage;
+
+    createdMessageWithAttachments.attachments = await Promise.all(
       attachments.map(async (attachment) => {
         const res = await fetch(
           `${process.env.API_URL}/api/image/${attachment}`
@@ -96,7 +101,7 @@ async function createMessagePrisma(
       })
     );
 
-    return createdMessage;
+    return createdMessageWithAttachments;
   } catch (error) {
     throw new Error("Unable To Create Message");
   } finally {

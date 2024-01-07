@@ -1,7 +1,9 @@
+import { PrismaClient } from "@prisma/client";
 import { prisma } from "./index";
 import { randomUUID } from "crypto";
+import { UserProfile } from "@/types";
 
-let client: any;
+let client: PrismaClient | undefined;
 
 async function init() {
   if (client) return;
@@ -18,7 +20,13 @@ async function init() {
   await init();
 })();
 
-async function createUserPrisma(user: any): Promise<boolean> {
+type NewUser = {
+  displayName: string;
+  email: string;
+  password: string;
+};
+
+async function createUserPrisma(user: NewUser): Promise<boolean> {
   try {
     console.log("Creating credentials:");
     // Check if email already exists
@@ -87,10 +95,10 @@ async function createUserPrisma(user: any): Promise<boolean> {
   }
 }
 
-async function deleteUserPrisma(uid: string): Promise<any> {
+async function deleteUserPrisma(uid: string): Promise<UserProfile> {
   try {
     const result = await prisma.user.delete({ where: { uid } });
-    return result;
+    return result as UserProfile;
   } catch (error) {
     throw new Error("Unable To Delete User");
   } finally {
@@ -98,7 +106,7 @@ async function deleteUserPrisma(uid: string): Promise<any> {
   }
 }
 
-async function getUserPrisma(uid: string, name: string): Promise<any> {
+async function getUserPrisma(uid: string, name: string): Promise<UserProfile> {
   console.log("Finding user:", uid);
 
   try {
@@ -110,7 +118,10 @@ async function getUserPrisma(uid: string, name: string): Promise<any> {
           followers: true,
         },
       });
-      return result;
+      if (result === null) {
+        throw new Error("User not found");
+      }
+      return result as UserProfile;
     } else if (name !== "") {
       const result = await prisma.user.findFirst({
         where: { displayName: { contains: name.toLowerCase() } },
@@ -120,7 +131,12 @@ async function getUserPrisma(uid: string, name: string): Promise<any> {
         },
       });
       console.log("Found user:", result);
-      return result;
+      if (result === null) {
+        throw new Error("User not found");
+      }
+      return result as UserProfile;
+    } else {
+      throw new Error("No UID or name provided");
     }
   } catch (error) {
     throw new Error("Unable to find user");
@@ -129,7 +145,16 @@ async function getUserPrisma(uid: string, name: string): Promise<any> {
   }
 }
 
-async function updateUserPrisma(user: any): Promise<any> {
+type UserInfo = {
+  uid: string;
+  title: string;
+  bio: string;
+  github: string;
+  profilePic: string;
+  bannerPic: string;
+};
+
+async function updateUserPrisma(user: UserInfo): Promise<UserProfile> {
   try {
     const data = {
       title: user.title,

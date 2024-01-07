@@ -4,8 +4,9 @@ import ProfileExperience from "./ProfileExperience"
 import ProfileSkills from "./ProfileSkills"
 import ProfileProjects from "./ProfileProjects"
 import ProfileActivity from "./ProfileActivity"
+import { User, UserProfile } from "@/types";
 
-export default function Profile(params: { pageUser: any, user: any }) {
+export default function Profile(params: { pageUser: UserProfile, user: User }) {
 
     const { pageUser, user } = params;
 

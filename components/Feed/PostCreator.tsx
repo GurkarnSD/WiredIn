@@ -5,8 +5,9 @@ import axios from 'axios';
 import styles from '../styles/Feed/Post.module.css';
 import Image from 'next/image';
 import Modal from '../Modal';
+import { User } from '@/types';
 
-export default function PostCreator(params: { user: any }) {
+export default function PostCreator(params: { user: User }) {
     const { user } = params;
 
     const [input, setInput] = useState('');
@@ -41,7 +42,7 @@ export default function PostCreator(params: { user: any }) {
     };
 
     const removeImage = (imageUrl: string) => {
-        var index = images.indexOf(imageUrl);
+        const index = images.indexOf(imageUrl);
         if (index > -1) {
             const newImages = [...images];
             newImages.splice(index, 1);
@@ -50,6 +51,7 @@ export default function PostCreator(params: { user: any }) {
             newImageFiles.splice(index, 1);
             setImageFiles(newImageFiles);
         }
+        setError('');
     }
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -178,7 +180,7 @@ export default function PostCreator(params: { user: any }) {
         <div className={styles.creatorContainer}>
             <div className={styles.postCreatorHeader}>
                 <div className={styles.title}>New Post</div>
-                
+                {error && <div className={styles.error}>{error}</div>}
             </div>
             <form className={styles.form} onSubmit={handleSubmit}>
                 {images.length > 0 &&

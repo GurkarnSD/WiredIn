@@ -11,7 +11,7 @@ export async function GET(req: Request) {
   const uid = searchParams.get("uid");
   const name = searchParams.get("name");
 
-  var res = {};
+  let res = {};
 
   if (uid) {
     res = await getUserPrisma(uid as string, "");

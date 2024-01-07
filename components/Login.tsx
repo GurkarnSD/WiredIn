@@ -6,8 +6,9 @@ import { signIn, signOut } from 'next-auth/react'
 import Image from 'next/image';
 import defaultProfile from '@/assets/defaultProfilePic.png'
 import { useRouter } from 'next/navigation'
+import { User } from '@/types';
 
-export default function Login({ user }: { user: any | null }) {
+export default function Login({ user }: { user: User | null }) {
 
     const { push } = useRouter();
 

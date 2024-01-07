@@ -7,9 +7,11 @@ import { pusherClient } from "@/lib/pusher";
 import Image from "next/image";
 import useSWR from 'swr';
 const fetcher = (url: string) => fetch(url).then(r => r.json());
-import { format, parseISO, isWithinInterval, subDays, isThisYear } from 'date-fns';
+import { format, isWithinInterval, subDays, isThisYear } from 'date-fns';
 import Modal from "./Modal";
 import axios from "axios";
+import { ChatMessage, User, UserChatRoom } from "@/types";
+import { Members } from "pusher-js";
 
 const fetchChatMessages = async (chatRoomId: string) => {
     const response = await fetch(`/api/message?chatRoomId=${chatRoomId}`);
@@ -17,33 +19,43 @@ const fetchChatMessages = async (chatRoomId: string) => {
     return messages;
 }
 
-export default function Messages(params: { user: any }) {
+type ChatUser = {
+    id: string;
+    info: {
+        name: string;
+        userId: string;
+    }
+}
+
+export default function Messages(params: { user: User }) {
 
     const { user } = params;
 
-    const { data: chatRooms, error: chatRoomsError } = useSWR(`/api/chatroom?id=${user.uid}`, fetcher);
+    const { data: chatRooms } = useSWR<UserChatRoom[]>(`/api/chatroom?id=${user.uid}`, fetcher);
 
-    const [chatRoom, setChatRoom] = useState();
+    const [chatRoom, setChatRoom] = useState<UserChatRoom>();
 
-    const [chat, setChat] = useState<any[]>([]);
+    const [chat, setChat] = useState<ChatMessage[]>([]);
     const [message, setMessage] = useState("");
     const [numOnlineUsers, setNumOnlineUsers] = useState(0);
-    const [onlineUsers, setOnlineUsers] = useState([]);
+    const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
     const [mountedChat, setMountedChat] = useState(false);
-    const [groupedChat, setGroupedChat] = useState({});
+    const [groupedChat, setGroupedChat] = useState<Record<string, (ChatMessage & { time: string })[]>>({});
 
-    const ref = useRef();
+    const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        ref.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "end",
-        });
+        if (ref.current) {
+            ref.current.scrollIntoView({
+                behavior: "smooth",
+                block: "end",
+            });
+        }
     }, [chat]);
 
     useEffect(() => {
-        const newGroupedChat = chat.reduce((acc, message) => {
-            const messageDate = parseISO(message.createdAt);
+        const newGroupedChat = chat.reduce((acc: { [key: string]: any[] }, message) => {
+            const messageDate = message.createdAt;
             let date;
             if (isWithinInterval(messageDate, { start: subDays(new Date(), 7), end: new Date() })) {
                 date = format(messageDate, 'EEEE');
@@ -71,21 +83,21 @@ export default function Messages(params: { user: any }) {
 
     useEffect(() => {
         if (chatRoom) {
-            var channel = pusherClient.subscribe(`presence-${chatRoom.uid}`);
-            channel.bind('incoming-message', (data: any) => {
+            const channel = pusherClient.subscribe(`presence-${chatRoom.uid}`);
+            channel.bind('incoming-message', (data: ChatMessage) => {
                 setChat((chat) => [...chat, data]);
             });
 
-            channel.bind('pusher:subscription_succeeded', (members: any) => {
+            channel.bind('pusher:subscription_succeeded', (members: Members) => {
                 setNumOnlineUsers(members.count);
             });
 
-            channel.bind('pusher:member_added', (members: any) => {
+            channel.bind('pusher:member_added', (members: ChatUser) => {
                 setNumOnlineUsers(numOnlineUsers + 1);
                 setOnlineUsers((onlineUsers) => [...onlineUsers, members.id]);
             });
 
-            channel.bind('pusher:member_removed', (members: any) => {
+            channel.bind('pusher:member_removed', (members: ChatUser) => {
                 setNumOnlineUsers(numOnlineUsers - 1);
                 setOnlineUsers(onlineUsers.filter((userId) => userId !== members.id));
             })
@@ -122,7 +134,7 @@ export default function Messages(params: { user: any }) {
     };
 
     const removeImage = (imageUrl: string) => {
-        var index = images.indexOf(imageUrl);
+        const index = images.indexOf(imageUrl);
         if (index > -1) {
             const newImages = [...images];
             newImages.splice(index, 1);
@@ -233,8 +245,8 @@ export default function Messages(params: { user: any }) {
                     <FontAwesomeIcon icon={faComment} className={styles.icon} />Messages
                 </div>
                 <div className={styles.chatRooms}>
-                    {chatRooms?.map((chatRoom: any, index: number) => {
-                        const chatRoomUser = chatRoom.users.filter((userInfo: any) => userInfo.uid !== user.uid)[0];
+                    {chatRooms?.map((chatRoom: UserChatRoom, index: number) => {
+                        const chatRoomUser = chatRoom.users.filter((userInfo: { uid: string }) => userInfo.uid !== user.uid)[0];
                         return (
                             <div key={index} className={styles.recipient} onClick={() => setChatRoom(chatRoom)}>
                                 <Image className={styles.recipientImage} src={chatRoomUser.profilePic} alt="Recipient Profile Picture" width={50} height={50} />
@@ -245,7 +257,7 @@ export default function Messages(params: { user: any }) {
                 </div>
             </div>
             <div className={styles.messenger}>
-                {chatRoom &&
+                {chatRoom?.users &&
                     <div className={styles.messageHeader}>
                         <div className={styles.messengerHeaderInfo}>
                             <div className={styles.userInfo}>
@@ -260,10 +272,10 @@ export default function Messages(params: { user: any }) {
                     </div>
                 }
                 <div className={styles.messengerBody}>
-                    {Object.entries(groupedChat).map(([date, messages], index) => (
+                    {Object.entries(groupedChat).map(([date, messages]: [string, (ChatMessage & { time: string })[]], index: number) => (
                         <div key={index}>
                             <div className={styles.date}>{date}</div>
-                            {messages.map((message, i) => (
+                            {messages.map((message: ChatMessage & { time: string }, i: number) => (
                                 <div key={i} className={message.userId === user.uid ? styles.sentMessage : styles.receivedMessage} >
                                     {message.attachments && message.attachments.length > 0 && (
                                         <div className={styles.attachments}>
