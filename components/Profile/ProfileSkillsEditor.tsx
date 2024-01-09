@@ -6,9 +6,9 @@ import { useState } from 'react'
 import Modal from '../Modal';
 import { UserProfile, UserSkill } from '@/types';
 
-export default function ProfileSkillsEditor(params: { user: UserProfile, skills: UserSkill[] }) {
+export default function ProfileSkillsEditor(params: { user: UserProfile, skills: UserSkill[], skillOptions: { skill: string }[] }) {
 
-    const { user, skills } = params;
+    const { user, skills, skillOptions } = params;
 
     const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
@@ -39,29 +39,18 @@ export default function ProfileSkillsEditor(params: { user: UserProfile, skills:
 
             {addSkillOpen && (
                 <Modal isOpen={addSkillOpen} onClose={() => setAddSkillOpen(false)}>
-                    <AddSkillMenu uid={user.uid} controlModal={setAddSkillOpen} skills={currentSkills} />
+                    <AddSkillMenu uid={user.uid} controlModal={setAddSkillOpen} skills={currentSkills} skillOptions={skillOptions} />
                 </Modal>
             )}
         </div>
     )
 }
 
-function AddSkillMenu(params: { uid: string, controlModal: (toggle: boolean) => void, skills: string[] }) {
+function AddSkillMenu(params: { uid: string, controlModal: (toggle: boolean) => void, skills: string[], skillOptions: { skill: string }[] }) {
 
-    const { uid, controlModal, skills } = params;
+    const { uid, controlModal, skills, skillOptions } = params;
 
-    const skillsList = [
-        'JavaScript', 'TypeScript', 'Python', 'Java', 'C#', 'C++', 'Ruby', 'PHP', 'Swift', 'Kotlin',
-        'React', 'Angular', 'Vue.js', 'Node.js', 'Express.js', 'Django', 'Flask', 'Ruby on Rails',
-        'GraphQL', 'REST API', 'SQL', 'NoSQL', 'MongoDB', 'Firebase', 'PostgreSQL', 'MySQL',
-        'HTML5', 'CSS3', 'Sass', 'Less', 'Webpack', 'Babel', 'Jest', 'Testing Library',
-        'Redux', 'Mobx', 'State Management', 'Responsive Design', 'UI/UX Design',
-        'Git', 'GitHub', 'CI/CD', 'Docker', 'Kubernetes',
-        'AWS', 'Azure', 'Google Cloud', 'Serverless', 'Microservices',
-        'OAuth', 'Web Security', 'PWA', 'Web Accessibility',
-        'Machine Learning', 'TensorFlow', 'PyTorch', 'NLP',
-        'Blockchain', 'Solidity', 'Cybersecurity',
-    ].filter(skill => !skills.includes(skill));
+    const skillsList = skillOptions.map((skill: { skill: string }) => skill.skill).filter((skill: string) => !skills.includes(skill));
 
     const [inputValue, setInputValue] = useState('');
     const [selectedSkill, setSelectedSkill] = useState('');
@@ -92,7 +81,7 @@ function AddSkillMenu(params: { uid: string, controlModal: (toggle: boolean) => 
             learnedIn: learnedIn,
         };
 
-        const res = await fetch('/api/profile/skills', {
+        const res = await fetch('/api/profile/skills/user', {
             method: "POST",
             body: JSON.stringify({
                 skill: skill,

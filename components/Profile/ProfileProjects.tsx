@@ -20,7 +20,7 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
 
     const { pageUser, user } = params;
 
-    const { data: skillsData } = useSWR(`/api/profile/skills/?uid=${pageUser.uid}`, fetcher)
+    const { data: skillsData } = useSWR(`/api/profile/skills/user/?uid=${pageUser.uid}`, fetcher)
 
     const { data: projectsData } = useSWR(`/api/profile/projects/?uid=${pageUser.uid}`, fetcher)
 

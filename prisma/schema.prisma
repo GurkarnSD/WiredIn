@@ -64,6 +64,7 @@ model User {
   experiences Experience[]
   projects    Project[]
   posts       Post[]
+  contracts  Contract[]  
   likedPosts  Post[]       @relation("LikedPosts")
   comments    Comment[]    @relation("PostComments")
   responses   Response[]   @relation("CommentResponses")
@@ -71,10 +72,12 @@ model User {
   likedResponses Response[] @relation("ResponseLikes")
   messages   Message[]    @relation("UserMessages")
   chatRooms  ChatRoom[]   @relation("ChatRoomUsers")
+  contractApps Contract[] @relation("ContractApplicants")
 }
 
 model Skill {
   id          Int          @id @default(autoincrement())
+  skill       SkillOption  @relation(fields: [name], references: [skill])
   name        String
   learnedIn   Int
   createdAt   DateTime     @default(now())
@@ -85,6 +88,7 @@ model Skill {
   projects    Project[]
 
   @@index([userId])
+  @@index([name])
 }
 
 model Experience {
@@ -211,4 +215,32 @@ model Attachment {
   messageId Int
 
   @@index([messageId])
+}
+
+model Contract {
+  id        Int      @id @default(autoincrement())
+  uid       String   @unique @default(uuid())
+  title     String
+  description String? @db.VarChar(1000)
+  location  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [uid], onDelete: Cascade)
+  userId    String
+  skills    SkillOption[] @relation("ContractSkills")
+  tags      TagOption[]   @relation("ContractTags")
+  applicants User[]  @relation("ContractApplicants")
+
+  @@index([userId])
+}
+
+model SkillOption {
+  skill      String    @id
+  contracts Contract[] @relation("ContractSkills")
+  skills    Skill[]
+}
+
+model TagOption {
+  tag      String   @id
+  contracts Contract[] @relation("ContractTags")
 }

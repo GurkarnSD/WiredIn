@@ -18,6 +18,17 @@ async function init() {
   await init();
 })();
 
+async function getSkillOptionsPrisma() {
+  try {
+    const skillOptions = await prisma.skillOption.findMany();
+    return skillOptions;
+  } catch (error) {
+    throw new Error("Unable To Get Skill Options");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function getSkillsPrisma(userId: string) {
   try {
     const skills = await prisma.skill.findMany({
@@ -38,7 +49,7 @@ async function addSkillPrisma(
   try {
     await prisma.skill.create({
       data: {
-        name: skill.name,
+        skill: { connect: { skill: skill.name } },
         learnedIn: skill.learnedIn,
         user: { connect: { uid: userId } },
       },
@@ -64,4 +75,9 @@ async function deleteSkillPrisma(id: string) {
   }
 }
 
-export { getSkillsPrisma, addSkillPrisma, deleteSkillPrisma };
+export {
+  getSkillOptionsPrisma,
+  getSkillsPrisma,
+  addSkillPrisma,
+  deleteSkillPrisma,
+};

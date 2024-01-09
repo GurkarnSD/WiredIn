@@ -42,6 +42,7 @@ type UserProfile = {
 
 type UserSkill = {
   id: number;
+  skill?: SkillOption;
   name: string;
   learnedIn: number;
   createdAt: Date;
@@ -143,6 +144,32 @@ type ChatMessage = {
   attachments: string[];
 };
 
+type UserContract = {
+  id: number;
+  uid: string;
+  title: string;
+  description?: string | null;
+  location?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  user: UserProfile;
+  userId: string;
+  skills: SkillOption[];
+  tags: TagOption[];
+  applicants?: UserProfile[];
+};
+
+type SkillOption = {
+  skill: string;
+  contracts?: UserContract[];
+  skills?: UserSkill[];
+};
+
+type TagOption = {
+  tag: string;
+  contracts?: UserContract[];
+};
+
 export type {
   User,
   UserProfile,
@@ -154,4 +181,7 @@ export type {
   CommentResponse,
   UserChatRoom,
   ChatMessage,
+  UserContract,
+  SkillOption,
+  TagOption,
 };

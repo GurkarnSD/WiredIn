@@ -10,7 +10,7 @@ import { User, UserProfile, UserSkill } from '@/types';
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
 const deleteSkill = async (id: number) => {
-    const res = await fetch(`/api/profile/skills/?id=${id}`, { method: 'DELETE' })
+    const res = await fetch(`/api/profile/skills/user/?id=${id}`, { method: 'DELETE' })
 
     return res.json();
 }
@@ -19,9 +19,9 @@ export default function ProfileSkills(params: { pageUser: UserProfile, user: Use
 
     const { pageUser, user } = params;
 
-    const { data } = useSWR(`/api/profile/skills/?uid=${pageUser.uid}`, fetcher)
+    const { data: userSkills } = useSWR(`/api/profile/skills/user/?uid=${pageUser.uid}`, fetcher)
 
-    const skills = data;
+    const { data: skillOptions } = useSWR(`/api/profile/skills`, fetcher)
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditSkills, setIsEditSkills] = useState(false);
@@ -48,7 +48,7 @@ export default function ProfileSkills(params: { pageUser: UserProfile, user: Use
             </div>
 
             <div className={styles.body}>
-                {skills?.map((skill: UserSkill) => (
+                {userSkills?.map((skill: UserSkill) => (
                     <div className={styles.skill} key={skill.id}>
                         <div>
                             <div className={styles.skillName}>{skill.name}</div>
@@ -61,7 +61,7 @@ export default function ProfileSkills(params: { pageUser: UserProfile, user: Use
 
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
-                    <ProfileSkillsEditor user={pageUser} skills={skills} />
+                    <ProfileSkillsEditor user={pageUser} skills={userSkills} skillOptions={skillOptions} />
                 </Modal>
             )}
         </div>
