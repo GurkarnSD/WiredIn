@@ -1,0 +1,324 @@
+.container {
+  width: 60vw;
+}
+
+.header {
+  margin-top: 50px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.searchIcon {
+  width: 20px;
+  height: 20px;
+  color: #000;
+}
+
+.searchBar {
+  background-color: #fff;
+  height: 60px;
+  border-radius: 10px;
+  width: 500px;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.searchInput {
+  margin-left: 20px;
+  margin-right: 15px;
+  border: none;
+  outline: none;
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  background-color: transparent;
+  color: #000;
+}
+
+.searchButton {
+  background-color: #0096ff;
+  height: 60px;
+  width: 200px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #000;
+}
+
+.title2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #000;
+}
+
+.contractsButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+  height: 40px;
+  width: 250px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.contractCreator {
+  width: 800px;
+  height: 600px;
+  border-radius: 20px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+}
+
+.contractForm {
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.contractFormRow {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.inputContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.inputHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.inputTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #606060;
+}
+
+.input {
+  height: 40px;
+  background-color: #d9d9d9;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  color: #000000;
+  font-weight: 600;
+}
+
+.selectionInput {
+  max-width: 100%;
+  height: 120px;
+  background-color: #d9d9d9;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  color: #000000;
+  font-weight: 600;
+  display: flex;
+  word-wrap: break-word;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  color: #000;
+}
+
+.desc {
+  width: 100%;
+  height: 90%;
+  background-color: #d9d9d9;
+  border: none;
+  border-radius: 10px;
+  color: #000000;
+  resize: none;
+  font-weight: 600;
+  padding: 10px;
+}
+
+.largeInputContainer {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.contractFormFooter {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submit {
+  background-color: #0096ff;
+  height: 40px;
+  width: 200px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.selectOptionsMenu {
+  width: 580px;
+  height: 360px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+}
+
+.largeInput {
+  height: 60px;
+  background-color: #d9d9d9;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  color: #000000;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.selectionBox {
+  margin-top: 10px;
+  height: 150px;
+  background-color: #ededed;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  color: #000000;
+  font-size: 25px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow-y: auto;
+}
+
+.selectionBox::-webkit-scrollbar {
+  width: 10px;
+}
+
+.selectionBox::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 5px;
+}
+
+.selectionBox::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.selectionBox::-webkit-scrollbar-track {
+  background-color: #d9d9d9;
+  border-radius: 5px;
+}
+
+.selectionBox {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #ededed;
+}
+
+.selectionBox::-moz-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 5px;
+}
+
+.selectionBox::-moz-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.optionFooter {
+  display: flex;
+  justify-content: space-between;
+}
+
+.customCheckbox {
+  display: none;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding-left: 25px;
+  cursor: pointer;
+}
+
+.checkboxCustom {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  transition: border-color 0.3s;
+}
+
+.customCheckbox:checked + .checkboxCustom {
+  border-color: #007bff;
+  background-color: #007bff;
+}
+
+.customCheckbox:checked + .checkboxCustom::after {
+  content: "\2713";
+  display: block;
+  position: absolute;
+  left: 3px;
+  bottom: -2px;
+  color: white;
+  font-size: 24px;
+}
+
+.selectButton {
+  width: 120px;
+  height: 40px;
+  background-color: #0096ff;
+  border-radius: 10px;
+  border: none;
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  justify-self: flex-end;
+}
+
+.searchResults {
+  margin-top: 20px;
+}

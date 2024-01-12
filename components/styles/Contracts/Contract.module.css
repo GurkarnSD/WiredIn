@@ -1,0 +1,204 @@
+.contractContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
+}
+
+.contract {
+  padding: 20px;
+  gap: 20px;
+  display: flex;
+  width: 100%;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.contractInfo {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.contractInfoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.userImage {
+  border-radius: 50px;
+}
+
+.userName {
+  font-size: 24px;
+  color: #000;
+}
+
+.contractTitle {
+  font-size: 24px;
+  color: #000;
+}
+
+.contractLocation {
+  font-size: 14px;
+  color: #909090;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+  color: #000;
+  font-size: 20px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+}
+
+.contractSkills {
+  margin-top: 5px;
+  display: flex;
+  color: #000;
+  font-weight: 500;
+}
+
+.contractDescription {
+  color: #000;
+  margin-top: 10px;
+  word-wrap: break-word;
+}
+
+.contractInfoFooter {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.contractTags {
+  display: flex;
+  gap: 10px;
+  color: #000;
+  font-weight: 500;
+}
+
+.tag {
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #0096ff;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.applicantsContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  max-height: 600px;
+  max-width: 700px;
+  border-radius: 25px;
+  padding: 20px;
+}
+
+.applicantsHeader {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 24px;
+  color: #000;
+}
+
+.applicantsBody {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.applicant {
+  display: flex;
+  width: 320px;
+  align-items: center;
+  gap: 5px;
+}
+
+.applicantInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.applicantSkills {
+  color: #000;
+}
+
+.poor {
+  color: #ff0000;
+  font-size: 16px;
+}
+
+.partial {
+  color: #ff9900;
+  font-size: 16px;
+}
+
+.adequate {
+  color: #ffff00;
+  font-size: 16px;
+}
+
+.excellent {
+  color: #00ff00;
+  font-size: 16px;
+}
+
+.view {
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  height: 30px;
+  width: 60px;
+  border-radius: 10px;
+  background-color: #0096ff;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.deleteIcon {
+  color: #000;
+  cursor: pointer;
+  margin: auto;
+  font-size: 28px;
+}
+
+.deleteIcon:hover {
+  cursor: pointer;
+  color: #e30000;
+}
