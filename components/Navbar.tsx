@@ -23,9 +23,6 @@ export default async function Navbar() {
                             <Link className={styles.link} href="/feed">
                                 Feed
                             </Link>
-                            <Link className={styles.link} href="/forums">
-                                Forums
-                            </Link>
                             <Link className={styles.link} href="/contracts">
                                 Contracts
                             </Link>

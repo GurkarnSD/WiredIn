@@ -14,7 +14,7 @@ const fetchProfileImage = async (profileKey: string) => {
     return profileURL;
 }
 
-export default function NavbarDropdown({ user }: { user: User | null }) {
+export default function NavbarDropdown({ user, lightMode }: { user: User | null, lightMode?: boolean }) {
 
     const [profilePic, setProfilePic] = useState('')
 
@@ -50,21 +50,21 @@ export default function NavbarDropdown({ user }: { user: User | null }) {
             {dropdownVisible && user && (
                 <div className={styles.dropdownContainer} ref={dropdownRef}>
                     <div className={styles.container}>
-                        <div className={styles.NavbarDropdown}>
+                        <div className={`${styles.NavbarDropdown}  ${lightMode ? styles.lightMode : ''}`}>
                             <div className={styles.displayName}>{user?.displayName}</div>
                             <div className={styles.options}>
-                                <div className={styles.option}>
+                                <div className={`${styles.option}  ${lightMode ? styles.lightMode : ''}`}>
                                     <Link href={`/profile/${user.displayName}`} >
                                         <FontAwesomeIcon icon={faUser} className={styles.icon} />Profile
                                     </Link>
                                 </div>
-                                <div className={styles.option}>
+                                <div className={`${styles.option}  ${lightMode ? styles.lightMode : ''}`}>
                                     <Link href='/messages'>
                                         <FontAwesomeIcon icon={faComment} className={styles.icon} />Messages
                                     </Link>
                                 </div>
-                                <div className={styles.option}>
-                                    <Link href='/' >
+                                <div className={`${styles.option}  ${lightMode ? styles.lightMode : ''}`}>
+                                    <Link href='/settings' >
                                         <FontAwesomeIcon icon={faGear} className={styles.icon} />Settings
                                     </Link>
                                 </div>

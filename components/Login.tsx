@@ -55,7 +55,7 @@ export default function Login({ user }: { user: User | null }) {
                     break;
             }
         } else {
-            push('/');
+            push('/feed');
         }
     }
 
