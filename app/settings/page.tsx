@@ -1,0 +1,20 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route"
+import Navbar from '@/components/Navbar';
+import { UserSession } from "@/types";
+import Settings from "@/components/Settings";
+
+export default async function SettingsPage() {
+
+    const session = (await getServerSession(authOptions)) as UserSession;
+
+    return (
+        <>
+            {/* @ts-expect-error Async Server Component */}
+            <Navbar />
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Settings user={session.user} />
+            </div>
+        </>
+    )
+}

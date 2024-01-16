@@ -26,6 +26,90 @@ type NewUser = {
   password: string;
 };
 
+async function checkLastNameChangePrisma(name: string): Promise<boolean> {
+  try {
+    const result = await prisma.nameChange.findFirst({
+      where: { name },
+    });
+
+    if (result === null) {
+      return true;
+    }
+
+    const daysSinceLastChange =
+      new Date().getTime() - new Date(result.updatedAt).getTime();
+    const minimumDays = 30 * 24 * 60 * 60 * 1000;
+
+    if (daysSinceLastChange > minimumDays) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw new Error("Unable to check last name change");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function checkDisplayNamePrisma(name: string): Promise<boolean> {
+  try {
+    const result = await prisma.credentials.findUnique({
+      where: { displayName: name },
+    });
+
+    if (result === null) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    throw new Error("Unable to check display name");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function changeDisplayNamePrisma(oldName: string, newName: string) {
+  const isDisplayNameAvailable = await checkDisplayNamePrisma(newName);
+  const isNameChangeAvailable = await checkLastNameChangePrisma(oldName);
+
+  if (!isDisplayNameAvailable) {
+    throw new Error("Display name is already in use");
+  }
+
+  if (!isNameChangeAvailable) {
+    throw new Error("Name change is not available");
+  }
+
+  try {
+    const result = await prisma.$transaction([
+      prisma.nameChange.upsert({
+        where: { name: oldName },
+        create: {
+          name: newName,
+          credentials: { connect: { displayName: oldName } },
+        },
+        update: { name: newName },
+      }),
+      prisma.credentials.update({
+        where: { displayName: oldName },
+        data: { displayName: newName },
+      }),
+      prisma.user.update({
+        where: { displayName: oldName },
+        data: { displayName: newName },
+      }),
+    ]);
+
+    return result;
+  } catch (error) {
+    throw new Error("Unable to change display name");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function createUserPrisma(user: NewUser): Promise<boolean> {
   try {
     console.log("Creating credentials:");
@@ -176,4 +260,12 @@ async function updateUserPrisma(user: UserInfo): Promise<UserProfile> {
   }
 }
 
-export { createUserPrisma, deleteUserPrisma, getUserPrisma, updateUserPrisma };
+export {
+  checkLastNameChangePrisma,
+  changeDisplayNamePrisma,
+  checkDisplayNamePrisma,
+  createUserPrisma,
+  deleteUserPrisma,
+  getUserPrisma,
+  updateUserPrisma,
+};

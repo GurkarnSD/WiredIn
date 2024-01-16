@@ -20,6 +20,7 @@ model Credentials {
   updatedAt   DateTime @updatedAt
   ActivateToken ActivateToken[]
   ResetToken    ResetToken[]
+  NameChange   NameChange[]
 }
 
 model ActivateToken {
@@ -40,6 +41,17 @@ model ResetToken {
   resetAt       DateTime?
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
+  credentials   Credentials  @relation(fields: [credsId], references: [id], onDelete: Cascade)
+  credsId Int
+
+  @@index([credsId])
+}
+
+model NameChange {
+  id            Int          @id @default(autoincrement())
+  name          String       @unique
+  updatedAt     DateTime     @updatedAt
+  createdAt     DateTime     @default(now())
   credentials   Credentials  @relation(fields: [credsId], references: [id], onDelete: Cascade)
   credsId Int
 

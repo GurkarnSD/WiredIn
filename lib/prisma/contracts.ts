@@ -83,7 +83,12 @@ async function getContractsPrisma(userId: string) {
   try {
     const contracts = await prisma.contract.findMany({
       where: { NOT: { userId } },
-      include: { user: true, skills: true, tags: true },
+      include: {
+        user: true,
+        skills: true,
+        tags: true,
+        applicants: true,
+      },
     });
 
     const imageCache: Record<string, string> = {};

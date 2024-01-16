@@ -57,7 +57,8 @@ export default function Contract(params: { contract: UserContract, user: User })
                         </div>
                         {user.uid === contract.user.uid ?
                             <button className={styles.button} onClick={() => setShowApplicants(true)}>View Applicants</button>
-                            : <button className={styles.button} onClick={applyToContract}>Apply</button>}
+                            :
+                            contract.applicants?.find(applicant => applicant.uid === user.uid) ? <button className={styles.button} disabled>Applied</button> : <button className={styles.button} onClick={applyToContract}>Apply</button>}
                     </div>
                     {contract.skills.length > 0 && <div className={styles.contractSkills}>
                         <h4>Skills:</h4>&nbsp;{contract.skills.map(skill => skill.skill).join(', ')}
