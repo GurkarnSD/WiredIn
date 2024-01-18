@@ -58,7 +58,7 @@
   margin-left: 10px;
   font-size: 30px;
   font-weight: 500;
-  width: 25vw;
+  width: 500px;
 }
 
 .mainButtons {
@@ -556,18 +556,6 @@
   object-fit: cover;
 }
 
-.med1Image {
-  width: 400px;
-  height: 400px;
-  object-fit: cover;
-}
-
-.med2Image {
-  width: 190px;
-  height: 190px;
-  object-fit: cover;
-}
-
 .smallImage {
   width: 150px;
   height: 150px;
@@ -580,11 +568,101 @@
   justify-content: center;
 }
 
+.wave {
+  background-color: #2d2d2d;
+}
+
 @keyframes scroll {
   0% {
     transform: translateY(0);
   }
   100% {
     transform: translateY(-100%);
+  }
+}
+
+@media screen and (max-width: 1550px) {
+  .profileShowcase {
+    width: 790px;
+  }
+
+  .profileBox {
+    width: 370px;
+  }
+}
+
+@media screen and (max-width: 1240px) {
+  .mainHook {
+    font-size: 6vw;
+  }
+
+  .mainSub {
+    width: 50vw;
+    font-size: 2vw;
+  }
+}
+
+@media screen and (max-width: 1050px) {
+  .additionalInfo {
+    padding-left: 8px;
+    align-items: flex-start;
+  }
+
+  .contentTitle {
+    width: 85vw;
+    word-wrap: break-word;
+  }
+
+  .contentSubtitle {
+    width: 75vw;
+    word-wrap: break-word;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .profileBox {
+    width: 100%;
+  }
+
+  .profileShowcase {
+    width: 90%;
+  }
+
+  .experienceInfo {
+    font-size: smaller;
+  }
+}
+
+@media screen and (max-width: 775px) {
+  .mainHook {
+    font-size: 10vw;
+  }
+
+  .mainSub {
+    font-size: 4vw;
+  }
+
+  .mainButton {
+    text-align: center;
+    font-size: 4vw;
+  }
+
+  .postContainer {
+    width: 100%;
+  }
+
+  .largeImage {
+    width: 60vw;
+    height: 60vw;
+  }
+
+  .medImage {
+    width: 25vw;
+    height: 25vw;
+  }
+
+  .smallImage {
+    width: 6vw;
+    height: 6vw;
   }
 }

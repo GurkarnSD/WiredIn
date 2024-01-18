@@ -17,9 +17,9 @@ export default async function Navbar() {
                         WiredIn
                     </Link>
                 </div>
-                <div className={styles.links}>
+                <div className={styles.navigation}>
                     {session &&
-                        <>
+                        <div className={styles.links}>
                             <Link className={styles.link} href="/feed">
                                 Feed
                             </Link>
@@ -29,12 +29,11 @@ export default async function Navbar() {
                             <Link className={styles.link} href="/jobs">
                                 Jobs
                             </Link>
-                        </>
+                        </div>
                     }
                     <NavbarDropdown user={session?.user} />
                 </div>
-
-            </div >
+            </div>
         </>
     )
 }

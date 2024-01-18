@@ -2,7 +2,7 @@
 import styles from './styles/NavbarDropdown.module.css'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faComment, faGear } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faComment, faGear, faFileContract, faMoneyBill, faShare } from '@fortawesome/free-solid-svg-icons'
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { signOut } from 'next-auth/react';
@@ -14,7 +14,7 @@ const fetchProfileImage = async (profileKey: string) => {
     return profileURL;
 }
 
-export default function NavbarDropdown({ user, lightMode }: { user: User | null, lightMode?: boolean }) {
+export default function NavbarDropdown({ user, lightMode, nav = false }: { user: User | null, lightMode?: boolean, nav?: boolean }) {
 
     const [profilePic, setProfilePic] = useState('')
 
@@ -58,7 +58,22 @@ export default function NavbarDropdown({ user, lightMode }: { user: User | null,
                                         <FontAwesomeIcon icon={faUser} className={styles.icon} />Profile
                                     </Link>
                                 </div>
-                                <div className={`${styles.option}  ${lightMode ? styles.lightMode : ''}`}>
+                                <div className={`${styles.option} ${nav ? styles.links : styles.hidden} ${lightMode ? styles.lightMode : ''}`}>
+                                    <Link href={'/feed'} >
+                                        <FontAwesomeIcon icon={faShare} className={styles.icon} />Feed
+                                    </Link>
+                                </div>
+                                <div className={`${styles.option} ${nav ? styles.links : styles.hidden} ${lightMode ? styles.lightMode : ''}`}>
+                                    <Link href={'/contracts'} >
+                                        <FontAwesomeIcon icon={faFileContract} className={styles.icon} />Contracts
+                                    </Link>
+                                </div>
+                                <div className={`${styles.option} ${nav ? styles.links : styles.hidden} ${lightMode ? styles.lightMode : ''}`}>
+                                    <Link href={'/jobs'} >
+                                        <FontAwesomeIcon icon={faMoneyBill} className={styles.icon} />Jobs
+                                    </Link>
+                                </div>
+                                <div className={`${styles.option} ${lightMode ? styles.lightMode : ''}`}>
                                     <Link href='/messages'>
                                         <FontAwesomeIcon icon={faComment} className={styles.icon} />Messages
                                     </Link>
