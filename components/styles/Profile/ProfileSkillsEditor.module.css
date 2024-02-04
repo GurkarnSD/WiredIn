@@ -135,6 +135,7 @@
 .skillFooter {
   display: flex;
   justify-content: space-between;
+  gap: 10px;
 }
 
 .text {
@@ -212,4 +213,14 @@
 .skillName {
   font-size: 22px;
   font-weight: 600;
+}
+
+@media screen and (max-width: 1200px) {
+  .container {
+    width: 100%;
+  }
+
+  .addSkillMenu {
+    width: 100%;
+  }
 }

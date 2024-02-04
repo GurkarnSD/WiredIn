@@ -118,3 +118,9 @@
   cursor: pointer;
   color: #e30000;
 }
+
+@media screen and (max-width: 1200px) {
+  .container {
+    width: 100%;
+  }
+}

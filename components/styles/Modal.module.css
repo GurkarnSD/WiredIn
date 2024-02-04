@@ -22,9 +22,9 @@
 }
 
 .icons {
-  position: absolute;
-  top: 100px;
-  left: 100px;
+  margin-right: auto;
+  margin-left: 10%;
+  margin-bottom: 20px;
 }
 
 .icon {

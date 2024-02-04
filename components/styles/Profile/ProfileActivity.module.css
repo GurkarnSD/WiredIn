@@ -18,3 +18,9 @@
   font-weight: 800;
   color: #000000;
 }
+
+@media screen and (max-width: 1200px) {
+  .container {
+    width: 100%;
+  }
+}

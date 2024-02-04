@@ -87,6 +87,10 @@ export default function ProfileProjectsEditor(params: { user: UserProfile, skill
                                 <div className={styles.inputTitle}>Deployment Link</div>
                                 <input className={styles.input} name='deployment' onChange={handleChange} />
                             </div>
+                            <div className={`${styles.inputContainer} ${styles.sourceCodeLeft}`}>
+                                <div className={styles.inputTitle}>Source Code Link</div>
+                                <input className={styles.input} name='source' onChange={handleChange} />
+                            </div>
                         </div>
 
                         <div className={styles.formGroupRight}>
@@ -119,7 +123,7 @@ export default function ProfileProjectsEditor(params: { user: UserProfile, skill
                                     </label>
                                 </div>
                             </div>
-                            <div className={styles.inputContainer}>
+                            <div className={`${styles.inputContainer} ${styles.sourceCodeRight}`}>
                                 <div className={styles.inputTitle}>Source Code Link</div>
                                 <input className={styles.input} name='source' onChange={handleChange} />
                             </div>

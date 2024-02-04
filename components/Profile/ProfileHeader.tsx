@@ -93,7 +93,7 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
 
     return (
         <div className={styles.container}>
-            <Image className={styles.banner} src={headerImages.bannerURL} alt={""} height={240} width={1152} />
+            <Image className={styles.banner} src={headerImages.bannerURL} alt={""} height={0} width={0} unoptimized />
             <div className={styles.profile}>
                 <Image className={styles.profilePicture} src={headerImages.profileURL} alt={""} width={224} height={224} />
 

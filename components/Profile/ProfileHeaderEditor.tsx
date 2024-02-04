@@ -141,8 +141,9 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
                         src={profilePic}
                         alt=""
                         onClick={handleProfilePicClick}
-                        width={150}
-                        height={150}
+                        width={0}
+                        height={0}
+                        unoptimized
                     />
                     <input
                         type="file"
@@ -157,8 +158,9 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
                         src={banner}
                         alt=""
                         onClick={handleBannerClick}
-                        width={576}
-                        height={160}
+                        width={0}
+                        height={0}
+                        unoptimized
                     />
                     <input
                         type="file"
