@@ -26,3 +26,9 @@
 .posts {
   width: 100%;
 }
+
+@media screen and (max-width: 775px) {
+  .container {
+    width: 100%;
+  }
+}

@@ -132,73 +132,75 @@ export default function Post(params: { data: UserPostWithStats, user: User }) {
     }
 
     return (
-        <div className={styles.postContainer} onClick={() => router.push(`/post/${data.uid}`)}>
-            <div className={styles.postHeader}>
-                <div className={styles.postHeaderLeft}>
-                    <Image className={styles.postProfile} src={data.user.profilePic} alt={""} height={50} width={50} onClick={(e) => { e.stopPropagation(); router.push(`/profile/${data.user.displayName}`) }} />
-                    <div className={styles.postInfo}>
-                        <div className={styles.displayName} onClick={(e) => { e.stopPropagation(); router.push(`/profile/${data.user.displayName}`) }}>{data.user.displayName}</div>
-                        <div className={styles.profileTitle}>{data.user.title}</div>
+        <>
+            <div className={styles.postContainer} onClick={() => router.push(`/post/${data.uid}`)}>
+                <div className={styles.postHeader}>
+                    <div className={styles.postHeaderLeft}>
+                        <Image className={styles.postProfile} src={data.user.profilePic} alt={""} height={50} width={50} onClick={(e) => { e.stopPropagation(); router.push(`/profile/${data.user.displayName}`) }} />
+                        <div className={styles.postInfo}>
+                            <div className={styles.displayName} onClick={(e) => { e.stopPropagation(); router.push(`/profile/${data.user.displayName}`) }}>{data.user.displayName}</div>
+                            <div className={styles.profileTitle}>{data.user.title}</div>
+                        </div>
+                    </div>
+                    <div className={styles.postHeaderRight}>
+                        <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(data.createdAt)}</div>
                     </div>
                 </div>
-                <div className={styles.postHeaderRight}>
-                    <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(data.createdAt)}</div>
-                </div>
-            </div>
-            <div className={styles.postBody} onClick={(e) => e.stopPropagation()}>
-                <div className={styles.text}>{data.text}</div>
-                <div className={styles.images}>
-                    {data.images.length > 0 &&
-                        <div className={`${styles.imagesContainer} ${styles[calculateImageGrid(data.images)]}`}>
-                            <div className={styles.imageContainer} onClick={() => openImageModal(data.images[0])}>
-                                <Image className={`${styles.image} ${calculateImageClass(data.images, 0)}`} src={data.images[0]} alt={''} width={0} height={0} unoptimized />
+                <div className={styles.postBody} onClick={(e) => e.stopPropagation()}>
+                    <div className={styles.text}>{data.text}</div>
+                    <div className={styles.images}>
+                        {data.images.length > 0 &&
+                            <div className={`${styles.imagesContainer} ${styles[calculateImageGrid(data.images)]}`}>
+                                <div className={styles.imageContainer} onClick={() => openImageModal(data.images[0])}>
+                                    <Image className={`${styles.image} ${calculateImageClass(data.images, 0)}`} src={data.images[0]} alt={''} width={0} height={0} unoptimized />
+                                </div>
+                                <div className={styles.imagesContainer2}>
+                                    {data.images.slice(1).map((image: string, index: number) => {
+                                        return (
+                                            <div key={image} className={styles.imageContainer} onClick={() => openImageModal(image)}>
+                                                <Image className={`${styles.image} ${calculateImageClass(data.images, index + 1)}`} src={image} alt={''} width={0} height={0} unoptimized />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             </div>
-                            <div className={styles.imagesContainer2}>
-                                {data.images.slice(1).map((image: string, index: number) => {
-                                    return (
-                                        <div key={image} className={styles.imageContainer} onClick={() => openImageModal(image)}>
-                                            <Image className={`${styles.image} ${calculateImageClass(data.images, index + 1)}`} src={image} alt={''} width={0} height={0} unoptimized />
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                            {imageModalOpen && selectedImage && (
-                                <Modal isOpen={imageModalOpen} onClose={closeImageModal} closeIcon>
-                                    <div className={styles.modalImageContainer}>
-                                        <Image className={styles.modalImage} src={selectedImage} alt={''} width={0} height={0} sizes="100vw" />
-                                    </div>
-                                </Modal>
-                            )}
-                        </div>
-                    }
+                        }
+                    </div>
                 </div>
-            </div>
-            <div className={styles.postFooter} onClick={(e) => e.stopPropagation()}>
-                <div>
-                    {liked ?
-                        <FontAwesomeIcon className={`${styles.postIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikePostHook(user.uid, data.uid)} />
-                        :
-                        <FontAwesomeIcon className={styles.postIcon} icon={faHeart} onClick={() => likePostHook(user.uid, data.uid)} />
-                    }
-                    <span className={styles.iconCount}>{numLikes}</span>
+                <div className={styles.postFooter} onClick={(e) => e.stopPropagation()}>
+                    <div>
+                        {liked ?
+                            <FontAwesomeIcon className={`${styles.postIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikePostHook(user.uid, data.uid)} />
+                            :
+                            <FontAwesomeIcon className={styles.postIcon} icon={faHeart} onClick={() => likePostHook(user.uid, data.uid)} />
+                        }
+                        <span className={styles.iconCount}>{numLikes}</span>
+                    </div>
+                    <div>
+                        <FontAwesomeIcon className={styles.postIcon} icon={faComment} onClick={() => setCommentsModalOpen(true)} />
+                        <span className={styles.iconCount}>{numComments}</span>
+                    </div>
+                    <div className={styles.postOptions} ref={settingsRef}>
+                        <FontAwesomeIcon className={styles.moreIcon} icon={faEllipsisVertical} onClick={() => setShowPostSettings(!showPostSettings)} />
+                        {showPostSettings && <PostSettings uid={user.uid} postInfo={{ uid: data.user.uid, postId: data.uid }} />}
+                    </div>
                 </div>
-                <div>
-                    <FontAwesomeIcon className={styles.postIcon} icon={faComment} onClick={() => setCommentsModalOpen(true)} />
-                    <span className={styles.iconCount}>{numComments}</span>
-                </div>
-                <div className={styles.postOptions} ref={settingsRef}>
-                    <FontAwesomeIcon className={styles.moreIcon} icon={faEllipsisVertical} onClick={() => setShowPostSettings(!showPostSettings)} />
-                    {showPostSettings && <PostSettings uid={user.uid} postInfo={{ uid: data.user.uid, postId: data.uid }} />}
-                </div>
-            </div>
-            {commentsModalOpen &&
-                <div className={styles.comments} onClick={(e) => e.stopPropagation()}>
-                    <Modal isOpen={commentsModalOpen} onClose={() => setCommentsModalOpen(false)} closeIcon disableClickOff>
-                        <Comments postId={data.uid} user={user} />
-                    </Modal>
-                </div>
-            }
-        </div >
+                {commentsModalOpen &&
+                    <div className={styles.comments} onClick={(e) => e.stopPropagation()}>
+                        <Modal isOpen={commentsModalOpen} onClose={() => setCommentsModalOpen(false)} closeIcon disableClickOff>
+                            <Comments postId={data.uid} user={user} />
+                        </Modal>
+                    </div>
+                }
+            </div >
+            {imageModalOpen && selectedImage && (
+                <Modal isOpen={imageModalOpen} onClose={closeImageModal} closeIcon>
+                    <div className={styles.modalImageContainer}>
+                        <Image className={styles.modalImage} src={selectedImage} alt={''} width={0} height={0} sizes="100vw" />
+                    </div>
+                </Modal>
+            )}
+        </>
     )
 }
 

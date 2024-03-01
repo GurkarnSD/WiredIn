@@ -44,10 +44,14 @@ export default async function FeedPage() {
       {/* @ts-expect-error Async Server Component */}
       <Navbar />
       <div className={styles.container}>
-        {/* @ts-expect-error Async Server Component */}
-        <Connect user={session?.user} />
+        <div className={styles.connect}>
+          {/* @ts-expect-error Async Server Component */}
+          <Connect user={session?.user} />
+        </div>
         <Feed user={session?.user} posts={posts} />
-        <ProfileCard user={session?.user} />
+        <div className={styles.profileCard}>
+          <ProfileCard user={session?.user} />
+        </div>
       </div>
     </>
   )
