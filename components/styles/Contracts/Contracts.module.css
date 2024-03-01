@@ -322,3 +322,24 @@
 .searchResults {
   margin-top: 20px;
 }
+
+@media screen and (max-width: 1200px) {
+  .container {
+    width: 80vw;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .headerRow {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .searchBar {
+    width: 100%;
+  }
+
+  .title {
+    text-align: center;
+  }
+}

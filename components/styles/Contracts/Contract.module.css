@@ -202,3 +202,17 @@
   cursor: pointer;
   color: #e30000;
 }
+
+@media screen and (max-width: 900px) {
+  .contract {
+    flex-direction: column;
+  }
+
+  .contractTags {
+    flex-wrap: wrap;
+  }
+
+  .button {
+    scale: 0.8;
+  }
+}
