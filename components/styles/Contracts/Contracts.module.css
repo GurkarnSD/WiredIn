@@ -342,4 +342,20 @@
   .title {
     text-align: center;
   }
+
+  .contractCreator {
+    min-width: 370px;
+    width: 80vw;
+    height: fit-content;
+  }
+
+  .contractFormRow {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .selectOptionsMenu {
+    min-width: 370px;
+    width: 80vw;
+  }
 }
