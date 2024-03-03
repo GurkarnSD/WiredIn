@@ -18,9 +18,9 @@ async function init() {
   await init();
 })();
 
-async function getMyContractsPrisma(userId: string) {
+async function getMyJobsPrisma(userId: string) {
   try {
-    const contracts = await prisma.contract.findMany({
+    const jobs = await prisma.job.findMany({
       where: { userId },
       include: {
         user: true,
@@ -32,16 +32,14 @@ async function getMyContractsPrisma(userId: string) {
       },
     });
 
-    const updatedContracts = await Promise.all(
-      contracts.map(async (contract) => {
+    const updatedJobs = await Promise.all(
+      jobs.map(async (job) => {
         const userImage = await (
-          await fetch(
-            `${process.env.API_URL}/api/image/${contract.user.profilePic}`
-          )
+          await fetch(`${process.env.API_URL}/api/image/${job.user.profilePic}`)
         ).json();
 
         const applicants = await Promise.all(
-          contract.applicants.map(async (applicant) => {
+          job.applicants.map(async (applicant) => {
             const applicantImage = await (
               await fetch(
                 `${process.env.API_URL}/api/image/${applicant.profilePic}`
@@ -53,24 +51,24 @@ async function getMyContractsPrisma(userId: string) {
         );
 
         return {
-          ...contract,
-          user: { ...contract.user, profilePic: userImage.url },
+          ...job,
+          user: { ...job.user, profilePic: userImage.url },
           applicants,
         };
       })
     );
 
-    return updatedContracts;
+    return updatedJobs;
   } catch (error) {
-    throw new Error("Unable To Get My Contracts");
+    throw new Error("Unable To Get My Jobs");
   } finally {
     await prisma.$disconnect();
   }
 }
 
-async function getContractsPrisma(userId: string) {
+async function getJobsPrisma(userId: string) {
   try {
-    const contracts = await prisma.contract.findMany({
+    const jobs = await prisma.job.findMany({
       where: { NOT: { userId } },
       include: {
         user: true,
@@ -82,55 +80,63 @@ async function getContractsPrisma(userId: string) {
 
     const imageCache: Record<string, string> = {};
 
-    const updatedContracts = await Promise.all(
-      contracts.map(async (contract) => {
+    const updatedJobs = await Promise.all(
+      jobs.map(async (job) => {
         let profilePicUrl;
-        if (imageCache[contract.user.profilePic]) {
-          profilePicUrl = imageCache[contract.user.profilePic];
+        if (imageCache[job.user.profilePic]) {
+          profilePicUrl = imageCache[job.user.profilePic];
         } else {
           const res = await fetch(
-            `${process.env.API_URL}/api/image/${contract.user.profilePic}`
+            `${process.env.API_URL}/api/image/${job.user.profilePic}`
           );
           const image = await res.json();
           profilePicUrl = image.url;
-          imageCache[contract.user.profilePic] = profilePicUrl;
+          imageCache[job.user.profilePic] = profilePicUrl;
         }
         return {
-          ...contract,
-          user: { ...contract.user, profilePic: profilePicUrl },
+          ...job,
+          user: { ...job.user, profilePic: profilePicUrl },
         };
       })
     );
 
-    return updatedContracts;
+    return updatedJobs;
   } catch (error) {
-    throw new Error("Unable To Get Contracts");
+    throw new Error("Unable To Get Jobs");
   } finally {
     await prisma.$disconnect();
   }
 }
 
-async function createContractPrisma(
+async function createJobPrisma(
   userId: string,
-  contract: {
+  job: {
     title: string;
     description: string;
     location: string;
     skills: string[];
     tags: string[];
+    salary: number;
+    hourly: number;
+    start: string;
+    end: string;
   }
 ) {
   try {
-    await prisma.contract.create({
+    await prisma.job.create({
       data: {
-        title: contract.title,
-        description: contract.description,
-        location: contract.location,
+        title: job.title,
+        description: job.description,
+        location: job.location,
+        salary: job.salary,
+        hourly: job.hourly,
+        start: job.start,
+        end: job.end,
         skills: {
-          connect: contract.skills.map((skill) => ({ skill })),
+          connect: job.skills.map((skill) => ({ skill })),
         },
         tags: {
-          connect: contract.tags.map((tag) => ({ tag })),
+          connect: job.tags.map((tag) => ({ tag })),
         },
         user: {
           connect: {
@@ -147,42 +153,42 @@ async function createContractPrisma(
   }
 }
 
-async function deleteContractPrisma(uid: string) {
+async function deleteJobPrisma(uid: string) {
   try {
-    await prisma.contract.delete({
+    await prisma.job.delete({
       where: { uid },
     });
   } catch (error) {
-    throw new Error("Unable To Delete Contract");
+    throw new Error("Unable To Delete Job");
   } finally {
     await prisma.$disconnect();
   }
 }
 
-async function applyToContractPrisma(contractId: string, userId: string) {
+async function applyToJobPrisma(jobId: string, userId: string) {
   try {
     await prisma.user.update({
       where: { uid: userId },
       data: {
-        contractApps: {
+        jobApps: {
           connect: {
-            uid: contractId,
+            uid: jobId,
           },
         },
       },
     });
   } catch (error) {
     console.log(error);
-    throw new Error("Unable To Apply To Contract");
+    throw new Error("Unable To Apply To Job");
   } finally {
     await prisma.$disconnect();
   }
 }
 
 export {
-  getMyContractsPrisma,
-  getContractsPrisma,
-  createContractPrisma,
-  deleteContractPrisma,
-  applyToContractPrisma,
+  getMyJobsPrisma,
+  getJobsPrisma,
+  createJobPrisma,
+  deleteJobPrisma,
+  applyToJobPrisma,
 };

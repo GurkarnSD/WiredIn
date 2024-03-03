@@ -13,7 +13,7 @@ export default function MyContracts(params: { user: User }) {
     const { user } = params
 
     const { data: skillOptions } = useSWR('/api/profile/skills', fetcher)
-    const { data: tagOptions } = useSWR('/api/contracts/tags', fetcher)
+    const { data: tagOptions } = useSWR('/api/tags', fetcher)
     const { data: userContracts } = useSWR(`/api/contracts/user/?uid=${user.uid}`, fetcher)
     const [showContractCreator, setShowContractCreator] = useState(false)
 

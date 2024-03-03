@@ -159,15 +159,35 @@ type UserContract = {
   applicants?: UserProfile[];
 };
 
+type UserJob = {
+  id: number;
+  uid: string;
+  title: string;
+  description?: string | null;
+  location?: string | null;
+  hourly?: number | null;
+  salary?: number | null;
+  start?: Date | null;
+  end?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  user: UserProfile;
+  userId: string;
+  skills: SkillOption[];
+  tags: TagOption[];
+  applicants?: UserProfile[];
+};
+
 type SkillOption = {
   skill: string;
   contracts?: UserContract[];
-  skills?: UserSkill[];
+  jobs?: UserJob[];
 };
 
 type TagOption = {
   tag: string;
   contracts?: UserContract[];
+  jobs?: UserJob[];
 };
 
 export type {
@@ -182,6 +202,7 @@ export type {
   UserChatRoom,
   ChatMessage,
   UserContract,
+  UserJob,
   SkillOption,
   TagOption,
 };
