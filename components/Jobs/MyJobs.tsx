@@ -36,7 +36,7 @@ export default function MyJobs(params: { user: User }) {
             </div>
             {showJobCreator &&
                 <Modal isOpen={showJobCreator} onClose={() => setShowJobCreator(false)}>
-                    <JobCreator user={user} skillOptions={skillOptions} tagOptions={tagOptions} />
+                    <JobCreator user={user} skillOptions={skillOptions} tagOptions={tagOptions} setModal={setShowJobCreator} />
                 </Modal>
             }
         </>

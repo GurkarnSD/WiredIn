@@ -5,15 +5,17 @@ import { useState } from 'react';
 import Modal from '../Modal';
 import { User } from '@/types';
 
-export default function ContractCreator(params: { user: User, skillOptions: { skill: string }[], tagOptions: { tag: string }[] }) {
+export default function ContractCreator(params: { user: User, skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void }) {
 
-    const { user, skillOptions, tagOptions } = params;
+    const { user, skillOptions, tagOptions, setModal } = params;
 
     const [contractForm, setContractForm] = useState({
         title: '',
         location: '',
         desc: ''
     })
+
+    const [error, setError] = useState('');
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setContractForm((prev) => ({
@@ -30,6 +32,8 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        setError('');
+
         const { title, location, desc } = contractForm;
 
         const contract = {
@@ -38,6 +42,21 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
             description: desc,
             skills: selectedSkills,
             tags: selectedTags
+        }
+
+        if (!title) {
+            setError('Title is required');
+            return;
+        }
+
+        if (!location) {
+            setError('Location is required');
+            return;
+        }
+
+        if (!desc) {
+            setError('Description is required');
+            return;
         }
 
         const res = await fetch('/api/contracts', {
@@ -50,6 +69,17 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
 
         if (!res.ok) {
             throw new Error('Failed to Publish Contract');
+        } else {
+            setContractForm({
+                title: '',
+                location: '',
+                desc: ''
+            });
+            setSelectedSkills([]);
+            setSelectedTags([]);
+            if (setModal) {
+                setModal(false);
+            }
         }
 
         return res.json();
@@ -57,16 +87,19 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
 
     return (
         <div className={styles.contractCreator}>
-            <h1 className={styles.title2}>Contract Creator</h1>
+            <div className={styles.contractCreatorHeader}>
+                <h1 className={styles.title2}>Contract Creator</h1>
+                {error && <div className={styles.error}>{error}</div>}
+            </div>
             <form className={styles.contractForm} onSubmit={handleSubmit}>
                 <div className={styles.contractFormRow}>
                     <div className={styles.inputContainer}>
                         <div className={styles.inputTitle}>Position Title</div>
-                        <input className={styles.input} name='title' onChange={handleChange} />
+                        <input className={styles.input} name='title' value={contractForm.title} onChange={handleChange} />
                     </div>
                     <div className={styles.inputContainer}>
                         <div className={styles.inputTitle}>Location</div>
-                        <input className={styles.input} name='location' onChange={handleChange} />
+                        <input className={styles.input} name='location' value={contractForm.location} onChange={handleChange} />
                     </div>
                 </div>
                 <div className={styles.contractFormRow}>
@@ -92,7 +125,7 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
                 <div className={styles.contractFormRow}>
                     <div className={styles.largeInputContainer}>
                         <div className={styles.inputTitle}>Description</div>
-                        <textarea className={styles.desc} aria-multiline name='desc' onChange={handleChange} />
+                        <textarea className={styles.desc} aria-multiline name='desc' value={contractForm.desc} onChange={handleChange} />
                     </div>
                 </div>
                 <div className={styles.contractFormFooter}>

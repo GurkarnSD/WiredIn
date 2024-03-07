@@ -26,7 +26,7 @@ export default function Feed(params: { user: User, posts: [] }) {
 
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                    <PostCreator user={user} />
+                    <PostCreator user={user} setModal={setIsModalOpen} />
                 </Modal>
             )}
         </div>

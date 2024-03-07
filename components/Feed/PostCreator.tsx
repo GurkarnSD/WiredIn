@@ -7,8 +7,8 @@ import Image from 'next/image';
 import Modal from '../Modal';
 import { User } from '@/types';
 
-export default function PostCreator(params: { user: User }) {
-    const { user } = params;
+export default function PostCreator(params: { user: User, setModal?: (isOpen: boolean) => void }) {
+    const { user, setModal } = params;
 
     const [input, setInput] = useState('');
     const [charCount, setCharCount] = useState(0);
@@ -128,6 +128,14 @@ export default function PostCreator(params: { user: User }) {
 
         if (!res.ok) {
             throw new Error('Failed to Post');
+        } else {
+            setInput('');
+            setCharCount(0);
+            setImages([]);
+            setImageFiles([]);
+            if (setModal) {
+                setModal(false);
+            }
         }
 
         return res.json();
@@ -209,7 +217,7 @@ export default function PostCreator(params: { user: User }) {
                     </div>
                 }
                 <div className={`${styles.charCount} ${charCount > maxChars && styles.overMaxChars}`}>{charCount}/{maxChars}</div>
-                <textarea className={styles.inputBox} aria-multiline name='input' placeholder='Tell everyone what they need to know...' onChange={handleInputChange} />
+                <textarea className={styles.inputBox} aria-multiline name='input' value={input} placeholder='Tell everyone what they need to know...' onChange={handleInputChange} />
                 <div className={styles.footer}>
                     <span>
                         <FontAwesomeIcon icon={faPaperclip} className={styles.icon} onClick={handleImageClick} />

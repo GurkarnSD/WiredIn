@@ -36,7 +36,7 @@ export default function MyContracts(params: { user: User }) {
             </div>
             {showContractCreator &&
                 <Modal isOpen={showContractCreator} onClose={() => setShowContractCreator(false)}>
-                    <ContractCreator user={user} skillOptions={skillOptions} tagOptions={tagOptions} />
+                    <ContractCreator user={user} skillOptions={skillOptions} tagOptions={tagOptions} setModal={setShowContractCreator} />
                 </Modal>
             }
         </>

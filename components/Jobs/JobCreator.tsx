@@ -5,9 +5,9 @@ import { useState } from 'react';
 import Modal from '../Modal';
 import { User } from '@/types';
 
-export default function JobCreator(params: { user: User, skillOptions: { skill: string }[], tagOptions: { tag: string }[] }) {
+export default function JobCreator(params: { user: User, skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void }) {
 
-    const { user, skillOptions, tagOptions } = params;
+    const { user, skillOptions, tagOptions, setModal } = params;
 
     const [jobForm, setJobForm] = useState({
         title: '',
@@ -18,6 +18,8 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
         start: '',
         end: ''
     })
+
+    const [error, setError] = useState('');
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setJobForm((prev) => ({
@@ -34,6 +36,8 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        setError('');
+
         const { title, location, desc, salary, hourly, start, end } = jobForm;
 
         const job = {
@@ -44,11 +48,29 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
             tags: selectedTags,
             salary: parseInt(salary),
             hourly: parseFloat(hourly),
-            start: start + '-01T00:00:00.000Z',
-            end: end + '-01T00:00:00.000Z',
+            start: start ? start + '-01T00:00:00.000Z' : null,
+            end: end ? end + '-01T00:00:00.000Z' : null,
         }
 
-        console.log(job)
+        if (!title) {
+            setError('Title is required');
+            return;
+        }
+
+        if (!location) {
+            setError('Location is required');
+            return;
+        }
+
+        if (!desc) {
+            setError('Description is required');
+            return;
+        }
+
+        if (job.start && job.end && job.start > job.end) {
+            setError('Start date must be before end date');
+            return;
+        }
 
         const res = await fetch('/api/jobs', {
             method: 'POST',
@@ -60,6 +82,21 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
 
         if (!res.ok) {
             throw new Error('Failed to Publish Job');
+        } else {
+            setJobForm({
+                title: '',
+                location: '',
+                desc: '',
+                salary: '',
+                hourly: '',
+                start: '',
+                end: ''
+            });
+            setSelectedSkills([]);
+            setSelectedTags([]);
+            if (setModal) {
+                setModal(false);
+            }
         }
 
         return res.json();
@@ -67,16 +104,19 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
 
     return (
         <div className={styles.jobCreator}>
-            <h1 className={styles.title2}>Job Creator</h1>
+            <div className={styles.jobCreatorHeader}>
+                <h1 className={styles.title2}>Job Creator</h1>
+                {error && <div className={styles.error}>{error}</div>}
+            </div>
             <form className={styles.jobForm} onSubmit={handleSubmit}>
                 <div className={styles.jobFormRow}>
                     <div className={styles.inputContainer}>
                         <div className={styles.inputTitle}>Position Title</div>
-                        <input className={styles.input} name='title' onChange={handleChange} />
+                        <input className={styles.input} name='title' value={jobForm.title} onChange={handleChange} />
                     </div>
                     <div className={styles.inputContainer}>
                         <div className={styles.inputTitle}>Location</div>
-                        <input className={styles.input} name='location' onChange={handleChange} />
+                        <input className={styles.input} name='location' value={jobForm.location} onChange={handleChange} />
                     </div>
                 </div>
                 <div className={styles.jobFormRow}>
@@ -102,28 +142,28 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
                 <div className={styles.jobFormRow}>
                     <div className={styles.inputContainer}>
                         <div className={styles.inputTitle}>Hourly Rate</div>
-                        <input className={styles.input} type='number' step='0.01' name='hourly' onChange={handleChange} />
+                        <input className={styles.input} type='number' step='0.01' name='hourly' value={jobForm.hourly} onChange={handleChange} />
                     </div>
                     <div className={styles.inputContainer}>
                         <div className={styles.inputTitle}>Salary</div>
-                        <input className={styles.input} type='number' name='salary' onChange={handleChange} />
+                        <input className={styles.input} type='number' name='salary' value={jobForm.salary} onChange={handleChange} />
                     </div>
                 </div>
                 <div className={styles.jobFormRow}>
                     <div className={styles.inputContainer}>
                         <div className={styles.inputTitle}>From</div>
-                        <input className={styles.input} type='month' name='start' onChange={handleChange} />
+                        <input className={styles.input} type='month' name='start' value={jobForm.start} onChange={handleChange} />
                     </div>
                     <FontAwesomeIcon icon={faArrowsLeftRight} className={styles.arrowIcon} />
                     <div className={styles.inputContainer}>
                         <div className={styles.inputTitle}>To</div>
-                        <input className={styles.input} type='month' name='end' onChange={handleChange} />
+                        <input className={styles.input} type='month' name='end' value={jobForm.end} onChange={handleChange} />
                     </div>
                 </div>
                 <div className={styles.jobFormRow}>
                     <div className={styles.largeInputContainer}>
                         <div className={styles.inputTitle}>Description</div>
-                        <textarea className={styles.desc} aria-multiline name='desc' onChange={handleChange} />
+                        <textarea className={styles.desc} aria-multiline name='desc' value={jobForm.desc} onChange={handleChange} />
                     </div>
                 </div>
                 <div className={styles.jobFormFooter}>
