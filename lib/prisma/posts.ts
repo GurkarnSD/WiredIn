@@ -58,6 +58,7 @@ async function getPostsPrisma(userId: string) {
           },
         },
       },
+      orderBy: { createdAt: "desc" },
     });
 
     const imageCache: Record<string, string> = {};

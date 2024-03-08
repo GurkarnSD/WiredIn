@@ -36,6 +36,7 @@ async function getResponsesPrisma(commentId: number) {
           },
         },
       },
+      orderBy: { createdAt: "desc" },
     });
 
     if (!responses) {

@@ -75,7 +75,7 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
 
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
-                    <ProfileProjectsEditor user={pageUser} skills={skillsData} />
+                    <ProfileProjectsEditor user={pageUser} skills={skillsData} setModal={setIsModalOpen} />
                 </Modal>
             )}
         </div>

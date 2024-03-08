@@ -5,9 +5,9 @@ import { useState } from 'react';
 import Modal from '../Modal';
 import { User } from '@/types';
 
-export default function JobCreator(params: { user: User, skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void }) {
+export default function JobCreator(params: { user: User, skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void, toastTrigger?: () => void }) {
 
-    const { user, skillOptions, tagOptions, setModal } = params;
+    const { user, skillOptions, tagOptions, setModal, toastTrigger } = params;
 
     const [jobForm, setJobForm] = useState({
         title: '',
@@ -18,7 +18,7 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
         start: '',
         end: ''
     })
-
+    const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -37,6 +37,7 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
         e.preventDefault();
 
         setError('');
+        setSubmitting(true);
 
         const { title, location, desc, salary, hourly, start, end } = jobForm;
 
@@ -94,10 +95,13 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
             });
             setSelectedSkills([]);
             setSelectedTags([]);
-            if (setModal) {
+            if (setModal)
                 setModal(false);
-            }
+            if (toastTrigger)
+                toastTrigger();
         }
+
+        setSubmitting(false);
 
         return res.json();
     }
@@ -167,7 +171,7 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
                     </div>
                 </div>
                 <div className={styles.jobFormFooter}>
-                    <button className={styles.submit} type='submit'>Publish Job</button>
+                    <button className={styles.submit} type='submit' disabled={submitting}>Publish Job</button>
                 </div>
             </form>
             {selectSkillsOpen && (

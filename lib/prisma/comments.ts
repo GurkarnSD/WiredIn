@@ -43,6 +43,7 @@ async function getCommentsPrisma(postId: string) {
           },
         },
       },
+      orderBy: { createdAt: "desc" },
     });
 
     if (!comments) {

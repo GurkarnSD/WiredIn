@@ -5,16 +5,16 @@ import { useState } from 'react';
 import Modal from '../Modal';
 import { User } from '@/types';
 
-export default function ContractCreator(params: { user: User, skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void }) {
+export default function ContractCreator(params: { user: User, skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void, toastTrigger?: () => void }) {
 
-    const { user, skillOptions, tagOptions, setModal } = params;
+    const { user, skillOptions, tagOptions, setModal, toastTrigger } = params;
 
     const [contractForm, setContractForm] = useState({
         title: '',
         location: '',
         desc: ''
     })
-
+    const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -33,6 +33,7 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
         e.preventDefault();
 
         setError('');
+        setSubmitting(true);
 
         const { title, location, desc } = contractForm;
 
@@ -77,10 +78,13 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
             });
             setSelectedSkills([]);
             setSelectedTags([]);
-            if (setModal) {
+            if (setModal) 
                 setModal(false);
-            }
+            if (toastTrigger)
+                toastTrigger();
         }
+
+        setSubmitting(false);
 
         return res.json();
     }
@@ -129,7 +133,7 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
                     </div>
                 </div>
                 <div className={styles.contractFormFooter}>
-                    <button className={styles.submit} type='submit'>Publish Contract</button>
+                    <button className={styles.submit} type='submit' disabled={submitting}>Publish Contract</button>
                 </div>
             </form>
             {selectSkillsOpen && (

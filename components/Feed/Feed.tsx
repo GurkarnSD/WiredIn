@@ -5,6 +5,7 @@ import Modal from "../Modal";
 import PostCreator from "./PostCreator";
 import Post from "./Post";
 import { User } from "@/types";
+import { Toaster, toast } from 'sonner'
 
 export default function Feed(params: { user: User, posts: [] }) {
 
@@ -13,6 +14,7 @@ export default function Feed(params: { user: User, posts: [] }) {
 
     return (
         <div className={styles.container}>
+            <Toaster position="top-right" />
             <div className={styles.header}>
                 <button className={styles.createPost} onClick={() => { setIsModalOpen(true) }}>Create Post</button>
             </div>
@@ -26,7 +28,7 @@ export default function Feed(params: { user: User, posts: [] }) {
 
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                    <PostCreator user={user} setModal={setIsModalOpen} />
+                    <PostCreator user={user} setModal={setIsModalOpen} toastTrigger={() => toast.success('Post Created')} />
                 </Modal>
             )}
         </div>

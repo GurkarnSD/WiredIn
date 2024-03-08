@@ -55,6 +55,7 @@ function AddSkillMenu(params: { uid: string, controlModal: (toggle: boolean) => 
     const [inputValue, setInputValue] = useState('');
     const [selectedSkill, setSelectedSkill] = useState('');
     const [learnedIn, setLearnedIn] = useState<number>();
+    const [submitting, setSubmitting] = useState(false);
 
     const filteredSkills = skillsList.filter(skill =>
         skill.toLowerCase().includes(inputValue.toLowerCase())
@@ -76,6 +77,8 @@ function AddSkillMenu(params: { uid: string, controlModal: (toggle: boolean) => 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        setSubmitting(true);
+
         const skill = {
             name: selectedSkill,
             learnedIn: learnedIn,
@@ -93,7 +96,9 @@ function AddSkillMenu(params: { uid: string, controlModal: (toggle: boolean) => 
             throw new Error("Failed to Add Skill")
         }
 
+
         controlModal(false);
+        setSubmitting(false);
         return res.json()
     }
 
@@ -130,7 +135,7 @@ function AddSkillMenu(params: { uid: string, controlModal: (toggle: boolean) => 
                         value={learnedIn !== undefined ? learnedIn.toString() : ''}
                         onChange={handleLearnedInChange} />
                 </span>
-                <button className={styles.addButton} type='submit'>Add</button>
+                <button className={styles.addButton} type='submit' disabled={submitting}>Add</button>
             </div>
         </form>
     )

@@ -168,11 +168,12 @@ export default function Comments(params: { postId: string, user: User }) {
 
             if (!res.ok) {
                 throw new Error('Failed to Respond');
+            } else {
+                setInput('');
+                setCharCount(0);
+                setSelectedComment(null);
             }
 
-            setInput('');
-            setCharCount(0);
-            setSelectedComment(null);
             return res.json();
         } else {
             const res = await fetch('/api/feed/comments', {
@@ -186,10 +187,12 @@ export default function Comments(params: { postId: string, user: User }) {
 
             if (!res.ok) {
                 throw new Error('Failed to Comment');
+            } else {
+                setInput('');
+                setCharCount(0);
+                setComments(await fetchComments(postId));
             }
 
-            setInput('');
-            setCharCount(0);
             return res.json();
         }
     };

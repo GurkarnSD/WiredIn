@@ -4,9 +4,9 @@ import { faArrowsLeftRight } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { UserProfile, UserSkill } from '@/types';
 
-export default function ProfileProjectsEditor(params: { user: UserProfile, skills: UserSkill[] }) {
+export default function ProfileProjectsEditor(params: { user: UserProfile, skills: UserSkill[], setModal?: (isOpen: boolean) => void }) {
 
-    const { user, skills } = params;
+    const { user, skills, setModal } = params;
 
     const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
@@ -20,6 +20,7 @@ export default function ProfileProjectsEditor(params: { user: UserProfile, skill
         desc: '',
     })
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+    const [submitting, setSubmitting] = useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setProjForm((prev) => ({
@@ -30,6 +31,8 @@ export default function ProfileProjectsEditor(params: { user: UserProfile, skill
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+
+        setSubmitting(true);
 
         const skillIds = selectedSkills.map((skill: string) => {
             const foundSkill = skills.find((s: UserSkill) => s.name === skill);
@@ -59,7 +62,22 @@ export default function ProfileProjectsEditor(params: { user: UserProfile, skill
 
         if (!res.ok) {
             throw new Error("Failed to Add Project")
+        } else {
+            setProjForm({
+                title: '',
+                deployment: '',
+                start: '',
+                end: '',
+                current: false,
+                source: '',
+                desc: '',
+            })
+            setSelectedSkills([]);
+            if (setModal)
+                setModal(false);
         }
+
+        setSubmitting(false);
 
         return res.json()
     }
@@ -155,7 +173,7 @@ export default function ProfileProjectsEditor(params: { user: UserProfile, skill
                         </div>
                     </div>
                 </div>
-                <button className={styles.saveButton} type='submit'>Save</button>
+                <button className={styles.saveButton} type='submit' disabled={submitting}>Save</button>
             </form >
         </div >
     )

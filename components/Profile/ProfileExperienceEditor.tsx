@@ -7,9 +7,9 @@ import Modal from '../Modal';
 import axios from 'axios';
 import { User, UserSkill } from '@/types';
 
-export default function ProfileExperienceEditor(params: { user: User, skills: UserSkill[] }) {
+export default function ProfileExperienceEditor(params: { user: User, skills: UserSkill[], setModal?: (isOpen: boolean) => void }) {
 
-    const { user, skills } = params;
+    const { user, skills, setModal } = params;
 
     const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
@@ -22,7 +22,7 @@ export default function ProfileExperienceEditor(params: { user: User, skills: Us
         current: false,
     })
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-
+    const [submitting, setSubmitting] = useState(false);
     const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
     const [error, setError] = useState('');
@@ -65,6 +65,8 @@ export default function ProfileExperienceEditor(params: { user: User, skills: Us
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
+        setSubmitting(true);
+
         const skillIds = selectedSkills.map((skill: string) => {
             const foundSkill = skills.find((s: UserSkill) => s.name === skill);
             if (foundSkill) {
@@ -106,7 +108,23 @@ export default function ProfileExperienceEditor(params: { user: User, skills: Us
 
         if (!res.ok) {
             throw new Error("Failed to Add Experience")
+        } else {
+            setExpForm({
+                title: '',
+                company: '',
+                start: '',
+                end: '',
+                desc: '',
+                current: false,
+            })
+            setSelectedSkills([]);
+            setImage('');
+            setImageFile(null);
+            if (setModal)
+                setModal(false);
         }
+
+        setSubmitting(false);
 
         return res.json()
     }
@@ -204,7 +222,7 @@ export default function ProfileExperienceEditor(params: { user: User, skills: Us
                         </div>
                     </div>
                 </div>
-                <button className={styles.saveButton} type='submit'>Save</button>
+                <button className={styles.saveButton} type='submit' disabled={submitting}>Save</button>
             </form>
 
             {selectSkillsOpen && (

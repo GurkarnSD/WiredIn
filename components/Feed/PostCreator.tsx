@@ -7,11 +7,12 @@ import Image from 'next/image';
 import Modal from '../Modal';
 import { User } from '@/types';
 
-export default function PostCreator(params: { user: User, setModal?: (isOpen: boolean) => void }) {
-    const { user, setModal } = params;
+export default function PostCreator(params: { user: User, setModal?: (isOpen: boolean) => void, toastTrigger?: () => void }) {
+    const { user, setModal, toastTrigger } = params;
 
     const [input, setInput] = useState('');
     const [charCount, setCharCount] = useState(0);
+    const [submitting, setSubmitting] = useState(false);
 
     const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
     const maxImages = 4;
@@ -79,6 +80,8 @@ export default function PostCreator(params: { user: User, setModal?: (isOpen: bo
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        setSubmitting(true);
+
         interface Post {
             text: string;
             images: string[];
@@ -133,10 +136,13 @@ export default function PostCreator(params: { user: User, setModal?: (isOpen: bo
             setCharCount(0);
             setImages([]);
             setImageFiles([]);
-            if (setModal) {
+            if (setModal)
                 setModal(false);
-            }
+            if (toastTrigger)
+                toastTrigger();
         }
+
+        setSubmitting(false);
 
         return res.json();
     };
@@ -229,7 +235,7 @@ export default function PostCreator(params: { user: User, setModal?: (isOpen: bo
                             hidden
                         />
                     </span>
-                    <button className={styles.postButton} type='submit'>Post</button>
+                    <button className={styles.postButton} type='submit' disabled={submitting}>Post</button>
                 </div>
             </form>
         </div>
