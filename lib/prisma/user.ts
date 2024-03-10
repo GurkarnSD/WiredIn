@@ -198,8 +198,9 @@ async function getUserPrisma(uid: string, name: string): Promise<UserProfile> {
       const result = await prisma.user.findUnique({
         where: { uid },
         include: {
-          following: true,
-          followers: true,
+          _count: {
+            select: { followers: true, following: true },
+          },
         },
       });
       if (result === null) {
@@ -210,8 +211,9 @@ async function getUserPrisma(uid: string, name: string): Promise<UserProfile> {
       const result = await prisma.user.findFirst({
         where: { displayName: { contains: name.toLowerCase() } },
         include: {
-          following: true,
-          followers: true,
+          _count: {
+            select: { followers: true, following: true },
+          },
         },
       });
       console.log("Found user:", result);

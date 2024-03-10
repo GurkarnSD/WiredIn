@@ -67,11 +67,26 @@ const fetchHeaderImages = async (bannerKey: string, profileKey: string) => {
     return { bannerURL, profileURL };
 }
 
+const checkFollowing = async (userId: string, pageUserId: string) => {
+    const res = await fetch(`/api/follow?user=${userId}&otherUser=${pageUserId}`, {
+        method: "GET",
+    })
+
+    if (!res.ok) {
+        throw new Error("Failed to check following")
+    }
+
+    return res.json()
+}
+
 export default function ProfileHeader(params: { pageUser: UserProfile, user: User }) {
 
     const { pageUser, user } = params;
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showFollowing, setShowFollowing] = useState(false);
+    const [showFollowers, setShowFollowers] = useState(false);
+    const [isFollowing, setIsFollowing] = useState(false);
 
     const [headerImages, setHeaderImages] = useState({
         bannerURL: '',
@@ -91,6 +106,17 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
         fetchImages();
     }, [pageUser.bannerPic, pageUser.profilePic]);
 
+    useEffect(() => {
+        const checkIfFollowing = async () => {
+            if (user) {
+                const following = await checkFollowing(user.uid, pageUser.uid);
+                setIsFollowing(following.response);
+            }
+        };
+
+        checkIfFollowing();
+    }, [user, pageUser.uid]);
+
     return (
         <div className={styles.container}>
             <Image className={styles.banner} src={headerImages.bannerURL} alt={""} height={0} width={0} unoptimized />
@@ -102,19 +128,19 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
                         <div className={styles.header}>
                             <div className={styles.displayName}>{pageUser?.displayName}</div>
                             {user?.uid !== pageUser?.uid ? (
-                                !pageUser?.followers?.some((follower: { uid: string }) => follower.uid === user?.uid) ?
-                                    <button className={styles.follow} onClick={() => followUser(user.uid, pageUser?.uid)}>Follow</button>
-                                    : <button className={styles.follow} onClick={() => unfollowUser(user.uid, pageUser?.uid)}>Unfollow</button>)
+                                !isFollowing ?
+                                    <button className={styles.follow} onClick={() => { followUser(user.uid, pageUser?.uid); setIsFollowing(true) }}>Follow</button>
+                                    : <button className={styles.follow} onClick={() => { unfollowUser(user.uid, pageUser?.uid); setIsFollowing(false) }}>Unfollow</button>)
                                 : null}
                             <Link className={styles.message} onClick={() => messageUser(user.uid, pageUser?.uid)} href={'/messages'}>Message</Link>
                         </div>
                         <div className={styles.stats}>
-                            <div className={styles.stat}>
-                                <div className={styles.statNumber}>{pageUser?.following?.length}</div>
+                            <div className={styles.stat} onClick={() => setShowFollowing(true)}>
+                                <div className={styles.statNumber}>{pageUser?._count?.following}</div>
                                 &nbsp;Following
                             </div>
-                            <div className={styles.stat}>
-                                <div className={styles.statNumber}>{pageUser?.followers?.length}</div>
+                            <div className={styles.stat} onClick={() => setShowFollowers(true)}>
+                                <div className={styles.statNumber}>{pageUser?._count?.followers}</div>
                                 &nbsp;Followers
                             </div>
                         </div>
@@ -144,6 +170,117 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
                     <ProfileHeaderEditor user={pageUser} userImages={headerImages} />
                 </Modal>
             )}
+
+            {showFollowing && (
+                <Modal isOpen={showFollowing} onClose={() => setShowFollowing(false)} backIcon disableClickOff>
+                    <UserList following pageUser={pageUser.uid} user={user.uid} />
+                </Modal>
+            )}
+
+            {showFollowers && (
+                <Modal isOpen={showFollowers} onClose={() => setShowFollowers(false)} backIcon disableClickOff>
+                    <UserList followers pageUser={pageUser.uid} user={user.uid} />
+                </Modal>
+            )}
         </div >
+    )
+}
+
+const getFollowers = async (user: string, sessionUser: string) => {
+    const res = await fetch(`/api/follow/followers?user=${user}&session=${sessionUser}`, {
+        method: "GET",
+    })
+
+    if (!res.ok) {
+        throw new Error("Failed to get followers")
+    }
+
+    return res.json()
+}
+
+const getFollowing = async (user: string, sessionUser: string) => {
+    const res = await fetch(`/api/follow/following?user=${user}&session=${sessionUser}`, {
+        method: "GET",
+    })
+
+    if (!res.ok) {
+        throw new Error("Failed to get following")
+    }
+
+    return res.json()
+}
+
+function UserList(params: { followers?: boolean, following?: boolean, pageUser: string, user: string }) {
+
+    const { followers, following, pageUser, user } = params;
+
+    let title = "";
+    if (followers) {
+        title = "Followers";
+    } else if (following) {
+        title = "Following";
+    }
+
+    interface UserProfileWithFollowing extends UserProfile {
+        sessionUserFollows?: boolean;
+    }
+
+    const [userList, setUserList] = useState<UserProfileWithFollowing[]>([]);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            if (followers) {
+                const followers = await getFollowers(pageUser, user);
+                setUserList(followers.response);
+            } else if (following) {
+                const following = await getFollowing(pageUser, user);
+                setUserList(following.response);
+            }
+        };
+
+        fetchUsers();
+    }, [followers, following]);
+
+    const followUserAndUpdateList = async (userId: string) => {
+        try {
+            await followUser(user, userId);
+            const updatedList = userList.map(member => {
+                if (member.uid === userId) {
+                    return { ...member, sessionUserFollows: true };
+                }
+                return member;
+            });
+            setUserList(updatedList);
+        } catch (error) {
+            console.error("Error following user:", error);
+        }
+    };
+
+    return (
+        <div className={styles.usersContainer}>
+            <div className={styles.usersHeader}>
+                <h1 className={styles.title}>{title}</h1>
+            </div>
+            <div className={styles.usersBody}>
+                {userList && userList?.map((member: UserProfileWithFollowing) => {
+                    return (
+                        <div key={member.uid} className={styles.user}>
+                            <Link href={`/profile/${member.displayName}`}>
+                                <div className={styles.userInfoGroup}>
+                                    <Image className={styles.userImage} src={member.profilePic} alt='User Image' width={50} height={50} />
+                                    <div className={styles.userInfo}>
+                                        <h2 className={styles.userName}>{member.displayName}</h2>
+                                    </div>
+                                </div>
+                            </Link>
+                            {member.uid !== user ? !member.sessionUserFollows ?
+                                <button className={styles.follow} onClick={() => { followUserAndUpdateList(member.uid); }}>Follow</button>
+                                : <button className={styles.follow} onClick={() => { followUserAndUpdateList(member.uid); }}>Unfollow</button>
+                                : null}
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
     )
 }

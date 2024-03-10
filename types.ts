@@ -38,6 +38,10 @@ type UserProfile = {
   likedResponses?: CommentResponse[];
   messages?: ChatMessage[];
   chatRooms?: UserChatRoom[];
+  _count?: {
+    followers: number;
+    following: number;
+  };
 };
 
 type UserSkill = {
