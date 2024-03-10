@@ -77,14 +77,7 @@ const calculateImageClass = (images: string[], index: number) => {
     }
 }
 
-type UserPostWithStats = UserPost & {
-    _count: {
-        likes: number;
-        comments: number;
-    };
-};
-
-export default function Post(params: { data: UserPostWithStats, user: User }) {
+export default function Post(params: { data: UserPost, user: User }) {
 
     const { data, user } = params;
 

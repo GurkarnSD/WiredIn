@@ -68,7 +68,11 @@ async function getMyContractsPrisma(userId: string) {
   }
 }
 
-async function getContractsPrisma(userId: string) {
+async function getContractsPrisma(
+  userId: string,
+  page: number,
+  pageSize: number
+) {
   try {
     const contracts = await prisma.contract.findMany({
       where: { NOT: { userId } },
@@ -78,6 +82,8 @@ async function getContractsPrisma(userId: string) {
         tags: true,
         applicants: true,
       },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
     });
 
     const imageCache: Record<string, string> = {};

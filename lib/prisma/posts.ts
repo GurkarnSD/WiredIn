@@ -18,7 +18,7 @@ async function init() {
   await init();
 })();
 
-async function getPostsPrisma(userId: string) {
+async function getPostsPrisma(userId: string, page: number, pageSize: number) {
   try {
     const user = await prisma.user.findUnique({
       where: { uid: userId },
@@ -59,6 +59,8 @@ async function getPostsPrisma(userId: string) {
         },
       },
       orderBy: { createdAt: "desc" },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
     });
 
     const imageCache: Record<string, string> = {};

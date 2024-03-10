@@ -1,5 +1,21 @@
-import { NextResponse } from "next/server";
-import { createJobPrisma, deleteJobPrisma } from "@/lib/prisma/jobs";
+import { NextRequest, NextResponse } from "next/server";
+import {
+  getJobsPrisma,
+  createJobPrisma,
+  deleteJobPrisma,
+} from "@/lib/prisma/jobs";
+
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const userId = searchParams.get("uid");
+  const page = Number(searchParams.get("page") || 1);
+  const pageSize = Number(searchParams.get("pageSize") || 10);
+  if (!userId) {
+    return NextResponse.error();
+  }
+  const jobs = await getJobsPrisma(userId, page, pageSize);
+  return NextResponse.json(jobs);
+}
 
 export async function POST(req: Request) {
   const body = await req.json();

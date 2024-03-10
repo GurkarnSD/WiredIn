@@ -66,7 +66,7 @@ async function getMyJobsPrisma(userId: string) {
   }
 }
 
-async function getJobsPrisma(userId: string) {
+async function getJobsPrisma(userId: string, page: number, pageSize: number) {
   try {
     const jobs = await prisma.job.findMany({
       where: { NOT: { userId } },
@@ -76,6 +76,8 @@ async function getJobsPrisma(userId: string) {
         tags: true,
         applicants: true,
       },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
     });
 
     const imageCache: Record<string, string> = {};

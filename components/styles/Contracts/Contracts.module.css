@@ -336,6 +336,18 @@
   text-align: center;
 }
 
+.loadMore {
+  width: 150px;
+  height: 40px;
+  background-color: #0096ff;
+  font-size: 20px;
+  font-weight: 800;
+  border: none;
+  border-radius: 10px;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
 @media screen and (max-width: 1200px) {
   .container {
     width: 80vw;

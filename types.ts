@@ -100,6 +100,10 @@ type UserPost = {
   userId: string;
   likes?: UserProfile[];
   comments?: PostComment[];
+  _count: {
+    likes: number;
+    comments: number;
+  };
 };
 
 type PostComment = {

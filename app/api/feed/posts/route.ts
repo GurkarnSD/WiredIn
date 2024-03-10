@@ -1,14 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import {
   getPostsPrisma,
   createPostPrisma,
   deletePostPrisma,
 } from "@/lib/prisma/posts";
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
   const uid = searchParams.get("uid");
-  const res = await getPostsPrisma(uid as string);
+  const page = Number(searchParams.get("page") || 1);
+  const pageSize = Number(searchParams.get("pageSize") || 10);
+  const res = await getPostsPrisma(uid as string, page, pageSize);
 
   return NextResponse.json(res);
 }

@@ -9,16 +9,6 @@ import { UserSession } from "@/types";
 
 export const revalidate = 0;
 
-const fetchPosts = async (uid: string) => {
-  const res = await fetch(`${process.env.API_URL}/api/feed/posts/?uid=${uid}`)
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch posts")
-  }
-
-  return res.json()
-}
-
 const fetchProfileImage = async (profileKey: string) => {
   const res = await fetch(`${process.env.API_URL}/api/image/${profileKey}`);
 
@@ -34,8 +24,6 @@ export default async function FeedPage() {
 
   let session = (await getServerSession(authOptions)) as UserSession;
 
-  const posts = await fetchPosts(session?.user?.uid)
-
   const profilePic = await fetchProfileImage(session?.user?.profilePic);
   session = { ...session, user: { ...session?.user, profilePic } };
 
@@ -48,7 +36,7 @@ export default async function FeedPage() {
           {/* @ts-expect-error Async Server Component */}
           <Connect user={session?.user} />
         </div>
-        <Feed user={session?.user} posts={posts} />
+        <Feed user={session?.user} />
         <div className={styles.profileCard}>
           <ProfileCard user={session?.user} />
         </div>

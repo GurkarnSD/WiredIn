@@ -1,8 +1,21 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import {
+  getContractsPrisma,
   createContractPrisma,
   deleteContractPrisma,
 } from "@/lib/prisma/contracts";
+
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams;
+  const userId = searchParams.get("uid");
+  const page = Number(searchParams.get("page") || 1);
+  const pageSize = Number(searchParams.get("pageSize") || 10);
+  if (!userId) {
+    return NextResponse.error();
+  }
+  const contracts = await getContractsPrisma(userId, page, pageSize);
+  return NextResponse.json(contracts);
+}
 
 export async function POST(req: Request) {
   const body = await req.json();

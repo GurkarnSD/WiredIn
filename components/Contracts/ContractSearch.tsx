@@ -1,13 +1,45 @@
+'use client';
 import styles from '../styles/Contracts/Contracts.module.css'
+import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass, faFilter } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
 import { User, UserContract } from '@/types'
 import Contract from './Contract'
 
-export default function ContractSearch(params: { contracts: UserContract[], user: User }) {
+const fetchContracts = async (uid: string, page: number = 1, pageSize: number = 10) => {
+    const res = await fetch(`/api/contracts/?uid=${uid}&page=${page}&pageSize=${pageSize}`)
 
-    const { contracts, user } = params;
+    if (!res.ok) {
+        throw new Error("Failed to fetch contracts")
+    }
+
+    return res.json()
+}
+
+export default function ContractSearch(params: { user: User }) {
+
+    const [contracts, setContracts] = useState<UserContract[]>([]);
+    const [page, setPage] = useState(1);
+    const [showLoadMore, setShowLoadMore] = useState(false);
+    const { user } = params;
+
+    const loadMoreContracts = async () => {
+        setPage((prevPage) => prevPage + 1);
+    };
+
+    useEffect(() => {
+        const fetchMoreContracts = async () => {
+            const newContracts = await fetchContracts(user.uid, page);
+            if (newContracts.length < 10) {
+                setShowLoadMore(false);
+            } else {
+                setShowLoadMore(true);
+            }
+            setContracts((prevContracts: UserContract[]) => [...prevContracts, ...newContracts]);
+        };
+        fetchMoreContracts();
+    }, [page]);
 
     return (
         <div className={styles.container}>
@@ -30,6 +62,7 @@ export default function ContractSearch(params: { contracts: UserContract[], user
                     <Contract key={contract.id} contract={contract} user={user} />
                 )}
             </div>
+            {showLoadMore && <button className={styles.loadMore} onClick={() => loadMoreContracts()}>Load More</button>}
         </div>
     )
 }
