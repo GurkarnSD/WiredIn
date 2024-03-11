@@ -80,7 +80,56 @@ async function getContractsPrisma(
         user: true,
         skills: true,
         tags: true,
-        applicants: true,
+        applicants: { where: { uid: userId } },
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    const imageCache: Record<string, string> = {};
+
+    const updatedContracts = await Promise.all(
+      contracts.map(async (contract) => {
+        let profilePicUrl;
+        if (imageCache[contract.user.profilePic]) {
+          profilePicUrl = imageCache[contract.user.profilePic];
+        } else {
+          const res = await fetch(
+            `${process.env.API_URL}/api/image/${contract.user.profilePic}`
+          );
+          const image = await res.json();
+          profilePicUrl = image.url;
+          imageCache[contract.user.profilePic] = profilePicUrl;
+        }
+        return {
+          ...contract,
+          user: { ...contract.user, profilePic: profilePicUrl },
+        };
+      })
+    );
+
+    return updatedContracts;
+  } catch (error) {
+    throw new Error("Unable To Get Contracts");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function searchContractsPrisma(
+  userId: string,
+  page: number,
+  pageSize: number,
+  title: string
+) {
+  try {
+    const contracts = await prisma.contract.findMany({
+      where: { NOT: { userId }, title: { contains: title } },
+      include: {
+        user: true,
+        skills: true,
+        tags: true,
+        applicants: { where: { uid: userId } },
       },
       skip: (page - 1) * pageSize,
       take: pageSize,
@@ -188,6 +237,7 @@ async function applyToContractPrisma(contractId: string, userId: string) {
 export {
   getMyContractsPrisma,
   getContractsPrisma,
+  searchContractsPrisma,
   createContractPrisma,
   deleteContractPrisma,
   applyToContractPrisma,

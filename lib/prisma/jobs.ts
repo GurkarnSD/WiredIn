@@ -74,7 +74,59 @@ async function getJobsPrisma(userId: string, page: number, pageSize: number) {
         user: true,
         skills: true,
         tags: true,
-        applicants: true,
+        applicants: { where: { uid: userId } },
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    const imageCache: Record<string, string> = {};
+
+    const updatedJobs = await Promise.all(
+      jobs.map(async (job) => {
+        let profilePicUrl;
+        if (imageCache[job.user.profilePic]) {
+          profilePicUrl = imageCache[job.user.profilePic];
+        } else {
+          const res = await fetch(
+            `${process.env.API_URL}/api/image/${job.user.profilePic}`
+          );
+          const image = await res.json();
+          profilePicUrl = image.url;
+          imageCache[job.user.profilePic] = profilePicUrl;
+        }
+        return {
+          ...job,
+          user: { ...job.user, profilePic: profilePicUrl },
+        };
+      })
+    );
+
+    return updatedJobs;
+  } catch (error) {
+    throw new Error("Unable To Get Jobs");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function searchJobsPrisma(
+  userId: string,
+  page: number,
+  pageSize: number,
+  title: string
+) {
+  try {
+    const jobs = await prisma.job.findMany({
+      where: {
+        NOT: { userId },
+        title: { contains: title },
+      },
+      include: {
+        user: true,
+        skills: true,
+        tags: true,
+        applicants: { where: { uid: userId } },
       },
       skip: (page - 1) * pageSize,
       take: pageSize,
@@ -190,6 +242,7 @@ async function applyToJobPrisma(jobId: string, userId: string) {
 export {
   getMyJobsPrisma,
   getJobsPrisma,
+  searchJobsPrisma,
   createJobPrisma,
   deleteJobPrisma,
   applyToJobPrisma,
