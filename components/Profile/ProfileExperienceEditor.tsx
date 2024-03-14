@@ -1,32 +1,35 @@
 import styles from '../styles/Profile/ProfileExperienceEditor.module.css'
 import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faImage, faArrowsLeftRight, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faImage, faArrowsLeftRight, faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useState, useRef } from 'react';
 import Modal from '../Modal';
 import axios from 'axios';
-import { User, UserSkill } from '@/types';
+import { User, UserSkill, WorkExperience } from '@/types';
 
-export default function ProfileExperienceEditor(params: { user: User, skills: UserSkill[], setModal?: (isOpen: boolean) => void }) {
+export default function ProfileExperienceEditor(params: { user: User, skills: UserSkill[], setModal?: (isOpen: boolean) => void, editMode?: boolean, experience?: WorkExperience }) {
 
-    const { user, skills, setModal } = params;
+    const { user, skills, setModal, editMode, experience } = params;
 
     const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
     const [expForm, setExpForm] = useState({
-        title: '',
-        company: '',
-        start: '',
-        end: '',
-        desc: '',
-        current: false,
+        id: editMode && experience ? experience.id : null,
+        prevSkills: editMode && experience ? experience.skills?.map((skill) => skill.id) ?? [] : [],
+        title: editMode && experience ? experience.title : '',
+        company: editMode && experience ? experience.company : '',
+        start: editMode && experience ? new Date(experience.start).toISOString().slice(0, 7) : '',
+        end: editMode && experience && experience.end !== null ? new Date(experience.end).toISOString().slice(0, 7) : '',
+        desc: editMode && experience ? experience.description : '',
+        current: editMode && experience ? experience.current : false,
     })
-    const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+
+    const [selectedSkills, setSelectedSkills] = useState<string[]>(editMode && experience ? experience.skills?.map((skill) => skill.name) ?? [] : []);
     const [submitting, setSubmitting] = useState(false);
     const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
     const [error, setError] = useState('');
-    const [image, setImage] = useState('');
+    const [image, setImage] = useState(editMode && experience ? experience.image : '');
     const [imageFile, setImageFile] = useState<File | null>(null);
     const imageInputRef = useRef<HTMLInputElement>(null);
 
@@ -78,7 +81,7 @@ export default function ProfileExperienceEditor(params: { user: User, skills: Us
             title: expForm.title,
             company: expForm.company,
             start: expForm.start + '-01T00:00:00.000Z',
-            end: expForm.end + '-01T00:00:00.000Z',
+            end: expForm.end !== '' ? expForm.end + '-01T00:00:00.000Z' : null,
             current: expForm.current,
             description: expForm.desc,
             skills: skillIds,
@@ -98,18 +101,39 @@ export default function ProfileExperienceEditor(params: { user: User, skills: Us
             experience['image'] = experiencePicURL.data.key;
         }
 
-        const res = await fetch('/api/profile/experiences', {
-            method: "POST",
-            body: JSON.stringify({
-                experience: experience,
-                uid: user.uid,
+        let res = null;
+
+        if (!editMode) {
+            res = await fetch('/api/profile/experiences', {
+                method: "POST",
+                body: JSON.stringify({
+                    experience: experience,
+                    uid: user.uid,
+                })
             })
-        })
+        } else {
+            res = await fetch('/api/profile/experiences', {
+                method: "PUT",
+                body: JSON.stringify({
+                    experience: {
+                        id: expForm.id,
+                        prevSkills: expForm.prevSkills.map((prevSkill: any) => { if (!skillIds.includes({ id: prevSkill })) { return { id: prevSkill } } }),
+                        ...experience
+                    },
+                })
+            })
+        }
 
         if (!res.ok) {
-            throw new Error("Failed to Add Experience")
+            if (!editMode) {
+                throw new Error("Failed to Add Experience")
+            } else {
+                throw new Error("Failed to Edit Experience")
+            }
         } else {
             setExpForm({
+                id: null,
+                prevSkills: [],
                 title: '',
                 company: '',
                 start: '',
@@ -120,8 +144,9 @@ export default function ProfileExperienceEditor(params: { user: User, skills: Us
             setSelectedSkills([]);
             setImage('');
             setImageFile(null);
-            if (setModal)
+            if (setModal) {
                 setModal(false);
+            }
         }
 
         setSubmitting(false);
@@ -131,7 +156,7 @@ export default function ProfileExperienceEditor(params: { user: User, skills: Us
 
     return (
         <div className={styles.container}>
-            <div className={styles.title}>Experience</div>
+            <div className={styles.title}>{editMode && "Edit "}Experience</div>
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
                     <div className={styles.formGroupUpper}>
@@ -139,14 +164,21 @@ export default function ProfileExperienceEditor(params: { user: User, skills: Us
                             <div className={styles.formGroupLeftUpper}>
                                 <div className={styles.image}>
                                     {image ?
-                                        <Image
-                                            className={styles.experienceImage}
-                                            src={image}
-                                            alt=""
-                                            onClick={handleImageClick}
-                                            width={150}
-                                            height={150}
-                                        /> :
+                                        <>
+                                            <Image
+                                                className={styles.experienceImage}
+                                                src={image}
+                                                alt=""
+                                                onClick={handleImageClick}
+                                                width={150}
+                                                height={150}
+                                            />
+                                            {editMode && <FontAwesomeIcon icon={faXmark} className={styles.deleteImageIcon}
+                                                onClick={() => {
+                                                    setImage('');
+                                                    setImageFile(null);
+                                                }} />}
+                                        </> :
                                         <>
                                             <div className={styles.experienceImage} />
                                             <FontAwesomeIcon icon={faImage} className={styles.imageIcon} onClick={handleImageClick} />
@@ -163,23 +195,23 @@ export default function ProfileExperienceEditor(params: { user: User, skills: Us
                                 <div className={styles.formGroupLeft2}>
                                     <div className={styles.inputContainer}>
                                         <div className={styles.inputTitle}>Position Title</div>
-                                        <input className={styles.input} name='title' onChange={handleChange} />
+                                        <input className={styles.input} name='title' value={expForm.title} onChange={handleChange} />
                                     </div>
                                     <div className={styles.inputContainer}>
                                         <div className={styles.inputTitle}>Company</div>
-                                        <input className={styles.input} name='company' onChange={handleChange} />
+                                        <input className={styles.input} name='company' value={expForm.company} onChange={handleChange} />
                                     </div>
                                 </div>
                             </div>
                             <div className={styles.formGroupLeftLower}>
                                 <div className={styles.inputContainer}>
                                     <div className={styles.inputTitle}>From</div>
-                                    <input className={styles.input} type='month' name='start' onChange={handleChange} />
+                                    <input className={styles.input} type='month' name='start' value={expForm.start} onChange={handleChange} />
                                 </div>
                                 <FontAwesomeIcon icon={faArrowsLeftRight} className={styles.arrowIcon} />
                                 <div className={styles.inputContainer}>
                                     <div className={styles.inputTitle}>To</div>
-                                    <input className={styles.input} type='month' name='end' onChange={handleChange} />
+                                    <input className={styles.input} type='month' name='end' value={expForm.end} onChange={handleChange} />
                                 </div>
                                 <div className={styles.checkboxContainer}>
                                     <label className={styles.smallCheckboxLabel}>
@@ -203,7 +235,7 @@ export default function ProfileExperienceEditor(params: { user: User, skills: Us
                         </div>
                         <div className={styles.formGroupRight}>
                             <div className={styles.inputTitle}>Description</div>
-                            <textarea className={styles.desc} aria-multiline name='desc' onChange={handleChange} />
+                            <textarea className={styles.desc} aria-multiline name='desc' value={expForm.desc} onChange={handleChange} />
                         </div>
                     </div>
                 </div>

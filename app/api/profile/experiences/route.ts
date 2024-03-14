@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   getExperiencesPrisma,
   createExperiencePrisma,
+  updateExperiencePrisma,
   deleteExperiencePrisma,
 } from "@/lib/prisma/experiences";
 
@@ -18,6 +19,13 @@ export async function POST(req: Request) {
   await createExperiencePrisma(body.uid, body.experience);
 
   return NextResponse.json({ response: "Created Experience" });
+}
+
+export async function PUT(req: Request) {
+  const body = await req.json();
+  await updateExperiencePrisma(body.experience);
+
+  return NextResponse.json({ response: "Updated Experience" });
 }
 
 export async function DELETE(req: Request) {

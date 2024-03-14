@@ -72,6 +72,42 @@ async function createProjectPrisma(
   }
 }
 
+async function updateProjectPrisma(project: {
+  id: number;
+  title: string;
+  description: string;
+  deployment: string;
+  source: string;
+  start: string;
+  end: string;
+  current: boolean;
+  prevSkills: SkillWhereUniqueInput[];
+  skills: SkillWhereUniqueInput[];
+}) {
+  try {
+    await prisma.project.update({
+      where: { id: project.id },
+      data: {
+        title: project.title,
+        description: project.description,
+        deployment: project.deployment,
+        source: project.source,
+        skills: {
+          disconnect: [...project.prevSkills],
+          connect: [...project.skills],
+        },
+        current: project.current,
+        start: project.start,
+        ...(project.end !== "-01T00:00:00.000Z" ? { end: project.end } : {}),
+      },
+    });
+  } catch (error) {
+    throw new Error("Unable To Update Project");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function deleteProjectPrisma(id: string) {
   try {
     const queryId = parseInt(id, 10);
@@ -86,4 +122,9 @@ async function deleteProjectPrisma(id: string) {
   }
 }
 
-export { getProjectsPrisma, createProjectPrisma, deleteProjectPrisma };
+export {
+  getProjectsPrisma,
+  createProjectPrisma,
+  updateProjectPrisma,
+  deleteProjectPrisma,
+};

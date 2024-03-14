@@ -418,6 +418,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                         <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(post.createdAt)}</div>
                     </div>
                 </div>
+                {post.createdAt !== post.updatedAt && <div className={styles.edited}>Edited</div>}
                 <div className={styles.postBody}>
                     <div className={styles.text}>{post.text}</div>
                     <div className={styles.images}>

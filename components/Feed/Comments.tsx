@@ -117,6 +117,8 @@ export default function Comments(params: { postId: string, user: User }) {
     const [responses, setResponses] = useState<Record<number, CommentResponseWithStats[]>>({});
     const [openResponses, setOpenResponses] = useState<Record<number, boolean>>({});
     const [selectedComment, setSelectedComment] = useState<PostCommentWithStats | null>(null);
+    const [editComment, setEditComment] = useState<PostCommentWithStats | null>(null);
+    const [editResponse, setEditResponse] = useState<CommentResponseWithStats | null>(null);
 
     const toggleResponses = async (commentId: number) => {
         if (!responses[commentId]) {
@@ -149,6 +151,72 @@ export default function Comments(params: { postId: string, user: User }) {
     ) => {
         setCharCount(event.target.value.length);
         setInput(event.target.value);
+    };
+
+    useEffect(() => {
+        if (editComment) {
+            setSelectedComment(null);
+            setEditResponse(null);
+            setInput(editComment.text);
+            setCharCount(editComment.text.length);
+        }
+    }, [editComment]);
+
+    useEffect(() => {
+        if (editResponse) {
+            setSelectedComment(null);
+            setEditComment(null);
+            setInput(editResponse.text);
+            setCharCount(editResponse.text.length);
+        }
+    }, [editResponse]);
+
+    const handleUpdateSubmit = async () => {
+        if (input.length == 0) {
+            return;
+        }
+
+        if (editComment) {
+            const res = await fetch('/api/feed/comments', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    commentId: editComment.id,
+                    text: input,
+                }),
+            });
+
+            if (!res.ok) {
+                throw new Error('Failed to Update Comment');
+            } else {
+                setInput('');
+                setCharCount(0);
+                setEditComment(null);
+                setComments(await fetchComments(postId));
+            }
+
+            return res.json();
+        }
+
+        if (editResponse) {
+            const res = await fetch('/api/feed/responses', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    responseId: editResponse.id,
+                    text: input,
+                }),
+            });
+
+            if (!res.ok) {
+                throw new Error('Failed to Update Response');
+            } else {
+                setInput('');
+                setCharCount(0);
+                setEditComment(null);
+                setComments(await fetchComments(postId));
+            }
+
+            return res.json();
+        }
     };
 
     const handleSubmit = async () => {
@@ -309,6 +377,7 @@ export default function Comments(params: { postId: string, user: User }) {
                             <div className={styles.commenterName}>{comment.user.displayName}</div>
                             <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(comment.createdAt)}</div>
                         </div>
+                        {comment.createdAt !== comment.updatedAt && <div className={styles.edited}>Edited</div>}
                         <div className={styles.commentContent}>
                             <div className={styles.commentText}>{comment.text}</div>
                             <div className={styles.commentControls}>
@@ -323,7 +392,7 @@ export default function Comments(params: { postId: string, user: User }) {
                             </div>
                         </div>
                         <div className={styles.commentFooter}>
-                            <FontAwesomeIcon className={styles.replyIcon} icon={faReply} onClick={() => setSelectedComment(comment)} />
+                            <FontAwesomeIcon className={styles.replyIcon} icon={faReply} onClick={() => { setEditComment(null); setSelectedComment(comment) }} />
                             {comment._count.responses > 0 && openResponses[comment.id] ?
                                 <div className={styles.replyControl} onClick={() => toggleResponses(comment.id)}>
                                     <FontAwesomeIcon className={styles.responsesIcon} icon={faAngleDown} />
@@ -336,7 +405,7 @@ export default function Comments(params: { postId: string, user: User }) {
                                 </div>
                             }
                             {showCommentSettings[comment.id] ?
-                                <CommentSettings close={() => setShowCommentSettings({ ...showCommentSettings, [comment.id]: false })} uid={user.uid} commentInfo={{ uid: comment.user.uid, commentId: comment.id }} />
+                                <CommentSettings close={() => setShowCommentSettings({ ...showCommentSettings, [comment.id]: false })} uid={user.uid} comment={comment} toggleEdit={setEditComment} />
                                 :
                                 <FontAwesomeIcon className={styles.settingsIcon} icon={faEllipsis} onClick={() => setShowCommentSettings({ ...showCommentSettings, [comment.id]: true })} />
                             }
@@ -350,9 +419,9 @@ export default function Comments(params: { postId: string, user: User }) {
                                         <div className={styles.commentHeader}>
                                             <Image className={styles.responsePic} src={response.user.profilePic} width={25} height={25} alt='Profile Pic' />
                                             <div className={styles.responseName}>{response.user.displayName}</div>
-                                            <div className={styles.responseTime} suppressHydrationWarning={true}>{formatTimeDifference(response.createdAt)}</div>
+                                            <div className={styles.responseTime} suppressHydrationWarning={true}>{response.createdAt !== response.updatedAt && <span className={styles.editedResponse}>Edited · </span>}{formatTimeDifference(response.createdAt)}</div>
                                             {showResponseSettings[response.id] ?
-                                                <ResponseSettings close={() => setShowResponseSettings({ ...showResponseSettings, [response.id]: false })} uid={user.uid} responseInfo={{ uid: response.user.uid, responseId: response.id }} />
+                                                <ResponseSettings close={() => setShowResponseSettings({ ...showResponseSettings, [response.id]: false })} uid={user.uid} response={response} toggleEdit={setEditResponse} />
                                                 :
                                                 <FontAwesomeIcon className={styles.responseSettingsIcon} icon={faEllipsisVertical} onClick={() => setShowResponseSettings({ ...showResponseSettings, [response.id]: true })} />
                                             }
@@ -396,11 +465,48 @@ export default function Comments(params: { postId: string, user: User }) {
                         </div>
                     </>
                 }
+                {editComment &&
+                    <>
+                        <div className={styles.selectedHeader}>
+                            <FontAwesomeIcon className={styles.closeIcon} icon={faCircleXmark} onClick={() => setEditComment(null)} />
+                            Editing Comment
+                        </div>
+                        <div className={styles.selectedComment}>
+                            <div className={styles.commentHeader}>
+                                <Image className={styles.profilePic} src={editComment.user.profilePic} width={40} height={40} alt='Profile Pic' />
+                                <div className={styles.commenterName}>{editComment.user.displayName}</div>
+                                <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(editComment.createdAt)}</div>
+                            </div>
+                            <div className={styles.commentContent}>
+                                <div className={styles.commentText}>{editComment.text}</div>
+                            </div>
+                        </div>
+                    </>
+                }
+                {editResponse &&
+                    <>
+                        <div className={styles.selectedHeader}>
+                            <FontAwesomeIcon className={styles.closeIcon} icon={faCircleXmark} onClick={() => setEditResponse(null)} />
+                            Editing Response
+                        </div>
+                        <div className={styles.selectedComment}>
+                            <div className={styles.commentHeader}>
+                                <Image className={styles.profilePic} src={editResponse.user.profilePic} width={40} height={40} alt='Profile Pic' />
+                                <div className={styles.commenterName}>{editResponse.user.displayName}</div>
+                                <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(editResponse.createdAt)}</div>
+                            </div>
+                            <div className={styles.commentContent}>
+                                <div className={styles.commentText}>{editResponse.text}</div>
+                            </div>
+                        </div>
+                    </>
+                }
+
                 <div className={styles.commentInput}>
                     <Image className={styles.profilePic} src={user.profilePic} width={50} height={50} alt='Profile Pic' />
                     <input className={styles.addComment} placeholder={selectedComment ? 'Post a response...' : 'Post a comment...'} name='input' value={input} onChange={handleInputChange} />
                     <div className={`${styles.charCount} ${charCount > maxChars && styles.overMaxChars}`}>{charCount}/{maxChars}</div>
-                    <FontAwesomeIcon className={styles.sendComment} icon={faPaperPlane} onClick={handleSubmit} />
+                    <FontAwesomeIcon className={styles.sendComment} icon={faPaperPlane} onClick={!editComment && !editResponse ? handleSubmit : handleUpdateSubmit} />
                 </div>
             </div>
         </div >
@@ -417,9 +523,9 @@ const deleteComment = async (commentId: number) => {
     return res.json()
 }
 
-const CommentSettings = (params: { close: () => void, uid: string, commentInfo: { uid: string, commentId: number } }) => {
+const CommentSettings = (params: { close: () => void, uid: string, comment: PostCommentWithStats, toggleEdit: (comment: PostCommentWithStats) => void }) => {
 
-    const { uid, commentInfo, close } = params;
+    const { uid, comment, close, toggleEdit } = params;
     const [confirmationPopup, setConfirmationPopup] = useState(false);
 
     const deleteCommentHook = async (commentId: number) => {
@@ -434,13 +540,13 @@ const CommentSettings = (params: { close: () => void, uid: string, commentInfo: 
         <div className={styles.settings}>
             <FontAwesomeIcon className={styles.closeSettings} icon={faXmark} onClick={close} />
             <FontAwesomeIcon className={styles.settingsOption} icon={faFlag} />
-            {commentInfo.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faPencil} />}
-            {commentInfo.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faTrash} onClick={() => setConfirmationPopup(true)} />}
+            {comment.user.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faPencil} onClick={() => { toggleEdit(comment) }} />}
+            {comment.user.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faTrash} onClick={() => setConfirmationPopup(true)} />}
             {confirmationPopup &&
                 <ConfirmationPopup
                     showPopup={confirmationPopup}
                     setShowPopup={setConfirmationPopup}
-                    onConfirm={() => deleteCommentHook(commentInfo.commentId)}
+                    onConfirm={() => deleteCommentHook(comment.id)}
                     onCancel={() => setConfirmationPopup(false)}
                     message='delete your comment'
                 />
@@ -459,9 +565,9 @@ const deleteResponse = async (responseId: number) => {
     return res.json()
 }
 
-const ResponseSettings = (params: { close: () => void, uid: string, responseInfo: { uid: string, responseId: number } }) => {
+const ResponseSettings = (params: { close: () => void, uid: string, response: CommentResponseWithStats, toggleEdit: (response: CommentResponseWithStats) => void }) => {
 
-    const { uid, responseInfo, close } = params;
+    const { uid, response, close, toggleEdit } = params;
     const [confirmationPopup, setConfirmationPopup] = useState(false);
 
     const deleteResponseHook = async (responseId: number) => {
@@ -476,13 +582,13 @@ const ResponseSettings = (params: { close: () => void, uid: string, responseInfo
         <div className={styles.responseSettings}>
             <FontAwesomeIcon className={styles.responseCloseSettings} icon={faXmark} onClick={close} />
             <FontAwesomeIcon className={styles.responseSettingsOption} icon={faFlag} />
-            {responseInfo.uid === uid && <FontAwesomeIcon className={styles.responseSettingsOption} icon={faPencil} />}
-            {responseInfo.uid === uid && <FontAwesomeIcon className={styles.responseSettingsOption} icon={faTrash} onClick={() => setConfirmationPopup(true)} />}
+            {response.user.uid === uid && <FontAwesomeIcon className={styles.responseSettingsOption} icon={faPencil} onClick={() => { toggleEdit(response) }} />}
+            {response.user.uid === uid && <FontAwesomeIcon className={styles.responseSettingsOption} icon={faTrash} onClick={() => setConfirmationPopup(true)} />}
             {confirmationPopup &&
                 <ConfirmationPopup
                     showPopup={confirmationPopup}
                     setShowPopup={setConfirmationPopup}
-                    onConfirm={() => deleteResponseHook(responseInfo.responseId)}
+                    onConfirm={() => deleteResponseHook(response.user.id)}
                     onCancel={() => setConfirmationPopup(false)}
                     message='delete your response'
                 />

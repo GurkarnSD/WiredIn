@@ -263,6 +263,58 @@ async function createPostPrisma(
   }
 }
 
+async function updatePostPrisma(post: {
+  id: string;
+  text: string;
+  images: string[];
+  oldImages: string[];
+}) {
+  try {
+    const createdPost = await prisma.post.update({
+      where: { uid: post.id },
+      data: {
+        text: post.text,
+      },
+    });
+
+    if (post.images.length > 0) {
+      post.images.map(async (image) => {
+        try {
+          await prisma.image.create({
+            data: {
+              key: image,
+              postId: createdPost.uid,
+            },
+          });
+        } catch (error) {
+          throw new Error("Unable To Create Image");
+        }
+      });
+    }
+
+    if (post.oldImages.length > 0) {
+      post.oldImages.map(async (oldImage) => {
+        const url = new URL(oldImage);
+        const key = url.pathname.substring(1);
+        try {
+          const image = await prisma.image.findFirst({
+            where: { postId: post.id, key: key },
+          });
+          if (image) {
+            await prisma.image.delete({ where: { id: image.id } });
+          }
+        } catch (error) {
+          throw new Error("Unable To Delete Image");
+        }
+      });
+    }
+  } catch (error) {
+    throw new Error("Unable To Create Post");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function deletePostPrisma(uid: string) {
   try {
     await prisma.post.delete({
@@ -313,6 +365,7 @@ export {
   getPostsPrisma,
   getPostPrisma,
   createPostPrisma,
+  updatePostPrisma,
   deletePostPrisma,
   likePostPrisma,
   unlikePostPrisma,

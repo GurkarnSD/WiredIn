@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   getCommentsPrisma,
   createCommentPrisma,
+  updateCommentPrisma,
   deleteCommentPrisma,
 } from "@/lib/prisma/comments";
 
@@ -16,6 +17,13 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const body = await req.json();
   await createCommentPrisma(body.uid, body.postId, body.text);
+
+  return NextResponse.json({ response: "Created Comment" });
+}
+
+export async function PUT(req: Request) {
+  const body = await req.json();
+  await updateCommentPrisma(body.commentId, body.text);
 
   return NextResponse.json({ response: "Created Comment" });
 }

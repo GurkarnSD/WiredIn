@@ -107,6 +107,21 @@ async function createCommentPrisma(
   }
 }
 
+async function updateCommentPrisma(commentId: number, comment: string) {
+  try {
+    await prisma.comment.update({
+      where: { id: commentId },
+      data: {
+        text: comment,
+      },
+    });
+  } catch (error) {
+    throw new Error("Unable To Update Comment");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function deleteCommentPrisma(id: number) {
   try {
     await prisma.comment.delete({
@@ -156,6 +171,7 @@ async function unlikeCommentPrisma(user: string, commentId: number) {
 export {
   getCommentsPrisma,
   createCommentPrisma,
+  updateCommentPrisma,
   deleteCommentPrisma,
   likeCommentPrisma,
   unlikeCommentPrisma,

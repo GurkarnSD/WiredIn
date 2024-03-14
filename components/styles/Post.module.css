@@ -444,3 +444,12 @@
   gap: 8px;
   align-items: center;
 }
+
+.edited {
+  color: #959595;
+  font-weight: 400;
+  font-size: 14px;
+  text-align: right;
+  margin-top: -10px;
+  margin-right: 16px;
+}

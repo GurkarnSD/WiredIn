@@ -108,6 +108,12 @@
   border: none;
 }
 
+.editIcon {
+  font-size: 30px;
+  margin: auto;
+  margin-right: 10px;
+}
+
 .deleteIcon {
   font-size: 30px;
   margin: auto;

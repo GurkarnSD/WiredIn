@@ -26,6 +26,8 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditExperiences, setIsEditExperiences] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedExperience, setSelectedExperience] = useState<WorkExperience | undefined>(undefined);
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
@@ -84,18 +86,22 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
                                     </div>
                                 </>
                             }
-                            {isEditExperiences && <FontAwesomeIcon className={styles.deleteIcon} icon={faTrash} onClick={() => deleteExperience(experience.id)} />}
+                            {isEditExperiences && <><FontAwesomeIcon className={styles.editIcon} icon={faPen} onClick={() => { setSelectedExperience(experience); setIsEditModalOpen(true) }} /><FontAwesomeIcon className={styles.deleteIcon} icon={faTrash} onClick={() => deleteExperience(experience.id)} /></>}
                         </div>
                         {index !== experiencesData.length - 1 && <div className={styles.horizontalDivider} />}
                     </div>
                 ))}
-
-
             </div>
 
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
                     <ProfileExperienceEditor user={pageUser} skills={skillsData} setModal={setIsModalOpen} />
+                </Modal>
+            )}
+
+            {isEditModalOpen && (
+                <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} backIcon disableClickOff>
+                    <ProfileExperienceEditor user={pageUser} skills={skillsData} setModal={setIsEditModalOpen} editMode experience={selectedExperience} />
                 </Modal>
             )}
         </div>

@@ -100,6 +100,21 @@ async function createResponsePrisma(
   }
 }
 
+async function updateResponsePrisma(responseId: number, response: string) {
+  try {
+    await prisma.response.update({
+      where: { id: responseId },
+      data: {
+        text: response,
+      },
+    });
+  } catch (error) {
+    throw new Error("Unable To Update Response");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function deleteResponsePrisma(id: number) {
   try {
     await prisma.response.delete({
@@ -149,6 +164,7 @@ async function unlikeResponsePrisma(user: string, responseId: number) {
 export {
   getResponsesPrisma,
   createResponsePrisma,
+  updateResponsePrisma,
   deleteResponsePrisma,
   likeResponsePrisma,
   unlikeResponsePrisma,

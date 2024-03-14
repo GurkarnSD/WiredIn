@@ -81,9 +81,14 @@
   font-weight: 400;
 }
 
+.editIcon {
+  font-size: 30px;
+  margin-left: auto;
+}
+
 .deleteIcon {
   font-size: 30px;
-  margin: auto;
+  margin-left: 10px;
   margin-right: 10px;
 }
 

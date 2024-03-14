@@ -88,6 +88,42 @@ async function createExperiencePrisma(
   }
 }
 
+async function updateExperiencePrisma(experience: {
+  id: number;
+  title: string;
+  company: string;
+  image: string;
+  description: string;
+  skills: SkillWhereUniqueInput[];
+  prevSkills: SkillWhereUniqueInput[];
+  current: boolean;
+  start: string;
+  end: string;
+}) {
+  try {
+    await prisma.experience.update({
+      where: { id: experience.id },
+      data: {
+        title: experience.title,
+        company: experience.company,
+        description: experience.description,
+        image: experience.image,
+        skills: {
+          disconnect: [...experience.prevSkills],
+          connect: [...experience.skills],
+        },
+        current: experience.current,
+        start: experience.start,
+        end: experience.end,
+      },
+    });
+  } catch (error) {
+    throw new Error("Unable To Update Experience");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function deleteExperiencePrisma(id: string) {
   try {
     const queryId = parseInt(id, 10);
@@ -102,4 +138,9 @@ async function deleteExperiencePrisma(id: string) {
   }
 }
 
-export { getExperiencesPrisma, createExperiencePrisma, deleteExperiencePrisma };
+export {
+  getExperiencesPrisma,
+  createExperiencePrisma,
+  updateExperiencePrisma,
+  deleteExperiencePrisma,
+};

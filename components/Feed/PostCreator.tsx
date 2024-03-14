@@ -5,21 +5,23 @@ import axios from 'axios';
 import styles from '../styles/Feed/Post.module.css';
 import Image from 'next/image';
 import Modal from '../Modal';
-import { User } from '@/types';
+import { User, UserPost } from '@/types';
 
-export default function PostCreator(params: { user: User, setModal?: (isOpen: boolean) => void, toastTrigger?: () => void }) {
-    const { user, setModal, toastTrigger } = params;
+export default function PostCreator(params: { user: User, setModal?: (isOpen: boolean) => void, toastTrigger?: () => void, editMode?: boolean, post?: UserPost }) {
+    const { user, setModal, toastTrigger, editMode, post } = params;
 
-    const [input, setInput] = useState('');
+    const [input, setInput] = useState(editMode && post ? post.text : '');
     const [charCount, setCharCount] = useState(0);
     const [submitting, setSubmitting] = useState(false);
 
     const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
     const maxImages = 4;
     const maxChars = 1200;
+    const postId = editMode && post ? post.uid : '';
+    const prevImages = editMode && post ? post.images : [];
 
     const [error, setError] = useState('');
-    const [images, setImages] = useState<string[]>([]);
+    const [images, setImages] = useState<string[]>(editMode && post ? post.images : []);
     const [imageFiles, setImageFiles] = useState<File[]>([]);
     const imageInputRef = useRef<HTMLInputElement>(null);
 
@@ -121,16 +123,36 @@ export default function PostCreator(params: { user: User, setModal?: (isOpen: bo
             post['images'] = await Promise.all(imageUploadPromises);
         }
 
-        const res = await fetch('/api/feed/posts', {
-            method: 'POST',
-            body: JSON.stringify({
-                post: post,
-                uid: user.uid,
-            }),
-        });
+        let res = null;
+
+        if (!editMode) {
+            res = await fetch('/api/feed/posts', {
+                method: 'POST',
+                body: JSON.stringify({
+                    post: post,
+                    uid: user.uid,
+                }),
+            });
+        } else {
+            const oldImages = prevImages.filter((prevImage: any) => !images.includes(prevImage));
+            res = await fetch('/api/feed/posts', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    post: {
+                        id: postId,
+                        oldImages,
+                        ...post
+                    }
+                }),
+            });
+        }
 
         if (!res.ok) {
-            throw new Error('Failed to Post');
+            if (!editMode) {
+                throw new Error('Failed to Post');
+            } else {
+                throw new Error('Failed to Update Post');
+            }
         } else {
             setInput('');
             setCharCount(0);
@@ -193,21 +215,21 @@ export default function PostCreator(params: { user: User, setModal?: (isOpen: bo
     return (
         <div className={styles.creatorContainer}>
             <div className={styles.postCreatorHeader}>
-                <div className={styles.title}>New Post</div>
+                <div className={styles.title}>{editMode ? 'Edit' : 'New'} Post</div>
                 {error && <div className={styles.error}>{error}</div>}
             </div>
             <form className={styles.form} onSubmit={handleSubmit}>
                 {images.length > 0 &&
                     <div className={`${styles.imagesContainer} ${styles[calculateImageGrid()]}`}>
                         <div className={styles.imageContainer} onClick={() => openImageModal(images[0])}>
-                            <Image className={`${styles.image} ${calculateImageClass(0)}`} src={images[0]} alt={''} width={0} height={0} />
+                            <Image className={`${styles.image} ${calculateImageClass(0)}`} src={images[0]} alt={''} width={0} height={0} unoptimized={editMode} />
                             <FontAwesomeIcon icon={faXmark} className={styles.removeImageIcon} onClick={(event) => { event.stopPropagation(); removeImage(images[0]); }} />
                         </div>
                         <div className={styles.imagesContainer2}>
                             {images.slice(1).map((image, index) => {
                                 return (
                                     <div key={index} className={styles.imageContainer} onClick={() => openImageModal(image)}>
-                                        <Image className={`${styles.image} ${calculateImageClass(index + 1)}`} src={image} alt={''} width={0} height={0} />
+                                        <Image className={`${styles.image} ${calculateImageClass(index + 1)}`} src={image} alt={''} width={0} height={0} unoptimized={editMode} />
                                         <FontAwesomeIcon icon={faXmark} className={styles.removeImageIcon} onClick={(event) => { event.stopPropagation(); removeImage(image); }} />
                                     </div>
                                 );
@@ -216,7 +238,7 @@ export default function PostCreator(params: { user: User, setModal?: (isOpen: bo
                         {isModalOpen && selectedImage && (
                             <Modal isOpen={isModalOpen} onClose={closeImageModal}>
                                 <div className={styles.modalImageContainer}>
-                                    <Image className={styles.modalImage} src={selectedImage} alt={''} width={0} height={0} sizes="100vw" />
+                                    <Image className={styles.modalImage} src={selectedImage} alt={''} width={0} height={0} sizes="100vw" unoptimized={editMode} />
                                 </div>
                             </Modal>
                         )}
@@ -235,7 +257,7 @@ export default function PostCreator(params: { user: User, setModal?: (isOpen: bo
                             hidden
                         />
                     </span>
-                    <button className={styles.postButton} type='submit' disabled={submitting}>Post</button>
+                    <button className={styles.postButton} type='submit' disabled={submitting}>{editMode ? 'Save' : 'Post'}</button>
                 </div>
             </form>
         </div>

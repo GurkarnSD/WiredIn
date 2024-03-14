@@ -26,6 +26,8 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditProjects, setIsEditProjects] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedProject, setSelectedProject] = useState<UserProject | undefined>(undefined);
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
@@ -59,7 +61,7 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
                             {project.source && <Link href={project.source}>
                                 <FontAwesomeIcon className={styles.projectIcon} icon={faCode} />
                             </Link>}
-                            {isEditProjects && <FontAwesomeIcon className={styles.deleteIcon} icon={faTrash} onClick={() => deleteProject(project.id)} />}
+                            {isEditProjects && <><FontAwesomeIcon className={styles.editIcon} icon={faPen} onClick={() => { setSelectedProject(project); setIsEditModalOpen(true) }} /><FontAwesomeIcon className={styles.deleteIcon} icon={faTrash} onClick={() => deleteProject(project.id)} /></>}
                         </div>
                         <div className={styles.projectDate}>{new Date(project.start).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })} - {project.current ? "Present" : new Date(project.end).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}</div>
                         <div className={styles.projectDescription}>
@@ -76,6 +78,12 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
                     <ProfileProjectsEditor user={pageUser} skills={skillsData} setModal={setIsModalOpen} />
+                </Modal>
+            )}
+
+            {isEditModalOpen && (
+                <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} backIcon disableClickOff>
+                    <ProfileProjectsEditor user={pageUser} skills={skillsData} setModal={setIsEditModalOpen} editMode project={selectedProject} />
                 </Modal>
             )}
         </div>

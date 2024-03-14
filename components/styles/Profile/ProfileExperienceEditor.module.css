@@ -127,6 +127,16 @@
   color: #c4c4c4;
 }
 
+.deleteImageIcon {
+  position: absolute;
+  height: 75px;
+  color: #c4c4c4;
+}
+
+.deleteImageIcon:hover {
+  color: #ff0000;
+}
+
 .arrowIcon {
   height: 30px;
   color: #000000;

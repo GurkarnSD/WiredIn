@@ -77,9 +77,9 @@ const calculateImageClass = (images: string[], index: number) => {
     }
 }
 
-export default function Post(params: { data: UserPost, user: User }) {
+export default function Post(params: { data: UserPost, user: User, selectPost: (post: UserPost) => void, openEditModal: (isOpen: boolean) => void }) {
 
-    const { data, user } = params;
+    const { data, user, selectPost, openEditModal } = params;
 
     const [liked, setLiked] = useState(data.likes?.some((like: { uid: string }) => like.uid === user.uid))
     const [numLikes, setNumLikes] = useState(data._count.likes);
@@ -139,6 +139,7 @@ export default function Post(params: { data: UserPost, user: User }) {
                         <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(data.createdAt)}</div>
                     </div>
                 </div>
+                {data.createdAt !== data.updatedAt && <div className={styles.edited}>Edited</div>}
                 <div className={styles.postBody} onClick={(e) => e.stopPropagation()}>
                     <div className={styles.text}>{data.text}</div>
                     <div className={styles.images}>
@@ -175,7 +176,7 @@ export default function Post(params: { data: UserPost, user: User }) {
                     </div>
                     <div className={styles.postOptions} ref={settingsRef}>
                         <FontAwesomeIcon className={styles.moreIcon} icon={faEllipsisVertical} onClick={() => setShowPostSettings(!showPostSettings)} />
-                        {showPostSettings && <PostSettings uid={user.uid} postInfo={{ uid: data.user.uid, postId: data.uid }} />}
+                        {showPostSettings && <PostSettings uid={user.uid} post={data} selectPost={selectPost} openEditModal={openEditModal} />}
                     </div>
                 </div>
                 {commentsModalOpen &&
@@ -207,9 +208,9 @@ const deletePost = async (postId: string) => {
     return res.json()
 }
 
-const PostSettings = (params: { uid: string, postInfo: { uid: string, postId: string } }) => {
+const PostSettings = (params: { uid: string, post: UserPost, selectPost: (post: UserPost) => void, openEditModal: (isOpen: boolean) => void }) => {
 
-    const { uid, postInfo } = params;
+    const { uid, post, selectPost, openEditModal } = params;
     const [confirmationPopup, setConfirmationPopup] = useState(false);
 
     const deletePostHook = async (postId: string) => {
@@ -223,13 +224,13 @@ const PostSettings = (params: { uid: string, postInfo: { uid: string, postId: st
     return (
         <div className={styles.settings}>
             <FontAwesomeIcon className={styles.settingsOption} icon={faFlag} />
-            {postInfo.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faPencil} />}
-            {postInfo.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faTrash} onClick={() => setConfirmationPopup(true)} />}
+            {post.user.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faPencil} onClick={() => { selectPost(post); openEditModal(true); }} />}
+            {post.user.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faTrash} onClick={() => setConfirmationPopup(true)} />}
             {confirmationPopup &&
                 <ConfirmationPopup
                     showPopup={confirmationPopup}
                     setShowPopup={setConfirmationPopup}
-                    onConfirm={() => deletePostHook(postInfo.postId)}
+                    onConfirm={() => deletePostHook(post.uid)}
                     onCancel={() => setConfirmationPopup(false)}
                     message='delete your post'
                 />

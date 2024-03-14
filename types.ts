@@ -76,9 +76,9 @@ type WorkExperience = {
 type UserProject = {
   id: number;
   title: string;
-  description?: string | null;
-  deployment?: string | null;
-  source?: string | null;
+  description: string;
+  deployment: string;
+  source: string;
   start: Date;
   end: Date;
   current: boolean;

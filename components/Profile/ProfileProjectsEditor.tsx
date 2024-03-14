@@ -2,24 +2,26 @@ import styles from '../styles/Profile/ProfileProjectsEditor.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsLeftRight } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
-import { UserProfile, UserSkill } from '@/types';
+import { UserProfile, UserProject, UserSkill } from '@/types';
 
-export default function ProfileProjectsEditor(params: { user: UserProfile, skills: UserSkill[], setModal?: (isOpen: boolean) => void }) {
+export default function ProfileProjectsEditor(params: { user: UserProfile, skills: UserSkill[], setModal?: (isOpen: boolean) => void, editMode?: boolean, project?: UserProject }) {
 
-    const { user, skills, setModal } = params;
+    const { user, skills, setModal, editMode, project } = params;
 
     const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
     const [projForm, setProjForm] = useState({
-        title: '',
-        deployment: '',
-        start: '',
-        end: '',
-        current: false,
-        source: '',
-        desc: '',
+        id: editMode && project ? project.id : null,
+        prevSkills: editMode && project ? project.skills?.map((skill) => skill.id) ?? [] : [],
+        title: editMode && project ? project.title : '',
+        deployment: editMode && project ? project.deployment : '',
+        start: editMode && project ? new Date(project.start).toISOString().slice(0, 7) : '',
+        end: editMode && project ? new Date(project.end).toISOString().slice(0, 7) : '',
+        current: editMode && project ? project.current : false,
+        source: editMode && project ? project.source : '',
+        desc: editMode && project ? project.description : '',
     })
-    const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+    const [selectedSkills, setSelectedSkills] = useState<string[]>(editMode && project ? project.skills?.map((skill) => skill.name) ?? [] : []);
     const [submitting, setSubmitting] = useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -52,18 +54,39 @@ export default function ProfileProjectsEditor(params: { user: UserProfile, skill
             skills: skillIds,
         }
 
-        const res = await fetch('/api/profile/projects', {
-            method: 'POST',
-            body: JSON.stringify({
-                project: project,
-                uid: user.uid
+        let res = null;
+
+        if (!editMode) {
+            res = await fetch('/api/profile/projects', {
+                method: 'POST',
+                body: JSON.stringify({
+                    project: project,
+                    uid: user.uid
+                })
             })
-        })
+        } else {
+            res = await fetch('/api/profile/projects', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    project: {
+                        id: projForm.id,
+                        prevSkills: projForm.prevSkills.map((prevSkill: any) => { if (!skillIds.includes({ id: prevSkill })) { return { id: prevSkill } } }),
+                        ...project
+                    },
+                })
+            })
+        }
 
         if (!res.ok) {
-            throw new Error("Failed to Add Project")
+            if (!editMode) {
+                throw new Error("Failed to Add Project")
+            } else {
+                throw new Error("Failed to Update Project")
+            }
         } else {
             setProjForm({
+                id: null,
+                prevSkills: [],
                 title: '',
                 deployment: '',
                 start: '',
@@ -99,11 +122,11 @@ export default function ProfileProjectsEditor(params: { user: UserProfile, skill
                         <div className={styles.formGroupLeft}>
                             <div className={styles.inputContainer}>
                                 <div className={styles.inputTitle}>Project Title</div>
-                                <input className={styles.input} name='title' onChange={handleChange} />
+                                <input className={styles.input} name='title' value={projForm.title} onChange={handleChange} />
                             </div>
                             <div className={styles.inputContainer}>
                                 <div className={styles.inputTitle}>Deployment Link</div>
-                                <input className={styles.input} name='deployment' onChange={handleChange} />
+                                <input className={styles.input} name='deployment' value={projForm.deployment} onChange={handleChange} />
                             </div>
                             <div className={`${styles.inputContainer} ${styles.sourceCodeLeft}`}>
                                 <div className={styles.inputTitle}>Source Code Link</div>
@@ -115,12 +138,12 @@ export default function ProfileProjectsEditor(params: { user: UserProfile, skill
                             <div className={styles.dateContainer}>
                                 <div className={styles.inputContainer}>
                                     <div className={styles.inputTitle}>From</div>
-                                    <input className={styles.input} type='month' name='start' onChange={handleChange} />
+                                    <input className={styles.input} type='month' name='start' value={projForm.start} onChange={handleChange} />
                                 </div>
                                 <FontAwesomeIcon icon={faArrowsLeftRight} className={styles.arrowIcon} />
                                 <div className={styles.inputContainer}>
                                     <div className={styles.inputTitle}>To</div>
-                                    <input className={styles.input} type='month' name='end' onChange={handleChange} />
+                                    <input className={styles.input} type='month' name='end' value={projForm.end} onChange={handleChange} />
                                 </div>
                                 <div className={styles.checkboxContainer}>
                                     <label className={styles.checkboxLabel}>
@@ -143,7 +166,7 @@ export default function ProfileProjectsEditor(params: { user: UserProfile, skill
                             </div>
                             <div className={`${styles.inputContainer} ${styles.sourceCodeRight}`}>
                                 <div className={styles.inputTitle}>Source Code Link</div>
-                                <input className={styles.input} name='source' onChange={handleChange} />
+                                <input className={styles.input} name='source' value={projForm.source} onChange={handleChange} />
                             </div>
                         </div>
                     </div>
@@ -151,7 +174,7 @@ export default function ProfileProjectsEditor(params: { user: UserProfile, skill
                     <div className={styles.formGroupLower}>
                         <div className={styles.largeFormGroupLeft}>
                             <div className={styles.inputTitle}>Description</div>
-                            <textarea className={styles.desc} aria-multiline name='desc' onChange={handleChange} />
+                            <textarea className={styles.desc} aria-multiline name='desc' value={projForm.desc} onChange={handleChange} />
                         </div>
                         <div className={styles.smallFormGroupRight}>
                             <div className={styles.inputTitle}>Skills</div>

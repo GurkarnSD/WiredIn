@@ -20,6 +20,8 @@ const fetchPosts = async (uid: string, page: number = 1, pageSize: number = 10) 
 export default function Feed(params: { user: User }) {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedPost, setSelectedPost] = useState<UserPost | undefined>();
     const [posts, setPosts] = useState<UserPost[]>([]);
     const [page, setPage] = useState(1);
     const [showLoadMore, setShowLoadMore] = useState(false);
@@ -51,14 +53,21 @@ export default function Feed(params: { user: User }) {
             <div className={styles.posts}>
                 {posts.map((post) => {
                     return (
-                        <Post key={post.uid} data={post} user={user} />
+                        <Post key={post.uid} data={post} user={user} selectPost={setSelectedPost} openEditModal={setIsEditModalOpen} />
                     );
                 })}
             </div>
             {showLoadMore && <button className={styles.loadMore} onClick={() => loadMorePosts()}>Load More</button>}
+
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                     <PostCreator user={user} setModal={setIsModalOpen} toastTrigger={() => toast.success('Post Created')} />
+                </Modal>
+            )}
+
+            {isEditModalOpen && (
+                <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
+                    <PostCreator user={user} setModal={setIsEditModalOpen} toastTrigger={() => toast.success('Post Updated')} editMode post={selectedPost} />
                 </Modal>
             )}
         </div>

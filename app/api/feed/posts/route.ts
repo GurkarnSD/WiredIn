@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   getPostsPrisma,
   createPostPrisma,
+  updatePostPrisma,
   deletePostPrisma,
 } from "@/lib/prisma/posts";
 
@@ -20,6 +21,13 @@ export async function POST(req: Request) {
   await createPostPrisma(body.uid, body.post);
 
   return NextResponse.json({ response: "Created Post" });
+}
+
+export async function PUT(req: Request) {
+  const body = await req.json();
+  await updatePostPrisma(body.post);
+
+  return NextResponse.json({ response: "Updated Post" });
 }
 
 export async function DELETE(req: Request) {
