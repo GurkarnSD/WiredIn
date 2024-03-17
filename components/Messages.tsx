@@ -202,7 +202,7 @@ export default function Messages(params: { user: User }) {
     };
 
     const handleSubmit = async () => {
-        if (chatRoom) {
+        if (chatRoom && (message !== "" || imageFiles.length > 0)) {
 
             let attachments: string[] = [];
 

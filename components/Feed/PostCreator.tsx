@@ -11,7 +11,7 @@ export default function PostCreator(params: { user: User, setModal?: (isOpen: bo
     const { user, setModal, toastTrigger, editMode, post } = params;
 
     const [input, setInput] = useState(editMode && post ? post.text : '');
-    const [charCount, setCharCount] = useState(0);
+    const [charCount, setCharCount] = useState(editMode && post ? post.text.length : 0);
     const [submitting, setSubmitting] = useState(false);
 
     const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
