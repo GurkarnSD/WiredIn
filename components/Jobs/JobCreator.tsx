@@ -55,21 +55,25 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
 
         if (!title) {
             setError('Title is required');
+            setSubmitting(false);
             return;
         }
 
         if (!location) {
             setError('Location is required');
+            setSubmitting(false);
             return;
         }
 
         if (!desc) {
             setError('Description is required');
+            setSubmitting(false);
             return;
         }
 
         if (job.start && job.end && job.start > job.end) {
             setError('Start date must be before end date');
+            setSubmitting(false);
             return;
         }
 

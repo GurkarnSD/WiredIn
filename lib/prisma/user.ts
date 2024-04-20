@@ -138,7 +138,7 @@ async function createUserPrisma(user: NewUser): Promise<boolean> {
     };
     const credentials = await prisma.credentials.create({ data: authData });
     const userData = {
-      email: user.email,
+      email: user.email.toLowerCase(),
       displayName: user.displayName,
       uid: credentials.uid,
     };
@@ -209,7 +209,7 @@ async function getUserPrisma(uid: string, name: string): Promise<UserProfile> {
       return result as UserProfile;
     } else if (name !== "") {
       const result = await prisma.user.findFirst({
-        where: { displayName: { contains: name.toLowerCase() } },
+        where: { displayName: { contains: name, mode: "insensitive" } },
         include: {
           _count: {
             select: { followers: true, following: true },

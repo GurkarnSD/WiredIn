@@ -24,9 +24,9 @@ async function getRandomUsersPrisma(uid: string): Promise<UserProfile[]> {
 
   try {
     const randomUsers = (await prisma.$queryRaw`
-      SELECT * FROM User
+      SELECT * FROM "User"
       WHERE uid != ${uid}
-      ORDER BY RAND()
+      ORDER BY RANDOM()
       LIMIT 3;
     `) as UserProfile[];
 

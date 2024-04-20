@@ -3,10 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider          = "mysql"
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  relationMode      = "prisma"
+  provider          = "postgresql"
+  url               = env("POSTGRES_PRISMA_URL")
+  directUrl         = env("POSTGRES_URL_NON_POOLING")
 }
 
 model Credentials {
@@ -42,7 +41,7 @@ model ResetToken {
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   credentials   Credentials  @relation(fields: [credsId], references: [id], onDelete: Cascade)
-  credsId Int
+  credsId       Int
 
   @@index([credsId])
 }
@@ -53,7 +52,7 @@ model NameChange {
   updatedAt     DateTime     @updatedAt
   createdAt     DateTime     @default(now())
   credentials   Credentials  @relation(fields: [credsId], references: [id], onDelete: Cascade)
-  credsId Int
+  credsId       Int
 
   @@index([credsId])
 }
@@ -76,8 +75,8 @@ model User {
   experiences Experience[]
   projects    Project[]
   posts       Post[]
-  contracts  Contract[]
-  jobs       Job[]  
+  contracts   Contract[]
+  jobs        Job[]  
   likedPosts  Post[]       @relation("LikedPosts")
   comments    Comment[]    @relation("PostComments")
   responses   Response[]   @relation("CommentResponses")

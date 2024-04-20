@@ -47,16 +47,19 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
 
         if (!title) {
             setError('Title is required');
+            setSubmitting(false);
             return;
         }
 
         if (!location) {
             setError('Location is required');
+            setSubmitting(false);
             return;
         }
 
         if (!desc) {
             setError('Description is required');
+            setSubmitting(false);
             return;
         }
 
@@ -78,7 +81,7 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
             });
             setSelectedSkills([]);
             setSelectedTags([]);
-            if (setModal) 
+            if (setModal)
                 setModal(false);
             if (toastTrigger)
                 toastTrigger();

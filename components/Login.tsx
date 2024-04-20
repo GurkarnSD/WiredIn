@@ -38,7 +38,7 @@ export default function Login({ user }: { user: User | null }) {
 
         const response = await signIn('credentials', {
             redirect: false,
-            email: loginForm.email,
+            email: loginForm.email.toLowerCase(),
             password: loginForm.password,
         })
 
