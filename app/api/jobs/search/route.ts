@@ -6,10 +6,19 @@ export async function GET(req: NextRequest) {
   const userId = searchParams.get("uid");
   const page = Number(searchParams.get("page") || 1);
   const pageSize = Number(searchParams.get("pageSize") || 10);
-  const title = searchParams.get("title");
-  if (!userId || !title) {
+  const title = searchParams.get("title") || "";
+  const skills = searchParams.get("skills")?.split(",") || [];
+  const tags = searchParams.get("tags")?.split(",") || [];
+  if (!userId) {
     return NextResponse.error();
   }
-  const jobs = await searchJobsPrisma(userId, page, pageSize, title);
+  const jobs = await searchJobsPrisma(
+    userId,
+    page,
+    pageSize,
+    title,
+    skills,
+    tags
+  );
   return NextResponse.json(jobs);
 }

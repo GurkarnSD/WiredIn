@@ -120,11 +120,31 @@ async function searchContractsPrisma(
   userId: string,
   page: number,
   pageSize: number,
-  title: string
+  title: string,
+  skills: string[],
+  tags: string[]
 ) {
   try {
+    let whereClause: {
+      NOT: { userId: string };
+      title: { contains: string | undefined };
+      skills?: { some: { skill: { in: string[] } } };
+      tags?: { some: { tag: { in: string[] } } };
+    } = {
+      NOT: { userId },
+      title: { contains: title },
+    };
+
+    if (skills.length !== 0) {
+      whereClause.skills = { some: { skill: { in: skills } } };
+    }
+
+    if (tags.length !== 0) {
+      whereClause.tags = { some: { tag: { in: tags } } };
+    }
+
     const contracts = await prisma.contract.findMany({
-      where: { NOT: { userId }, title: { contains: title } },
+      where: whereClause,
       include: {
         user: true,
         skills: true,
@@ -159,6 +179,7 @@ async function searchContractsPrisma(
 
     return updatedContracts;
   } catch (error) {
+    console.log(error);
     throw new Error("Unable To Get Contracts");
   } finally {
     await prisma.$disconnect();

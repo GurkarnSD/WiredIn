@@ -180,21 +180,21 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
             </form>
             {selectSkillsOpen && (
                 <Modal isOpen={selectSkillsOpen} onClose={() => setSelectSkillsOpen(false)}>
-                    <SelectOptions type={'Skills'} optionsList={skillOptions} selector={setSelectedSkills} chosenOptions={selectedSkills} />
+                    <SelectOptions type={'Skills'} optionsList={skillOptions} selector={setSelectedSkills} chosenOptions={selectedSkills} setSelectOptionsPanel={setSelectSkillsOpen} />
                 </Modal>
             )}
             {selectTagsOpen && (
                 <Modal isOpen={selectTagsOpen} onClose={() => setSelectTagsOpen(false)}>
-                    <SelectOptions type={'Tags'} optionsList={tagOptions} selector={setSelectedTags} chosenOptions={selectedTags} />
+                    <SelectOptions type={'Tags'} optionsList={tagOptions} selector={setSelectedTags} chosenOptions={selectedTags} setSelectOptionsPanel={setSelectTagsOpen} />
                 </Modal>
             )}
         </div>
     )
 }
 
-function SelectOptions(params: { type: string, optionsList: { [key: string]: string }[], selector: (options: string[]) => void, chosenOptions: string[] }) {
+function SelectOptions(params: { type: string, optionsList: { [key: string]: string }[], selector: (options: string[]) => void, chosenOptions: string[], setSelectOptionsPanel: (state: boolean) => void }) {
 
-    const { type, optionsList, selector, chosenOptions } = params;
+    const { type, optionsList, selector, chosenOptions, setSelectOptionsPanel } = params;
 
     const [inputValue, setInputValue] = useState('');
     const [selectedOptions, setSelectedOptions] = useState<string[]>(chosenOptions);
@@ -220,6 +220,7 @@ function SelectOptions(params: { type: string, optionsList: { [key: string]: str
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         selector(selectedOptions);
+        setSelectOptionsPanel(false);
     }
 
     return (
