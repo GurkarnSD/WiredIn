@@ -4,13 +4,13 @@
   justify-content: space-between;
   padding-left: 40px;
   background-color: #000000;
-  height: 100px;
+  height: 80px;
   padding-right: 40px;
 }
 
 .wiredIn {
   font-weight: 800;
-  font-size: 50px;
+  font-size: 40px;
   background: linear-gradient(90deg, #ff00ff 30.43%, #0096ff 67.25%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -27,7 +27,7 @@
 .link {
   color: #ffffff;
   font-weight: 700;
-  font-size: 30px;
+  font-size: 28px;
   margin-right: 40px;
 }
 

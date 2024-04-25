@@ -133,12 +133,12 @@ async function createUserPrisma(user: NewUser): Promise<boolean> {
 
     const authData = {
       displayName: user.displayName,
-      email: user.email,
+      email: user.email.toLowerCase(),
       password: user.password,
     };
     const credentials = await prisma.credentials.create({ data: authData });
     const userData = {
-      email: user.email.toLowerCase(),
+      email: user.email,
       displayName: user.displayName,
       uid: credentials.uid,
     };

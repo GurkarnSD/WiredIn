@@ -1,13 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faComment, faEllipsisVertical, faTrash, faPencil, faFlag } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faComment, faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import styles from "../styles/Feed/Post.module.css";
 import Modal from '../Modal';
 import { useState, useRef, useEffect } from 'react';
 import Comments from "./Comments";
-import ConfirmationPopup from "../ConfirmationPopup";
 import { useRouter } from "next/navigation";
 import { User, UserPost } from "@/types";
+import PostSettings from "./PostSettings";
 
 const likePost = async (userId: string, postId: string) => {
     const res = await fetch('/api/feed/like/post', {
@@ -195,47 +195,6 @@ export default function Post(params: { data: UserPost, user: User, selectPost: (
                 </Modal>
             )}
         </>
-    )
-}
-
-const deletePost = async (postId: string) => {
-    const res = await fetch(`/api/feed/posts?uid=${postId}`, { method: "DELETE" })
-
-    if (!res.ok) {
-        throw new Error("Failed to delete post")
-    }
-
-    return res.json()
-}
-
-const PostSettings = (params: { uid: string, post: UserPost, selectPost: (post: UserPost) => void, openEditModal: (isOpen: boolean) => void }) => {
-
-    const { uid, post, selectPost, openEditModal } = params;
-    const [confirmationPopup, setConfirmationPopup] = useState(false);
-
-    const deletePostHook = async (postId: string) => {
-        try {
-            await deletePost(postId);
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    return (
-        <div className={styles.settings}>
-            <FontAwesomeIcon className={styles.settingsOption} icon={faFlag} />
-            {post.user.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faPencil} onClick={() => { selectPost(post); openEditModal(true); }} />}
-            {post.user.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faTrash} onClick={() => setConfirmationPopup(true)} />}
-            {confirmationPopup &&
-                <ConfirmationPopup
-                    showPopup={confirmationPopup}
-                    setShowPopup={setConfirmationPopup}
-                    onConfirm={() => deletePostHook(post.uid)}
-                    onCancel={() => setConfirmationPopup(false)}
-                    message='delete your post'
-                />
-            }
-        </div>
     )
 }
 

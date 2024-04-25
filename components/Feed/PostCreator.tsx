@@ -91,11 +91,13 @@ export default function PostCreator(params: { user: User, setModal?: (isOpen: bo
 
         if (input.length == 0 && imageFiles.length == 0) {
             setError('Cannot Submit Empty Post');
+            setSubmitting(false);
             return;
         }
 
         if (input.length > maxChars) {
             setError('Character Limit Exceeded');
+            setSubmitting(false);
             return;
         }
 

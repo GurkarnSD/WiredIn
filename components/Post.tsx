@@ -1,11 +1,16 @@
 'use client';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faComment, faPaperPlane, faReply, faAngleUp, faAngleDown, faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faComment, faPaperPlane, faReply, faAngleUp, faAngleDown, faCircleXmark, faEllipsisVertical, faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import styles from "./styles/Post.module.css";
 import Modal from './Modal';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { CommentResponse, PostComment, User, UserPost } from "@/types";
+import PostSettings from "./Feed/PostSettings";
+import PostCreator from "./Feed/PostCreator";
+import { Toaster, toast } from 'sonner'
+import CommentSettings from "./Feed/CommentSettings";
+import ResponseSettings from "./Feed/ResponseSettings";
 
 const likePost = async (userId: string, postId: string) => {
     const res = await fetch('/api/feed/like/post', {
@@ -79,6 +84,18 @@ const calculateImageClass = (images: string[], index: number) => {
     } else {
         return styles.smallImage
     }
+}
+
+const fetchComments = async (uid: string) => {
+    const res = await fetch(`/api/feed/comments/?uid=${uid}`)
+
+    if (!res.ok) {
+        throw new Error("Failed to fetch comments")
+    }
+
+    const comments = await res.json()
+
+    return comments
 }
 
 const fetchResponses = async (id: number) => {
@@ -185,11 +202,16 @@ export default function Post(params: { post: PostWithStats, user: User }) {
 
     const { post, user } = params;
     const [profilePic, setProfilePic] = useState('');
-
+    const [comments, setComments] = useState([]);
     const [responses, setResponses] = useState<Record<number, CommentResponseWithStats[]>>({});
     const [openResponses, setOpenResponses] = useState<Record<number, boolean>>({});
-
     const [selectedComment, setSelectedComment] = useState<PostCommentWithStats | null>(null);
+    const [editComment, setEditComment] = useState<PostCommentWithStats | null>(null);
+    const [editResponse, setEditResponse] = useState<CommentResponseWithStats | null>(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [showPostSettings, setShowPostSettings] = useState(false);
+    const settingsRef = useRef(null);
+    HandleCloseSettings(settingsRef, setShowPostSettings);
 
     const toggleResponses = async (commentId: number) => {
         if (!responses[commentId]) {
@@ -229,6 +251,55 @@ export default function Post(params: { post: PostWithStats, user: User }) {
         setCharCount(event.target.value.length);
         setInput(event.target.value);
     };
+
+    const handleUpdateSubmit = async () => {
+        if (input.length == 0) {
+            return;
+        }
+
+        if (editComment) {
+            const res = await fetch('/api/feed/comments', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    commentId: editComment.id,
+                    text: input,
+                }),
+            });
+
+            if (!res.ok) {
+                throw new Error('Failed to Update Comment');
+            } else {
+                setInput('');
+                setCharCount(0);
+                setEditComment(null);
+                setComments(await fetchComments(post.uid));
+            }
+
+            return res.json();
+        }
+
+        if (editResponse) {
+            const res = await fetch('/api/feed/responses', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    responseId: editResponse.id,
+                    text: input,
+                }),
+            });
+
+            if (!res.ok) {
+                throw new Error('Failed to Update Response');
+            } else {
+                setInput('');
+                setCharCount(0);
+                setEditComment(null);
+                setComments(await fetchComments(post.uid));
+            }
+
+            return res.json();
+        }
+    };
+
 
     const handleSubmit = async () => {
         if (input.length == 0) {
@@ -403,8 +474,12 @@ export default function Post(params: { post: PostWithStats, user: User }) {
         }
     }
 
+    const [showCommentSettings, setShowCommentSettings] = useState<Record<number, boolean>>({});
+    const [showResponseSettings, setShowResponseSettings] = useState<Record<number, boolean>>({});
+
     return (
         <div className={styles.container}>
+            <Toaster position="top-right" />
             <div className={styles.postContainer}>
                 <div className={styles.postHeader}>
                     <div className={styles.postHeaderLeft}>
@@ -418,7 +493,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                         <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(post.createdAt)}</div>
                     </div>
                 </div>
-                {post.createdAt !== post.updatedAt && <div className={styles.edited}>Edited</div>}
+                {post.createdAt.getTime() !== post.updatedAt.getTime() && <div className={styles.edited}>Edited</div>}
                 <div className={styles.postBody}>
                     <div className={styles.text}>{post.text}</div>
                     <div className={styles.images}>
@@ -460,6 +535,10 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                         <FontAwesomeIcon className={styles.postIcon} icon={faComment} />
                         <span className={styles.iconCount}>{numComments}</span>
                     </div>
+                    <div className={styles.postOptions} ref={settingsRef}>
+                        <FontAwesomeIcon className={styles.moreIcon} icon={faEllipsisVertical} onClick={() => setShowPostSettings(!showPostSettings)} />
+                        {showPostSettings && <PostSettings uid={user.uid} post={post} openEditModal={setIsEditModalOpen} />}
+                    </div>
                 </div>
                 <div className={styles.commentBody}>
                     {post.comments.map((comment: PostCommentWithStats) => (
@@ -495,6 +574,11 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                                         <div className={styles.replyText}>View Replies</div>
                                     </div>
                                 }
+                                {showCommentSettings[comment.id] ?
+                                    <CommentSettings close={() => setShowCommentSettings({ ...showCommentSettings, [comment.id]: false })} uid={user.uid} comment={comment} toggleEdit={setEditComment} />
+                                    :
+                                    <FontAwesomeIcon className={styles.settingsIcon} icon={faEllipsis} onClick={() => setShowCommentSettings({ ...showCommentSettings, [comment.id]: true })} />
+                                }
                             </div>
 
                             {openResponses[comment.id] && responses[comment.id] &&
@@ -506,6 +590,11 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                                                 <Image className={styles.responsePic} src={response.user.profilePic} width={25} height={25} alt='Profile Pic' />
                                                 <div className={styles.responseName}>{response.user.displayName}</div>
                                                 <div className={styles.responseTime} suppressHydrationWarning={true}>{formatTimeDifference(response.createdAt)}</div>
+                                                {showResponseSettings[response.id] ?
+                                                    <ResponseSettings close={() => setShowResponseSettings({ ...showResponseSettings, [response.id]: false })} uid={user.uid} response={response} toggleEdit={setEditResponse} />
+                                                    :
+                                                    <FontAwesomeIcon className={styles.responseSettingsIcon} icon={faEllipsisVertical} onClick={() => setShowResponseSettings({ ...showResponseSettings, [response.id]: true })} />
+                                                }
                                             </div>
                                             <div className={styles.commentContent}>
                                                 <div className={styles.responseText}>{response.text}</div>
@@ -546,14 +635,55 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                             </div>
                         </>
                     }
+                    {editComment &&
+                        <>
+                            <div className={styles.selectedHeader}>
+                                <FontAwesomeIcon className={styles.closeIcon} icon={faCircleXmark} onClick={() => setEditComment(null)} />
+                                Editing Comment
+                            </div>
+                            <div className={styles.selectedComment}>
+                                <div className={styles.commentHeader}>
+                                    <Image className={styles.profilePic} src={editComment.user.profilePic} width={40} height={40} alt='Profile Pic' />
+                                    <div className={styles.commenterName}>{editComment.user.displayName}</div>
+                                    <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(editComment.createdAt)}</div>
+                                </div>
+                                <div className={styles.commentContent}>
+                                    <div className={styles.commentText}>{editComment.text}</div>
+                                </div>
+                            </div>
+                        </>
+                    }
+                    {editResponse &&
+                        <>
+                            <div className={styles.selectedHeader}>
+                                <FontAwesomeIcon className={styles.closeIcon} icon={faCircleXmark} onClick={() => setEditResponse(null)} />
+                                Editing Response
+                            </div>
+                            <div className={styles.selectedComment}>
+                                <div className={styles.commentHeader}>
+                                    <Image className={styles.profilePic} src={editResponse.user.profilePic} width={40} height={40} alt='Profile Pic' />
+                                    <div className={styles.commenterName}>{editResponse.user.displayName}</div>
+                                    <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(editResponse.createdAt)}</div>
+                                </div>
+                                <div className={styles.commentContent}>
+                                    <div className={styles.commentText}>{editResponse.text}</div>
+                                </div>
+                            </div>
+                        </>
+                    }
                     <div className={styles.commentInput}>
                         <Image className={styles.profilePic} src={profilePic} width={50} height={50} alt='Profile Pic' />
                         <input className={styles.addComment} placeholder={selectedComment ? 'Post a response...' : 'Post a comment...'} name='input' value={input} onChange={handleInputChange} />
                         <div className={`${styles.charCount} ${charCount > maxChars && styles.overMaxChars}`}>{charCount}/{maxChars}</div>
-                        <FontAwesomeIcon className={styles.sendComment} icon={faPaperPlane} onClick={handleSubmit} />
+                        <FontAwesomeIcon className={styles.sendComment} icon={faPaperPlane} onClick={!editComment && !editResponse ? handleSubmit : handleUpdateSubmit} />
                     </div>
                 </div>
             </div>
+            {isEditModalOpen && (
+                <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
+                    <PostCreator user={user} setModal={setIsEditModalOpen} toastTrigger={() => toast.success('Post Updated')} editMode post={post} />
+                </Modal>
+            )}
         </div>
     )
 }
@@ -585,4 +715,20 @@ function formatTimeDifference(createdAt: Date): string {
     return timeDifferenceInDays < 30
         ? `${timeDifferenceInDays} day${timeDifferenceInDays !== 1 ? 's' : ''} ago`
         : createdDateTime.toISOString().slice(0, 10);
+}
+
+function HandleCloseSettings(settingsRef: React.RefObject<HTMLElement>, setVisible: React.Dispatch<React.SetStateAction<boolean>>) {
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
+                setVisible(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [settingsRef]);
 }

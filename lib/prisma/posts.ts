@@ -134,7 +134,7 @@ async function getPostPrisma(postId: string) {
           include: {
             user: {
               select: {
-                title: true,
+                uid: true,
                 displayName: true,
                 profilePic: true,
               },

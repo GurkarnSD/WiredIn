@@ -453,3 +453,26 @@
   margin-top: -10px;
   margin-right: 16px;
 }
+
+.postOptions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.moreIcon {
+  margin-right: 20px;
+  font-size: 20px;
+  color: #000000;
+}
+
+.settingsIcon {
+  margin-left: auto;
+  color: #000000;
+  font-size: 14px;
+}
+
+.responseSettingsIcon {
+  color: #000000;
+  font-size: 12px;
+}
