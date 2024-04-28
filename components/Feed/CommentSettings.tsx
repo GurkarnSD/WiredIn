@@ -22,18 +22,10 @@ export default function CommentSettings(params: { close: () => void, uid: string
         const res = await fetch(`/api/feed/comments?id=${commentId}`, { method: "DELETE" })
 
         if (!res.ok) {
-            throw new Error("Failed to delete comment")
+            throw new Error("Failed to Delete Comment")
         }
 
         return res.json()
-    }
-
-    const deleteCommentHook = async (commentId: number) => {
-        try {
-            await deleteComment(commentId);
-        } catch (error) {
-            console.log(error)
-        }
     }
 
     return (
@@ -46,7 +38,7 @@ export default function CommentSettings(params: { close: () => void, uid: string
                 <ConfirmationPopup
                     showPopup={confirmationPopup}
                     setShowPopup={setConfirmationPopup}
-                    onConfirm={() => deleteCommentHook(comment.id)}
+                    onConfirm={() => deleteComment(comment.id)}
                     onCancel={() => setConfirmationPopup(false)}
                     message='delete your comment'
                 />

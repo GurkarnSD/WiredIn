@@ -224,6 +224,44 @@ async function createJobPrisma(
   }
 }
 
+async function updateJobPrisma(job: {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  skills: string[];
+  tags: string[];
+  salary: number;
+  hourly: number;
+  start: string;
+  end: string;
+}) {
+  try {
+    await prisma.job.update({
+      where: { uid: job.id },
+      data: {
+        title: job.title,
+        description: job.description,
+        location: job.location,
+        salary: job.salary,
+        hourly: job.hourly,
+        start: job.start,
+        end: job.end,
+        skills: {
+          set: job.skills.map((skill) => ({ skill })),
+        },
+        tags: {
+          set: job.tags.map((tag) => ({ tag })),
+        },
+      },
+    });
+  } catch (error) {
+    throw new Error("Unable To Update Job");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function deleteJobPrisma(uid: string) {
   try {
     await prisma.job.delete({
@@ -261,6 +299,7 @@ export {
   getJobsPrisma,
   searchJobsPrisma,
   createJobPrisma,
+  updateJobPrisma,
   deleteJobPrisma,
   applyToJobPrisma,
 };

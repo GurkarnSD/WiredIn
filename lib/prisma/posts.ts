@@ -270,7 +270,7 @@ async function updatePostPrisma(post: {
   oldImages: string[];
 }) {
   try {
-    const createdPost = await prisma.post.update({
+    const updatedPost = await prisma.post.update({
       where: { uid: post.id },
       data: {
         text: post.text,
@@ -283,7 +283,7 @@ async function updatePostPrisma(post: {
           await prisma.image.create({
             data: {
               key: image,
-              postId: createdPost.uid,
+              postId: updatedPost.uid,
             },
           });
         } catch (error) {
@@ -309,7 +309,7 @@ async function updatePostPrisma(post: {
       });
     }
   } catch (error) {
-    throw new Error("Unable To Create Post");
+    throw new Error("Unable To Update Post");
   } finally {
     await prisma.$disconnect();
   }

@@ -1,5 +1,5 @@
 import Modal from "./Modal"
-import styles from "./styles/Feed/ConfirmationPopup.module.css"
+import styles from "./styles/ConfirmationPopup.module.css"
 
 export default function ConfirmationPopup(params: { showPopup: boolean, setShowPopup: (value: boolean) => void, message?: string, onConfirm: () => void, onCancel: () => void }) {
 

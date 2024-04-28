@@ -197,16 +197,33 @@
   cursor: pointer;
 }
 
+.settings {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+
 .deleteIcon {
   color: #000;
   cursor: pointer;
-  margin: auto;
   font-size: 28px;
 }
 
 .deleteIcon:hover {
   cursor: pointer;
   color: #e30000;
+}
+
+.editIcon {
+  color: #000;
+  cursor: pointer;
+  font-size: 26px;
+}
+
+.editIcon:hover {
+  cursor: pointer;
+  color: #0096ff;
 }
 
 @media screen and (max-width: 900px) {

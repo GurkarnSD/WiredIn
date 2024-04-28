@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   getContractsPrisma,
   createContractPrisma,
+  updateContractPrisma,
   deleteContractPrisma,
 } from "@/lib/prisma/contracts";
 
@@ -21,6 +22,12 @@ export async function POST(req: Request) {
   const body = await req.json();
   await createContractPrisma(body.userId, body.contract);
   return NextResponse.json({ response: "Created Contract" });
+}
+
+export async function PUT(req: Request) {
+  const body = await req.json();
+  await updateContractPrisma(body.contract);
+  return NextResponse.json({ response: "Updated Contract" });
 }
 
 export async function DELETE(req: Request) {

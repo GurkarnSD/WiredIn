@@ -3,23 +3,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faArrowsLeftRight } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react';
 import Modal from '../Modal';
-import { User } from '@/types';
+import { User, UserJob } from '@/types';
 
-export default function JobCreator(params: { user: User, skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void, toastTrigger?: () => void }) {
+export default function JobCreator(params: { user: User, skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void, toastTrigger?: () => void, editMode?: boolean, job?: UserJob }) {
 
-    const { user, skillOptions, tagOptions, setModal, toastTrigger } = params;
+    const { user, skillOptions, tagOptions, setModal, toastTrigger, editMode, job } = params;
 
     const [jobForm, setJobForm] = useState({
-        title: '',
-        location: '',
-        desc: '',
-        salary: '',
-        hourly: '',
-        start: '',
-        end: ''
+        title: editMode && job ? job.title : '',
+        location: editMode && job ? job.location : '',
+        desc: editMode && job ? job.description : '',
+        salary: editMode && job?.salary ? job.salary.toString() : '',
+        hourly: editMode && job?.hourly ? job.hourly.toString() : '',
+        start: editMode && job?.start ? new Date(job.start).toISOString().slice(0, 7) : '',
+        end: editMode && job?.end ? new Date(job.end).toISOString().slice(0, 7) : ''
     })
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
+    const jobId = editMode && job ? job.uid : '';
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setJobForm((prev) => ({
@@ -28,9 +29,9 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
         }))
     }
 
-    const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+    const [selectedSkills, setSelectedSkills] = useState<string[]>(editMode && job ? job.skills.map((skill) => { return skill.skill }) : []);
     const [selectSkillsOpen, setSelectSkillsOpen] = useState(false);
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const [selectedTags, setSelectedTags] = useState<string[]>(editMode && job ? job.tags.map((tag) => { return tag.tag }) : []);
     const [selectTagsOpen, setSelectTagsOpen] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -77,16 +78,32 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
             return;
         }
 
-        const res = await fetch('/api/jobs', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ userId: user.uid, job })
-        })
+        let res = null;
+
+        if (!editMode) {
+            res = await fetch('/api/jobs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId: user.uid, job })
+            })
+        } else {
+            res = await fetch(`/api/jobs`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ job: { id: jobId, ...job } })
+            })
+        }
 
         if (!res.ok) {
-            throw new Error('Failed to Publish Job');
+            if (!editMode) {
+                throw new Error('Failed to Publish Job');
+            } else {
+                throw new Error('Failed to Update Job');
+            }
         } else {
             setJobForm({
                 title: '',
@@ -113,7 +130,7 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
     return (
         <div className={styles.jobCreator}>
             <div className={styles.jobCreatorHeader}>
-                <h1 className={styles.title2}>Job Creator</h1>
+                <h1 className={styles.title2}>Job {editMode ? 'Editor' : 'Creator'}</h1>
                 {error && <div className={styles.error}>{error}</div>}
             </div>
             <form className={styles.jobForm} onSubmit={handleSubmit}>

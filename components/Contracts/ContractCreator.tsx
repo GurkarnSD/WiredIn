@@ -3,19 +3,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react';
 import Modal from '../Modal';
-import { User } from '@/types';
+import { User, UserContract } from '@/types';
 
-export default function ContractCreator(params: { user: User, skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void, toastTrigger?: () => void }) {
+export default function ContractCreator(params: { user: User, skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void, toastTrigger?: () => void, editMode?: boolean, contract?: UserContract }) {
 
-    const { user, skillOptions, tagOptions, setModal, toastTrigger } = params;
+    const { user, skillOptions, tagOptions, setModal, toastTrigger, editMode, contract } = params;
 
     const [contractForm, setContractForm] = useState({
-        title: '',
-        location: '',
-        desc: ''
+        title: editMode && contract ? contract.title : '',
+        location: editMode && contract ? contract.location : '',
+        desc: editMode && contract ? contract.description : ''
     })
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
+    const contractId = editMode && contract ? contract.uid : '';
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setContractForm((prev) => ({
@@ -24,9 +25,9 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
         }))
     }
 
-    const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+    const [selectedSkills, setSelectedSkills] = useState<string[]>(editMode && contract ? contract.skills.map((skill) => { return skill.skill }) : []);
     const [selectSkillsOpen, setSelectSkillsOpen] = useState(false);
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const [selectedTags, setSelectedTags] = useState<string[]>(editMode && contract ? contract.tags.map((tag) => { return tag.tag }) : []);
     const [selectTagsOpen, setSelectTagsOpen] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -63,16 +64,32 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
             return;
         }
 
-        const res = await fetch('/api/contracts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ userId: user.uid, contract })
-        })
+        let res = null;
+
+        if (!editMode) {
+            res = await fetch('/api/contracts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId: user.uid, contract })
+            })
+        } else {
+            res = await fetch(`/api/contracts`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ contract: { id: contractId, ...contract } })
+            })
+        }
 
         if (!res.ok) {
-            throw new Error('Failed to Publish Contract');
+            if (!editMode) {
+                throw new Error('Failed to Publish Contract');
+            } else {
+                throw new Error('Failed to Update Contract');
+            }
         } else {
             setContractForm({
                 title: '',
@@ -95,7 +112,7 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
     return (
         <div className={styles.contractCreator}>
             <div className={styles.contractCreatorHeader}>
-                <h1 className={styles.title2}>Contract Creator</h1>
+                <h1 className={styles.title2}>Contract {editMode ? 'Editor' : 'Creator'}</h1>
                 {error && <div className={styles.error}>{error}</div>}
             </div>
             <form className={styles.contractForm} onSubmit={handleSubmit}>
@@ -136,7 +153,7 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
                     </div>
                 </div>
                 <div className={styles.contractFormFooter}>
-                    <button className={styles.submit} type='submit' disabled={submitting}>Publish Contract</button>
+                    <button className={styles.submit} type='submit' disabled={submitting}>{editMode ? "Update Contract" : "Publish Contract"}</button>
                 </div>
             </form>
             {selectSkillsOpen && (

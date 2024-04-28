@@ -17,6 +17,8 @@ export default function MyJobs(params: { user: User }) {
     const { data: tagOptions } = useSWR('/api/tags', fetcher)
     const { data: userJobs } = useSWR(`/api/jobs/user/?uid=${user.uid}`, fetcher)
     const [showJobCreator, setShowJobCreator] = useState(false)
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedJob, setSelectedJob] = useState<UserJob | undefined>();
 
     return (
         <>
@@ -31,7 +33,7 @@ export default function MyJobs(params: { user: User }) {
                 <div>
                     {userJobs && userJobs.map((job: UserJob) => {
                         return (
-                            <Job key={job.id} job={job} user={user} />
+                            <Job key={job.id} job={job} user={user} selectJob={setSelectedJob} openEditModal={setIsEditModalOpen} />
                         )
                     })}
                 </div>
@@ -41,6 +43,12 @@ export default function MyJobs(params: { user: User }) {
                     <JobCreator user={user} skillOptions={skillOptions} tagOptions={tagOptions} setModal={setShowJobCreator} toastTrigger={() => toast.success("Job Created")} />
                 </Modal>
             }
+
+            {isEditModalOpen && (
+                <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
+                    <JobCreator user={user} skillOptions={skillOptions} tagOptions={tagOptions} setModal={setShowJobCreator} toastTrigger={() => toast.success("Job Updated")} editMode job={selectedJob} />
+                </Modal>
+            )}
         </>
     )
 }

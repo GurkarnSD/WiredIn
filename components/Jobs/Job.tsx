@@ -6,11 +6,13 @@ import Modal from "../Modal";
 import { useState } from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faPencil } from "@fortawesome/free-solid-svg-icons";
+import ConfirmationPopup from "../ConfirmationPopup";
 
-export default function Job(params: { job: UserJob, user: User }) {
+export default function Job(params: { job: UserJob, user: User, selectJob?: (job: UserJob) => void, openEditModal?: (isOpen: boolean) => void }) {
 
-    const { job, user } = params
+    const { job, user, selectJob, openEditModal } = params;
+    const [confirmationPopup, setConfirmationPopup] = useState(false);
 
     async function applyToJob() {
         const res = await fetch('/api/jobs/apply', {
@@ -23,6 +25,12 @@ export default function Job(params: { job: UserJob, user: User }) {
             },
             method: 'POST'
         })
+
+        if (!res.ok) {
+            throw new Error("Failed to Apply to Job")
+        }
+
+        return res.json()
     }
 
     async function deleteJob() {
@@ -35,6 +43,12 @@ export default function Job(params: { job: UserJob, user: User }) {
             },
             method: 'DELETE'
         })
+
+        if (!res.ok) {
+            throw new Error("Failed to Delete Job")
+        }
+
+        return res.json()
     }
 
     const [showApplicants, setShowApplicants] = useState(false);
@@ -43,7 +57,10 @@ export default function Job(params: { job: UserJob, user: User }) {
         <div className={styles.jobContainer}>
             <div className={styles.job}>
                 {user.uid === job.user.uid &&
-                    <FontAwesomeIcon icon={faTrash} className={styles.deleteIcon} onClick={deleteJob} />
+                    <div className={styles.settings}>
+                        <FontAwesomeIcon icon={faPencil} className={styles.editIcon} onClick={() => { if (selectJob) selectJob(job); if (openEditModal) openEditModal(true); }} />
+                        <FontAwesomeIcon icon={faTrash} className={styles.deleteIcon} onClick={() => setConfirmationPopup(true)} />
+                    </div>
                 }
                 <div className={styles.userInfo}>
                     <Image className={styles.userImage} src={job.user.profilePic} alt='User Image' width={100} height={100} />
@@ -76,10 +93,10 @@ export default function Job(params: { job: UserJob, user: User }) {
                     }
                     {job.start &&
                         <div className={styles.jobDetails}>
-                            <h4>Start:</h4>&nbsp;{new Date(job.start).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                            <h4>Start:</h4>&nbsp;{new Date(job.start).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
                             {job.end &&
                                 <div className={styles.jobDetails}>
-                                    &nbsp;<h4>End:</h4>&nbsp;{new Date(job.end).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                                    &nbsp;<h4>End:</h4>&nbsp;{new Date(job.end).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
                                 </div>
                             }
                         </div>
@@ -100,6 +117,15 @@ export default function Job(params: { job: UserJob, user: User }) {
                 <Modal isOpen={showApplicants} onClose={() => setShowApplicants(false)} backIcon={true}>
                     <Applicants jobSkills={job.skills} applicants={job.applicants} />
                 </Modal>
+            }
+            {confirmationPopup &&
+                <ConfirmationPopup
+                    showPopup={confirmationPopup}
+                    setShowPopup={setConfirmationPopup}
+                    onConfirm={deleteJob}
+                    onCancel={() => setConfirmationPopup(false)}
+                    message='delete your job'
+                />
             }
         </div>
     )

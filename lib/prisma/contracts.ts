@@ -223,6 +223,36 @@ async function createContractPrisma(
   }
 }
 
+async function updateContractPrisma(contract: {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  skills: string[];
+  tags: string[];
+}) {
+  try {
+    await prisma.contract.update({
+      where: { uid: contract.id },
+      data: {
+        title: contract.title,
+        description: contract.description,
+        location: contract.location,
+        skills: {
+          set: contract.skills.map((skill) => ({ skill })),
+        },
+        tags: {
+          set: contract.tags.map((tag) => ({ tag })),
+        },
+      },
+    });
+  } catch (error) {
+    throw new Error("Unable To Update Contract");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function deleteContractPrisma(uid: string) {
   try {
     await prisma.contract.delete({
@@ -260,6 +290,7 @@ export {
   getContractsPrisma,
   searchContractsPrisma,
   createContractPrisma,
+  updateContractPrisma,
   deleteContractPrisma,
   applyToContractPrisma,
 };

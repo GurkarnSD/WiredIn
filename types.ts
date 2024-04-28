@@ -156,8 +156,8 @@ type UserContract = {
   id: number;
   uid: string;
   title: string;
-  description?: string | null;
-  location?: string | null;
+  description: string;
+  location: string;
   createdAt: Date;
   updatedAt: Date;
   user: UserProfile;
@@ -171,8 +171,8 @@ type UserJob = {
   id: number;
   uid: string;
   title: string;
-  description?: string | null;
-  location?: string | null;
+  description: string;
+  location: string;
   hourly?: number | null;
   salary?: number | null;
   start?: Date | null;

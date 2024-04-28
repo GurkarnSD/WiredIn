@@ -17,6 +17,8 @@ export default function MyContracts(params: { user: User }) {
     const { data: tagOptions } = useSWR('/api/tags', fetcher)
     const { data: userContracts } = useSWR(`/api/contracts/user/?uid=${user.uid}`, fetcher)
     const [showContractCreator, setShowContractCreator] = useState(false)
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedContract, setSelectedContract] = useState<UserContract | undefined>();
 
     return (
         <>
@@ -31,16 +33,22 @@ export default function MyContracts(params: { user: User }) {
                 <div>
                     {userContracts && userContracts.map((contract: UserContract) => {
                         return (
-                            <Contract key={contract.id} contract={contract} user={user} />
+                            <Contract key={contract.id} contract={contract} user={user} selectContract={setSelectedContract} openEditModal={setIsEditModalOpen} />
                         )
                     })}
                 </div>
             </div>
             {showContractCreator &&
                 <Modal isOpen={showContractCreator} onClose={() => setShowContractCreator(false)}>
-                    <ContractCreator user={user} skillOptions={skillOptions} tagOptions={tagOptions} setModal={setShowContractCreator} toastTrigger={() => toast.success("Contract Created")}/>
+                    <ContractCreator user={user} skillOptions={skillOptions} tagOptions={tagOptions} setModal={setShowContractCreator} toastTrigger={() => toast.success("Contract Created")} />
                 </Modal>
             }
+
+            {isEditModalOpen && (
+                <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
+                    <ContractCreator user={user} skillOptions={skillOptions} tagOptions={tagOptions} setModal={setShowContractCreator} toastTrigger={() => toast.success("Contract Updated")} editMode contract={selectedContract} />
+                </Modal>
+            )}
         </>
     )
 }

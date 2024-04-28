@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   getJobsPrisma,
   createJobPrisma,
+  updateJobPrisma,
   deleteJobPrisma,
 } from "@/lib/prisma/jobs";
 
@@ -21,6 +22,12 @@ export async function POST(req: Request) {
   const body = await req.json();
   await createJobPrisma(body.userId, body.job);
   return NextResponse.json({ response: "Created Job" });
+}
+
+export async function PUT(req: Request) {
+  const body = await req.json();
+  await updateJobPrisma(body.job);
+  return NextResponse.json({ response: "Updated Job" });
 }
 
 export async function DELETE(req: Request) {

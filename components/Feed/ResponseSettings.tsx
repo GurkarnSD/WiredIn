@@ -22,18 +22,10 @@ export default function ResponseSettings(params: { close: () => void, uid: strin
         const res = await fetch(`/api/feed/responses?id=${responseId}`, { method: "DELETE" })
 
         if (!res.ok) {
-            throw new Error("Failed to delete post")
+            throw new Error("Failed to Delete Response")
         }
 
         return res.json()
-    }
-
-    const deleteResponseHook = async (responseId: number) => {
-        try {
-            await deleteResponse(responseId);
-        } catch (error) {
-            console.log(error)
-        }
     }
 
     return (
@@ -46,7 +38,7 @@ export default function ResponseSettings(params: { close: () => void, uid: strin
                 <ConfirmationPopup
                     showPopup={confirmationPopup}
                     setShowPopup={setConfirmationPopup}
-                    onConfirm={() => deleteResponseHook(response.id)}
+                    onConfirm={() => deleteResponse(response.id)}
                     onCancel={() => setConfirmationPopup(false)}
                     message='delete your response'
                 />

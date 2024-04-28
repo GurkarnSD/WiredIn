@@ -6,11 +6,13 @@ import Modal from "../Modal";
 import { useState } from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faPencil } from "@fortawesome/free-solid-svg-icons";
+import ConfirmationPopup from "../ConfirmationPopup";
 
-export default function Contract(params: { contract: UserContract, user: User }) {
+export default function Contract(params: { contract: UserContract, user: User, selectContract?: (contract: UserContract) => void, openEditModal?: (isOpen: boolean) => void }) {
 
-    const { contract, user } = params
+    const { contract, user, selectContract, openEditModal } = params;
+    const [confirmationPopup, setConfirmationPopup] = useState(false);
 
     async function applyToContract() {
         const res = await fetch('/api/contracts/apply', {
@@ -23,6 +25,12 @@ export default function Contract(params: { contract: UserContract, user: User })
             },
             method: 'POST'
         })
+
+        if (!res.ok) {
+            throw new Error("Failed to Apply to Contract")
+        }
+
+        return res.json()
     }
 
     async function deleteContract() {
@@ -35,6 +43,12 @@ export default function Contract(params: { contract: UserContract, user: User })
             },
             method: 'DELETE'
         })
+
+        if (!res.ok) {
+            throw new Error("Failed to Delete Contract")
+        }
+
+        return res.json()
     }
 
     const [showApplicants, setShowApplicants] = useState(false);
@@ -43,7 +57,10 @@ export default function Contract(params: { contract: UserContract, user: User })
         <div className={styles.contractContainer}>
             <div className={styles.contract}>
                 {user.uid === contract.user.uid &&
-                    <FontAwesomeIcon icon={faTrash} className={styles.deleteIcon} onClick={deleteContract} />
+                    <div className={styles.settings}>
+                        <FontAwesomeIcon icon={faPencil} className={styles.editIcon} onClick={() => { if (selectContract) selectContract(contract); if (openEditModal) openEditModal(true); }} />
+                        <FontAwesomeIcon icon={faTrash} className={styles.deleteIcon} onClick={() => setConfirmationPopup(true)} />
+                    </div>
                 }
                 <div className={styles.userInfo}>
                     <Image className={styles.userImage} src={contract.user.profilePic} alt='User Image' width={100} height={100} />
@@ -79,6 +96,15 @@ export default function Contract(params: { contract: UserContract, user: User })
                 <Modal isOpen={showApplicants} onClose={() => setShowApplicants(false)} backIcon={true}>
                     <Applicants contractSkills={contract.skills} applicants={contract.applicants} />
                 </Modal>
+            }
+            {confirmationPopup &&
+                <ConfirmationPopup
+                    showPopup={confirmationPopup}
+                    setShowPopup={setConfirmationPopup}
+                    onConfirm={deleteContract}
+                    onCancel={() => setConfirmationPopup(false)}
+                    message='delete your contract'
+                />
             }
         </div>
     )

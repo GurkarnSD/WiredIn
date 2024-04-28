@@ -14,18 +14,10 @@ export default function PostSettings(params: { uid: string, post: UserPost, sele
         const res = await fetch(`/api/feed/posts?uid=${postId}`, { method: "DELETE" })
 
         if (!res.ok) {
-            throw new Error("Failed to delete post")
+            throw new Error("Failed to Delete Post")
         }
 
         return res.json()
-    }
-
-    const deletePostHook = async (postId: string) => {
-        try {
-            await deletePost(postId);
-        } catch (error) {
-            console.log(error)
-        }
     }
 
     return (
@@ -37,7 +29,7 @@ export default function PostSettings(params: { uid: string, post: UserPost, sele
                 <ConfirmationPopup
                     showPopup={confirmationPopup}
                     setShowPopup={setConfirmationPopup}
-                    onConfirm={() => deletePostHook(post.uid)}
+                    onConfirm={() => deletePost(post.uid)}
                     onCancel={() => setConfirmationPopup(false)}
                     message='delete your post'
                 />
