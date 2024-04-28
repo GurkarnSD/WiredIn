@@ -6,6 +6,7 @@ import Connect from "@/components/Feed/Connect";
 import Feed from "@/components/Feed/Feed";
 import ProfileCard from "@/components/Feed/ProfileCard";
 import { UserSession } from "@/types";
+import { redirect } from "next/navigation";
 
 export const revalidate = 0;
 
@@ -23,7 +24,7 @@ const fetchProfileImage = async (profileKey: string) => {
 export default async function FeedPage() {
 
   let session = (await getServerSession(authOptions)) as UserSession;
-
+  if (!session) redirect('/');
   const profilePic = await fetchProfileImage(session?.user?.profilePic);
   session = { ...session, user: { ...session?.user, profilePic } };
 

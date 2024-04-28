@@ -212,8 +212,7 @@ export default function Comments(params: { postId: string, user: User }) {
             } else {
                 setInput('');
                 setCharCount(0);
-                setEditComment(null);
-                setComments(await fetchComments(postId));
+                setEditResponse(null);
             }
 
             return res.json();

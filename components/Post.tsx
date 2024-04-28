@@ -252,6 +252,24 @@ export default function Post(params: { post: PostWithStats, user: User }) {
         setInput(event.target.value);
     };
 
+    useEffect(() => {
+        if (editComment) {
+            setSelectedComment(null);
+            setEditResponse(null);
+            setInput(editComment.text);
+            setCharCount(editComment.text.length);
+        }
+    }, [editComment]);
+
+    useEffect(() => {
+        if (editResponse) {
+            setSelectedComment(null);
+            setEditComment(null);
+            setInput(editResponse.text);
+            setCharCount(editResponse.text.length);
+        }
+    }, [editResponse]);
+
     const handleUpdateSubmit = async () => {
         if (input.length == 0) {
             return;
@@ -292,8 +310,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
             } else {
                 setInput('');
                 setCharCount(0);
-                setEditComment(null);
-                setComments(await fetchComments(post.uid));
+                setEditResponse(null);
             }
 
             return res.json();
@@ -548,6 +565,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                                 <div className={styles.commenterName}>{comment.user.displayName}</div>
                                 <div className={styles.commentTime} suppressHydrationWarning={true}>{formatTimeDifference(comment.createdAt)}</div>
                             </div>
+                            {comment.createdAt.getTime() !== comment.updatedAt.getTime() && <div className={styles.editedComment}>Edited</div>}
                             <div className={styles.commentContent}>
                                 <div className={styles.commentText}>{comment.text}</div>
                                 <div className={styles.commentControls}>
@@ -589,7 +607,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                                             <div className={styles.commentHeader}>
                                                 <Image className={styles.responsePic} src={response.user.profilePic} width={25} height={25} alt='Profile Pic' />
                                                 <div className={styles.responseName}>{response.user.displayName}</div>
-                                                <div className={styles.responseTime} suppressHydrationWarning={true}>{formatTimeDifference(response.createdAt)}</div>
+                                                <div className={styles.responseTime} suppressHydrationWarning={true}>{response.createdAt !== response.updatedAt && <span className={styles.editedResponse}>Edited · </span>}{formatTimeDifference(response.createdAt)}</div>
                                                 {showResponseSettings[response.id] ?
                                                     <ResponseSettings close={() => setShowResponseSettings({ ...showResponseSettings, [response.id]: false })} uid={user.uid} response={response} toggleEdit={setEditResponse} />
                                                     :

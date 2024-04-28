@@ -3,10 +3,12 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { UserSession } from "@/types";
 import ContractSearch from "@/components/Contracts/ContractSearch";
+import { redirect } from "next/navigation";
 
 export default async function ContractsPage() {
 
     const session = (await getServerSession(authOptions)) as UserSession;
+    if (!session) redirect('/')
 
     return (
         <>

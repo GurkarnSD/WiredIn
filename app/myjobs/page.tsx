@@ -3,10 +3,12 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { UserSession } from "@/types";
 import MyJobs from "@/components/Jobs/MyJobs";
+import { redirect } from "next/navigation";
 
 export default async function MyJobsPage() {
 
     const session = (await getServerSession(authOptions)) as UserSession;
+    if (!session) redirect('/')
 
     return (
         <>

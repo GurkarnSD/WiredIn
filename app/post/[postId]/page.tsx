@@ -4,12 +4,17 @@ import Navbar from '@/components/Navbar';
 import { getPostPrisma } from '@/lib/prisma/posts';
 import Post from '@/components/Post';
 import { PostComment, UserPost, UserSession } from "@/types";
+import { notFound, redirect } from 'next/navigation'
 
 export const revalidate = 0;
 
 const fetchPost = async (postId: string) => {
-    const res = await getPostPrisma(postId)
-    return res;
+    try {
+        const post = await getPostPrisma(postId)
+        return post
+    } catch (e) {
+        notFound()
+    }
 }
 
 type PostWithStats = UserPost & {
@@ -30,9 +35,10 @@ type PostCommentWithStats = PostComment & {
 };
 
 export default async function PostPage({ params }: { params: { postId: string } }) {
-    const postId = params.postId;
 
     const session = (await getServerSession(authOptions)) as UserSession;
+    if (!session) redirect('/')
+    const postId = params.postId;
     const postData = await fetchPost(postId) as unknown as PostWithStats;
 
     return (

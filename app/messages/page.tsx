@@ -4,10 +4,12 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 import Navbar from "@/components/Navbar"
 import Messages from "@/components/Messages"
 import { UserSession } from "@/types";
+import { redirect } from "next/navigation";
 
 export default async function MessagesPage() {
 
     const session = (await getServerSession(authOptions)) as UserSession;
+    if (!session) redirect('/')
 
     return (
         <>

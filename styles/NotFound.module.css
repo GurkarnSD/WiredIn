@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: calc(100vh - 160px);
+}
+
+.errorCode {
+  font-size: 10rem;
+  font-weight: 700;
+  color: #000000;
+}
+
+.errorMessage {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #000000;
+}

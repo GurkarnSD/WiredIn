@@ -16,17 +16,28 @@
   align-items: center;
 }
 
-.barButtons {
+.navigation {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   height: 100%;
   width: 100%;
   padding-right: 50px;
-  gap: 20px;
 }
 
-.barButton {
+.signupButton {
+  background-color: #0096ff;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 20px;
+  font-weight: 500;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.loginButton {
   background-color: #0096ff;
   border-radius: 10px;
   padding: 10px 20px;
@@ -37,7 +48,8 @@
   cursor: pointer;
 }
 
-.barButton:hover {
+.signupButton:hover,
+.loginButton:hover {
   background-color: #ffffff;
   color: #0096ff;
 }
@@ -570,6 +582,19 @@
 
 .wave {
   background-color: #2d2d2d;
+}
+
+.link {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 28px;
+  margin-right: 30px;
+}
+
+@media screen and (max-width: 620px) {
+  .links {
+    display: none;
+  }
 }
 
 @keyframes scroll {
