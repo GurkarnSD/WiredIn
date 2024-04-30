@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma/index";
 import { hash } from "bcrypt";
 import { randomUUID } from "crypto";
+import { Resend } from "resend";
+import ResetTemplate from "@/emails/reset";
 
 export async function POST(
   req: NextRequest,
@@ -30,14 +32,15 @@ export async function POST(
     },
   });
 
-  await fetch(`${process.env.API_URL}/api/send/reset`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email: user.email,
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: "WiredIn <reset@wiredin.social>",
+    to: user.email,
+    subject: "Reset Your Password",
+    react: ResetTemplate({
       token: token.token,
+      siteURL: process.env.API_URL || "",
       user: user.displayName,
     }),
   });

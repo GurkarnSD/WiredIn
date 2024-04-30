@@ -5,10 +5,19 @@ import {
   updateContractPrisma,
   deleteContractPrisma,
 } from "@/lib/prisma/contracts";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
+import { UserSession } from "@/types";
 
 export async function GET(req: NextRequest) {
+  const session = (await getServerSession(authOptions)) as UserSession;
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const userId = session.user.uid;
   const searchParams = req.nextUrl.searchParams;
-  const userId = searchParams.get("uid");
   const page = Number(searchParams.get("page") || 1);
   const pageSize = Number(searchParams.get("pageSize") || 10);
   if (!userId) {
@@ -19,19 +28,37 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: Request) {
+  const session = (await getServerSession(authOptions)) as UserSession;
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
-  await createContractPrisma(body.userId, body.contract);
+  await createContractPrisma(session.user.uid, body.contract);
   return NextResponse.json({ response: "Created Contract" });
 }
 
 export async function PUT(req: Request) {
+  const session = (await getServerSession(authOptions)) as UserSession;
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
-  await updateContractPrisma(body.contract);
+  await updateContractPrisma(session.user.uid, body.contract);
   return NextResponse.json({ response: "Updated Contract" });
 }
 
 export async function DELETE(req: Request) {
+  const session = (await getServerSession(authOptions)) as UserSession;
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
-  await deleteContractPrisma(body.contractId);
+  await deleteContractPrisma(session.user.uid, body.contractId);
   return NextResponse.json({ response: "Deleted Contract" });
 }

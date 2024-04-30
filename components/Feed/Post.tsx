@@ -9,11 +9,10 @@ import { useRouter } from "next/navigation";
 import { User, UserPost } from "@/types";
 import PostSettings from "./PostSettings";
 
-const likePost = async (userId: string, postId: string) => {
+const likePost = async (postId: string) => {
     const res = await fetch('/api/feed/like/post', {
         method: "POST",
         body: JSON.stringify({
-            uid: userId,
             postId: postId
         })
     })
@@ -25,11 +24,10 @@ const likePost = async (userId: string, postId: string) => {
     return res.json()
 }
 
-const unlikePost = async (userId: string, postId: string) => {
+const unlikePost = async (postId: string) => {
     const res = await fetch('/api/feed/like/post', {
         method: "DELETE",
         body: JSON.stringify({
-            uid: userId,
             postId: postId
         })
     })
@@ -104,9 +102,9 @@ export default function Post(params: { data: UserPost, user: User, selectPost: (
         setImageModalOpen(false);
     };
 
-    const likePostHook = async (userId: string, postId: string) => {
+    const likePostHook = async (postId: string) => {
         try {
-            await likePost(userId, postId);
+            await likePost(postId);
             setLiked(true);
             setNumLikes(numLikes + 1);
         } catch (error) {
@@ -114,9 +112,9 @@ export default function Post(params: { data: UserPost, user: User, selectPost: (
         }
     }
 
-    const unlikePostHook = async (userId: string, postId: string) => {
+    const unlikePostHook = async (postId: string) => {
         try {
-            await unlikePost(userId, postId);
+            await unlikePost(postId);
             setLiked(false);
             setNumLikes(numLikes - 1);
         } catch (error) {
@@ -164,9 +162,9 @@ export default function Post(params: { data: UserPost, user: User, selectPost: (
                 <div className={styles.postFooter} onClick={(e) => e.stopPropagation()}>
                     <div>
                         {liked ?
-                            <FontAwesomeIcon className={`${styles.postIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikePostHook(user.uid, data.uid)} />
+                            <FontAwesomeIcon className={`${styles.postIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikePostHook(data.uid)} />
                             :
-                            <FontAwesomeIcon className={styles.postIcon} icon={faHeart} onClick={() => likePostHook(user.uid, data.uid)} />
+                            <FontAwesomeIcon className={styles.postIcon} icon={faHeart} onClick={() => likePostHook(data.uid)} />
                         }
                         <span className={styles.iconCount}>{numLikes}</span>
                     </div>

@@ -88,21 +88,24 @@ async function createExperiencePrisma(
   }
 }
 
-async function updateExperiencePrisma(experience: {
-  id: number;
-  title: string;
-  company: string;
-  image: string;
-  description: string;
-  skills: SkillWhereUniqueInput[];
-  prevSkills: SkillWhereUniqueInput[];
-  current: boolean;
-  start: string;
-  end: string;
-}) {
+async function updateExperiencePrisma(
+  userId: string,
+  experience: {
+    id: number;
+    title: string;
+    company: string;
+    image: string;
+    description: string;
+    skills: SkillWhereUniqueInput[];
+    prevSkills: SkillWhereUniqueInput[];
+    current: boolean;
+    start: string;
+    end: string;
+  }
+) {
   try {
     await prisma.experience.update({
-      where: { id: experience.id },
+      where: { userId, id: experience.id },
       data: {
         title: experience.title,
         company: experience.company,
@@ -124,12 +127,12 @@ async function updateExperiencePrisma(experience: {
   }
 }
 
-async function deleteExperiencePrisma(id: string) {
+async function deleteExperiencePrisma(userId: string, id: string) {
   try {
     const queryId = parseInt(id, 10);
 
     await prisma.experience.delete({
-      where: { id: queryId },
+      where: { userId, id: queryId },
     });
   } catch (error) {
     throw new Error("Unable To Delete Experience");

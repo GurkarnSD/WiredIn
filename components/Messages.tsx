@@ -31,7 +31,7 @@ export default function Messages(params: { user: User }) {
 
     const { user } = params;
 
-    const { data: chatRooms } = useSWR<UserChatRoom[]>(`/api/chatroom?id=${user.uid}`, fetcher);
+    const { data: chatRooms } = useSWR<UserChatRoom[]>(`/api/chatroom`, fetcher);
 
     const [chatRoom, setChatRoom] = useState<UserChatRoom>();
 
@@ -210,7 +210,6 @@ export default function Messages(params: { user: User }) {
                 const imageUploadPromises: Promise<string>[] = imageFiles.map(async (file) => {
                     const postPicData = new FormData();
                     postPicData.append('image', file);
-                    postPicData.append('uid', user.uid);
                     postPicData.append('type', file.type);
 
                     const response = await axios.post('/api/image', postPicData, {
@@ -227,7 +226,7 @@ export default function Messages(params: { user: User }) {
 
             const res = await fetch('/api/message', {
                 method: 'POST',
-                body: JSON.stringify({ chatRoomId: chatRoom.uid, senderId: user.uid, message: message, attachments }),
+                body: JSON.stringify({ chatRoomId: chatRoom.uid, message: message, attachments }),
             });
 
             if (res.ok) {

@@ -18,7 +18,6 @@ export default function Contract(params: { contract: UserContract, user: User, s
         const res = await fetch('/api/contracts/apply', {
             body: JSON.stringify({
                 contractId: contract.uid,
-                userId: user.uid
             }),
             headers: {
                 'Content-Type': 'application/json'

@@ -12,11 +12,10 @@ import { Toaster, toast } from 'sonner'
 import CommentSettings from "./Feed/CommentSettings";
 import ResponseSettings from "./Feed/ResponseSettings";
 
-const likePost = async (userId: string, postId: string) => {
+const likePost = async (postId: string) => {
     const res = await fetch('/api/feed/like/post', {
         method: "POST",
         body: JSON.stringify({
-            uid: userId,
             postId: postId
         })
     })
@@ -28,11 +27,10 @@ const likePost = async (userId: string, postId: string) => {
     return res.json()
 }
 
-const unlikePost = async (userId: string, postId: string) => {
+const unlikePost = async (postId: string) => {
     const res = await fetch('/api/feed/like/post', {
         method: "DELETE",
         body: JSON.stringify({
-            uid: userId,
             postId: postId
         })
     })
@@ -110,11 +108,10 @@ const fetchResponses = async (id: number) => {
     return responses
 }
 
-const likeComment = async (userId: string, commentId: number) => {
+const likeComment = async (commentId: number) => {
     const res = await fetch('/api/feed/like/comment', {
         method: "POST",
         body: JSON.stringify({
-            uid: userId,
             commentId: commentId
         })
     })
@@ -126,11 +123,10 @@ const likeComment = async (userId: string, commentId: number) => {
     return res.json()
 }
 
-const unlikeComment = async (userId: string, commentId: number) => {
+const unlikeComment = async (commentId: number) => {
     const res = await fetch('/api/feed/like/comment', {
         method: "DELETE",
         body: JSON.stringify({
-            uid: userId,
             commentId: commentId
         })
     })
@@ -142,11 +138,10 @@ const unlikeComment = async (userId: string, commentId: number) => {
     return res.json()
 }
 
-const likeResponse = async (userId: string, responseId: number) => {
+const likeResponse = async (responseId: number) => {
     const res = await fetch('/api/feed/like/response', {
         method: "POST",
         body: JSON.stringify({
-            uid: userId,
             responseId: responseId
         })
     })
@@ -158,11 +153,10 @@ const likeResponse = async (userId: string, responseId: number) => {
     return res.json()
 }
 
-const unlikeResponse = async (userId: string, responseId: number) => {
+const unlikeResponse = async (responseId: number) => {
     const res = await fetch('/api/feed/like/response', {
         method: "DELETE",
         body: JSON.stringify({
-            uid: userId,
             responseId: responseId
         })
     })
@@ -346,7 +340,6 @@ export default function Post(params: { post: PostWithStats, user: User }) {
             const res = await fetch('/api/feed/comments', {
                 method: 'POST',
                 body: JSON.stringify({
-                    uid: user.uid,
                     postId: post.uid,
                     text: input,
                 }),
@@ -373,9 +366,9 @@ export default function Post(params: { post: PostWithStats, user: User }) {
         setImageModalOpen(false);
     };
 
-    const likePostHook = async (userId: string, postId: string) => {
+    const likePostHook = async (postId: string) => {
         try {
-            await likePost(userId, postId);
+            await likePost(postId);
             setLiked(true);
             setNumLikes(numLikes + 1);
         } catch (error) {
@@ -383,9 +376,9 @@ export default function Post(params: { post: PostWithStats, user: User }) {
         }
     }
 
-    const unlikePostHook = async (userId: string, postId: string) => {
+    const unlikePostHook = async (postId: string) => {
         try {
-            await unlikePost(userId, postId);
+            await unlikePost(postId);
             setLiked(false);
             setNumLikes(numLikes - 1);
         } catch (error) {
@@ -409,9 +402,9 @@ export default function Post(params: { post: PostWithStats, user: User }) {
         setCommentNumLikes(newNumLikes);
     }, [post.comments]);
 
-    const likeCommentHook = async (userId: string, commentId: number) => {
+    const likeCommentHook = async (commentId: number) => {
         try {
-            await likeComment(userId, commentId);
+            await likeComment(commentId);
             setLikedComments((prev) => ({
                 ...prev,
                 [commentId]: true,
@@ -425,9 +418,9 @@ export default function Post(params: { post: PostWithStats, user: User }) {
         }
     }
 
-    const unlikeCommentHook = async (userId: string, commentId: number) => {
+    const unlikeCommentHook = async (commentId: number) => {
         try {
-            await unlikeComment(userId, commentId);
+            await unlikeComment(commentId);
             setLikedComments((prev) => ({
                 ...prev,
                 [commentId]: false,
@@ -459,9 +452,9 @@ export default function Post(params: { post: PostWithStats, user: User }) {
         setResponseNumLikes(newNumLikes);
     }, [responses]);
 
-    const likeResponseHook = async (userId: string, responseId: number) => {
+    const likeResponseHook = async (responseId: number) => {
         try {
-            await likeResponse(userId, responseId);
+            await likeResponse(responseId);
             setLikedResponses((prev) => ({
                 ...prev,
                 [responseId]: true,
@@ -475,9 +468,9 @@ export default function Post(params: { post: PostWithStats, user: User }) {
         }
     }
 
-    const unlikeResponseHook = async (userId: string, responseId: number) => {
+    const unlikeResponseHook = async (responseId: number) => {
         try {
-            await unlikeResponse(userId, responseId);
+            await unlikeResponse(responseId);
             setLikedResponses((prev) => ({
                 ...prev,
                 [responseId]: false,
@@ -542,9 +535,9 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                 <div className={styles.postFooter}>
                     <div>
                         {liked ?
-                            <FontAwesomeIcon className={`${styles.postIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikePostHook(user.uid, post.uid)} />
+                            <FontAwesomeIcon className={`${styles.postIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikePostHook(post.uid)} />
                             :
-                            <FontAwesomeIcon className={styles.postIcon} icon={faHeart} onClick={() => likePostHook(user.uid, post.uid)} />
+                            <FontAwesomeIcon className={styles.postIcon} icon={faHeart} onClick={() => likePostHook(post.uid)} />
                         }
                         <span className={styles.iconCount}>{numLikes}</span>
                     </div>
@@ -572,9 +565,9 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                                     <div className={styles.likeComment}>
                                         <span className={styles.commentCount}>{commentNumLikes[comment.id]}</span>
                                         {likedComments[comment.id] ?
-                                            <FontAwesomeIcon className={`${styles.commentIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikeCommentHook(user.uid, comment.id)} />
+                                            <FontAwesomeIcon className={`${styles.commentIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikeCommentHook(comment.id)} />
                                             :
-                                            <FontAwesomeIcon className={styles.commentIcon} icon={faHeart} onClick={() => likeCommentHook(user.uid, comment.id)} />
+                                            <FontAwesomeIcon className={styles.commentIcon} icon={faHeart} onClick={() => likeCommentHook(comment.id)} />
                                         }
                                     </div>
                                 </div>
@@ -620,9 +613,9 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                                                     <div className={styles.likeComment}>
                                                         <span className={styles.responseIconCount}>{responseNumLikes[response.id]}</span>
                                                         {likedResponses[response.id] ?
-                                                            <FontAwesomeIcon className={`${styles.responseIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikeResponseHook(user.uid, response.id)} />
+                                                            <FontAwesomeIcon className={`${styles.responseIcon} ${styles.liked}`} icon={faHeart} onClick={() => unlikeResponseHook(response.id)} />
                                                             :
-                                                            <FontAwesomeIcon className={styles.responseIcon} icon={faHeart} onClick={() => likeResponseHook(user.uid, response.id)} />
+                                                            <FontAwesomeIcon className={styles.responseIcon} icon={faHeart} onClick={() => likeResponseHook(response.id)} />
                                                         }
                                                     </div>
                                                 </div>
@@ -699,7 +692,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
             </div>
             {isEditModalOpen && (
                 <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-                    <PostCreator user={user} setModal={setIsEditModalOpen} toastTrigger={() => toast.success('Post Updated')} editMode post={post} />
+                    <PostCreator setModal={setIsEditModalOpen} toastTrigger={() => toast.success('Post Updated')} editMode post={post} />
                 </Modal>
             )}
         </div>

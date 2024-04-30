@@ -9,11 +9,10 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import { User, UserProfile } from '@/types';
 
-const followUser = async (userId: string, pageUserId: string) => {
+const followUser = async (pageUserId: string) => {
     const res = await fetch('/api/follow', {
         method: "POST",
         body: JSON.stringify({
-            user: userId,
             otherUser: pageUserId
         })
     })
@@ -25,11 +24,10 @@ const followUser = async (userId: string, pageUserId: string) => {
     return res.json()
 }
 
-const unfollowUser = async (userId: string, pageUserId: string) => {
+const unfollowUser = async (pageUserId: string) => {
     const res = await fetch('/api/follow', {
         method: "PUT",
         body: JSON.stringify({
-            user: userId,
             otherUser: pageUserId
         })
     })
@@ -41,12 +39,11 @@ const unfollowUser = async (userId: string, pageUserId: string) => {
     return res.json()
 }
 
-const messageUser = async (userId: string, pageUserId: string) => {
+const messageUser = async (pageUserId: string) => {
     const res = await fetch('/api/chatroom', {
         method: "POST",
         body: JSON.stringify({
-            userId1: userId,
-            userId2: pageUserId
+            otherUser: pageUserId
         })
     })
 
@@ -67,10 +64,8 @@ const fetchHeaderImages = async (bannerKey: string, profileKey: string) => {
     return { bannerURL, profileURL };
 }
 
-const checkFollowing = async (userId: string, pageUserId: string) => {
-    const res = await fetch(`/api/follow?user=${userId}&otherUser=${pageUserId}`, {
-        method: "GET",
-    })
+const checkFollowing = async (pageUserId: string) => {
+    const res = await fetch(`/api/follow?otherUser=${pageUserId}`)
 
     if (!res.ok) {
         throw new Error("Failed to check following")
@@ -109,7 +104,7 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
     useEffect(() => {
         const checkIfFollowing = async () => {
             if (user) {
-                const following = await checkFollowing(user.uid, pageUser.uid);
+                const following = await checkFollowing(pageUser.uid);
                 setIsFollowing(following.response);
             }
         };
@@ -129,10 +124,10 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
                             <div className={styles.displayName}>{pageUser?.displayName}</div>
                             {user?.uid !== pageUser?.uid ? (
                                 !isFollowing ?
-                                    <button className={styles.follow} onClick={() => { followUser(user.uid, pageUser?.uid); setIsFollowing(true) }}>Follow</button>
-                                    : <button className={styles.follow} onClick={() => { unfollowUser(user.uid, pageUser?.uid); setIsFollowing(false) }}>Unfollow</button>)
+                                    <button className={styles.follow} onClick={() => { followUser(pageUser?.uid); setIsFollowing(true) }}>Follow</button>
+                                    : <button className={styles.follow} onClick={() => { unfollowUser(pageUser?.uid); setIsFollowing(false) }}>Unfollow</button>)
                                 : null}
-                            <Link className={styles.message} onClick={() => messageUser(user.uid, pageUser?.uid)} href={'/messages'}>Message</Link>
+                            <Link className={styles.message} onClick={() => messageUser(pageUser?.uid)} href={'/messages'}>Message</Link>
                         </div>
                         <div className={styles.stats}>
                             <div className={styles.stat} onClick={() => setShowFollowing(true)}>
@@ -186,8 +181,8 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
     )
 }
 
-const getFollowers = async (user: string, sessionUser: string) => {
-    const res = await fetch(`/api/follow/followers?user=${user}&session=${sessionUser}`, {
+const getFollowers = async (user: string) => {
+    const res = await fetch(`/api/follow/followers?user=${user}`, {
         method: "GET",
     })
 
@@ -198,8 +193,8 @@ const getFollowers = async (user: string, sessionUser: string) => {
     return res.json()
 }
 
-const getFollowing = async (user: string, sessionUser: string) => {
-    const res = await fetch(`/api/follow/following?user=${user}&session=${sessionUser}`, {
+const getFollowing = async (user: string) => {
+    const res = await fetch(`/api/follow/following?user=${user}`, {
         method: "GET",
     })
 
@@ -230,10 +225,10 @@ function UserList(params: { followers?: boolean, following?: boolean, pageUser: 
     useEffect(() => {
         const fetchUsers = async () => {
             if (followers) {
-                const followers = await getFollowers(pageUser, user);
+                const followers = await getFollowers(pageUser);
                 setUserList(followers.response);
             } else if (following) {
-                const following = await getFollowing(pageUser, user);
+                const following = await getFollowing(pageUser);
                 setUserList(following.response);
             }
         };
@@ -243,7 +238,7 @@ function UserList(params: { followers?: boolean, following?: boolean, pageUser: 
 
     const followUserAndUpdateList = async (userId: string) => {
         try {
-            await followUser(user, userId);
+            await followUser(userId);
             const updatedList = userList.map(member => {
                 if (member.uid === userId) {
                     return { ...member, sessionUserFollows: true };

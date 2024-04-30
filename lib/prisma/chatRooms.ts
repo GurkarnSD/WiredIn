@@ -152,10 +152,15 @@ async function findChatRoomPrisma(userId1: string, userId2: string) {
   }
 }
 
-async function deleteChatRoomPrisma(chatRoomId: string) {
+async function deleteChatRoomPrisma(userId: string, chatRoomId: string) {
   try {
     await prisma.chatRoom.delete({
       where: {
+        users: {
+          some: {
+            uid: userId,
+          },
+        },
         uid: chatRoomId,
       },
     });

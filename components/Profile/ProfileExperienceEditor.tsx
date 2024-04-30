@@ -5,11 +5,11 @@ import { faImage, faArrowsLeftRight, faPlus, faXmark } from '@fortawesome/free-s
 import { useState, useRef } from 'react';
 import Modal from '../Modal';
 import axios from 'axios';
-import { User, UserSkill, WorkExperience } from '@/types';
+import { UserSkill, WorkExperience } from '@/types';
 
-export default function ProfileExperienceEditor(params: { user: User, skills: UserSkill[], setModal?: (isOpen: boolean) => void, editMode?: boolean, experience?: WorkExperience }) {
+export default function ProfileExperienceEditor(params: { skills: UserSkill[], setModal?: (isOpen: boolean) => void, editMode?: boolean, experience?: WorkExperience }) {
 
-    const { user, skills, setModal, editMode, experience } = params;
+    const { skills, setModal, editMode, experience } = params;
 
     const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
@@ -92,7 +92,6 @@ export default function ProfileExperienceEditor(params: { user: User, skills: Us
             const experiencePicData = new FormData();
             experiencePicData.append('image', imageFile);
             experiencePicData.append('type', imageFile.type)
-            experiencePicData.append('uid', user.uid);
             const experiencePicURL = await axios.post('/api/image', experiencePicData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -108,7 +107,6 @@ export default function ProfileExperienceEditor(params: { user: User, skills: Us
                 method: "POST",
                 body: JSON.stringify({
                     experience: experience,
-                    uid: user.uid,
                 })
             })
         } else {

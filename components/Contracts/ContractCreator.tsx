@@ -3,11 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react';
 import Modal from '../Modal';
-import { User, UserContract } from '@/types';
+import { UserContract } from '@/types';
 
-export default function ContractCreator(params: { user: User, skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void, toastTrigger?: () => void, editMode?: boolean, contract?: UserContract }) {
+export default function ContractCreator(params: { skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void, toastTrigger?: () => void, editMode?: boolean, contract?: UserContract }) {
 
-    const { user, skillOptions, tagOptions, setModal, toastTrigger, editMode, contract } = params;
+    const { skillOptions, tagOptions, setModal, toastTrigger, editMode, contract } = params;
 
     const [contractForm, setContractForm] = useState({
         title: editMode && contract ? contract.title : '',
@@ -72,7 +72,7 @@ export default function ContractCreator(params: { user: User, skillOptions: { sk
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ userId: user.uid, contract })
+                body: JSON.stringify({ contract })
             })
         } else {
             res = await fetch(`/api/contracts`, {

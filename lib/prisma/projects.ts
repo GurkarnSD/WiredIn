@@ -72,21 +72,24 @@ async function createProjectPrisma(
   }
 }
 
-async function updateProjectPrisma(project: {
-  id: number;
-  title: string;
-  description: string;
-  deployment: string;
-  source: string;
-  start: string;
-  end: string;
-  current: boolean;
-  prevSkills: SkillWhereUniqueInput[];
-  skills: SkillWhereUniqueInput[];
-}) {
+async function updateProjectPrisma(
+  userId: string,
+  project: {
+    id: number;
+    title: string;
+    description: string;
+    deployment: string;
+    source: string;
+    start: string;
+    end: string;
+    current: boolean;
+    prevSkills: SkillWhereUniqueInput[];
+    skills: SkillWhereUniqueInput[];
+  }
+) {
   try {
     await prisma.project.update({
-      where: { id: project.id },
+      where: { userId, id: project.id },
       data: {
         title: project.title,
         description: project.description,
@@ -108,12 +111,12 @@ async function updateProjectPrisma(project: {
   }
 }
 
-async function deleteProjectPrisma(id: string) {
+async function deleteProjectPrisma(userId: string, id: string) {
   try {
     const queryId = parseInt(id, 10);
 
     await prisma.project.delete({
-      where: { id: queryId },
+      where: { userId, id: queryId },
     });
   } catch (error) {
     throw new Error("Unable To Delete Project");

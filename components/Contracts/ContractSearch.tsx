@@ -10,8 +10,8 @@ import Modal from '../Modal';
 import useSWR from 'swr';
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-const fetchContracts = async (uid: string, page: number = 1, pageSize: number = 10) => {
-    const res = await fetch(`/api/contracts/?uid=${uid}&page=${page}&pageSize=${pageSize}`)
+const fetchContracts = async (page: number = 1, pageSize: number = 10) => {
+    const res = await fetch(`/api/contracts/?page=${page}&pageSize=${pageSize}`)
 
     if (!res.ok) {
         throw new Error("Failed to fetch contracts")
@@ -20,9 +20,9 @@ const fetchContracts = async (uid: string, page: number = 1, pageSize: number = 
     return res.json()
 }
 
-const searchContracts = async (uid: string, title: string, skills: string[], tags: string[], page: number = 1, pageSize: number = 10,) => {
+const searchContracts = async (title: string, skills: string[], tags: string[], page: number = 1, pageSize: number = 10,) => {
 
-    let url = `/api/contracts/search/?uid=${uid}&page=${page}&pageSize=${pageSize}`
+    let url = `/api/contracts/search/?page=${page}&pageSize=${pageSize}`
 
     if (title.length > 0) {
         url += `&title=${title}`;
@@ -66,7 +66,7 @@ export default function ContractSearch(params: { user: User }) {
     useEffect(() => {
         const fetchMoreContracts = async () => {
             if (!searchMode) {
-                const newContracts = await fetchContracts(user.uid, page);
+                const newContracts = await fetchContracts(page);
                 if (newContracts.length < 10) {
                     setShowLoadMore(false);
                 } else {
@@ -74,7 +74,7 @@ export default function ContractSearch(params: { user: User }) {
                 }
                 setContracts((prevContracts: UserContract[]) => [...prevContracts, ...newContracts]);
             } else {
-                const newContracts = await searchContracts(user.uid, searchInput, selectedSkills, selectedTags, page);
+                const newContracts = await searchContracts(searchInput, selectedSkills, selectedTags, page);
                 if (newContracts.length < 10) {
                     setShowLoadMore(false);
                 } else {
@@ -88,7 +88,7 @@ export default function ContractSearch(params: { user: User }) {
 
     const handleSearch = async () => {
         if (searchInput === '' && selectedSkills.length === 0 && selectedTags.length === 0) {
-            const newContracts = await fetchContracts(user.uid, page);
+            const newContracts = await fetchContracts(page);
             setContracts(newContracts);
             if (newContracts.length < 10) {
                 setShowLoadMore(false);
@@ -97,7 +97,7 @@ export default function ContractSearch(params: { user: User }) {
             }
             setSearchMode(false);
         } else {
-            const newContracts = await searchContracts(user.uid, searchInput, selectedSkills, selectedTags, page);
+            const newContracts = await searchContracts(searchInput, selectedSkills, selectedTags, page);
             setContracts(newContracts);
             if (newContracts.length < 10) {
                 setShowLoadMore(false);

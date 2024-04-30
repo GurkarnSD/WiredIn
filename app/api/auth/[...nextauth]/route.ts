@@ -6,6 +6,8 @@ import { createUserPrisma } from "@/lib/prisma/user";
 import { compare } from "bcrypt";
 import { User } from "@prisma/client";
 import { randomUUID } from "crypto";
+import { Resend } from "resend";
+import ActivateTemplate from "@/emails/activate";
 
 const authOptions: NextAuthOptions = {
   session: {
@@ -38,14 +40,15 @@ const authOptions: NextAuthOptions = {
             },
           });
 
-          await fetch(`${process.env.API_URL}/api/send/activate`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: user.email,
+          const resend = new Resend(process.env.RESEND_API_KEY);
+
+          await resend.emails.send({
+            from: "WiredIn <activation@wiredin.social>",
+            to: user.email,
+            subject: "Activate Your Account",
+            react: ActivateTemplate({
               token: token.token,
+              siteURL: process.env.API_URL || "",
               user: user.displayName,
             }),
           });

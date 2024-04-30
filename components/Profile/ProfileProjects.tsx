@@ -63,7 +63,7 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
                             </Link>}
                             {isEditProjects && <><FontAwesomeIcon className={styles.editIcon} icon={faPen} onClick={() => { setSelectedProject(project); setIsEditModalOpen(true) }} /><FontAwesomeIcon className={styles.deleteIcon} icon={faTrash} onClick={() => deleteProject(project.id)} /></>}
                         </div>
-                        <div className={styles.projectDate}>{new Date(project.start).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })} - {project.current ? "Present" : new Date(project.end).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}</div>
+                        <div className={styles.projectDate}>{new Date(project.start).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}{project.current ? " - Present" : project.end && " - " + new Date(project.end).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}</div>
                         <div className={styles.projectDescription}>
                             <ul>
                                 {project?.description?.split('.').map((point: string, index: number) => (
@@ -77,13 +77,13 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
 
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
-                    <ProfileProjectsEditor user={pageUser} skills={skillsData} setModal={setIsModalOpen} />
+                    <ProfileProjectsEditor skills={skillsData} setModal={setIsModalOpen} />
                 </Modal>
             )}
 
             {isEditModalOpen && (
                 <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} backIcon disableClickOff>
-                    <ProfileProjectsEditor user={pageUser} skills={skillsData} setModal={setIsEditModalOpen} editMode project={selectedProject} />
+                    <ProfileProjectsEditor skills={skillsData} setModal={setIsEditModalOpen} editMode project={selectedProject} />
                 </Modal>
             )}
         </div>

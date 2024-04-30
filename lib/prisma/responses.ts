@@ -100,10 +100,14 @@ async function createResponsePrisma(
   }
 }
 
-async function updateResponsePrisma(responseId: number, response: string) {
+async function updateResponsePrisma(
+  userId: string,
+  responseId: number,
+  response: string
+) {
   try {
     await prisma.response.update({
-      where: { id: responseId },
+      where: { userId, id: responseId },
       data: {
         text: response,
       },
@@ -115,10 +119,10 @@ async function updateResponsePrisma(responseId: number, response: string) {
   }
 }
 
-async function deleteResponsePrisma(id: number) {
+async function deleteResponsePrisma(userId: string, id: number) {
   try {
     await prisma.response.delete({
-      where: { id: id },
+      where: { userId: userId, id: id },
     });
   } catch (error) {
     throw new Error("Unable To Delete Response");

@@ -5,10 +5,10 @@ import axios from 'axios';
 import styles from '../styles/Feed/Post.module.css';
 import Image from 'next/image';
 import Modal from '../Modal';
-import { User, UserPost } from '@/types';
+import { UserPost } from '@/types';
 
-export default function PostCreator(params: { user: User, setModal?: (isOpen: boolean) => void, toastTrigger?: () => void, editMode?: boolean, post?: UserPost }) {
-    const { user, setModal, toastTrigger, editMode, post } = params;
+export default function PostCreator(params: { setModal?: (isOpen: boolean) => void, toastTrigger?: () => void, editMode?: boolean, post?: UserPost }) {
+    const { setModal, toastTrigger, editMode, post } = params;
 
     const [input, setInput] = useState(editMode && post ? post.text : '');
     const [charCount, setCharCount] = useState(editMode && post ? post.text.length : 0);
@@ -110,7 +110,6 @@ export default function PostCreator(params: { user: User, setModal?: (isOpen: bo
             const imageUploadPromises: Promise<string>[] = imageFiles.map(async (file) => {
                 const postPicData = new FormData();
                 postPicData.append('image', file);
-                postPicData.append('uid', user.uid);
                 postPicData.append('type', file.type);
 
                 const response = await axios.post('/api/image', postPicData, {
@@ -132,7 +131,6 @@ export default function PostCreator(params: { user: User, setModal?: (isOpen: bo
                 method: 'POST',
                 body: JSON.stringify({
                     post: post,
-                    uid: user.uid,
                 }),
             });
         } else {

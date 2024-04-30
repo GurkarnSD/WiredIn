@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { prisma } from "./index";
 import { randomUUID } from "crypto";
 import { UserProfile } from "@/types";
+import { Resend } from "resend";
+import ActivateTemplate from "@/emails/activate";
 
 let client: PrismaClient | undefined;
 
@@ -70,7 +72,11 @@ async function checkDisplayNamePrisma(name: string): Promise<boolean> {
   }
 }
 
-async function changeDisplayNamePrisma(oldName: string, newName: string) {
+async function changeDisplayNamePrisma(
+  userId: string,
+  oldName: string,
+  newName: string
+) {
   const isDisplayNameAvailable = await checkDisplayNamePrisma(newName);
   const isNameChangeAvailable = await checkLastNameChangePrisma(oldName);
 
@@ -97,7 +103,7 @@ async function changeDisplayNamePrisma(oldName: string, newName: string) {
         data: { displayName: newName },
       }),
       prisma.user.update({
-        where: { displayName: oldName },
+        where: { uid: userId, displayName: oldName },
         data: { displayName: newName },
       }),
     ]);
@@ -153,14 +159,15 @@ async function createUserPrisma(user: NewUser): Promise<boolean> {
     });
     console.log("Token created:", token);
 
-    await fetch(`${process.env.API_URL}/api/send/activate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: user.email,
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    await resend.emails.send({
+      from: "WiredIn <activation@wiredin.social>",
+      to: user.email,
+      subject: "Activate Your Account",
+      react: ActivateTemplate({
         token: token.token,
+        siteURL: process.env.API_URL || "",
         user: user.displayName,
       }),
     });
@@ -232,7 +239,6 @@ async function getUserPrisma(uid: string, name: string): Promise<UserProfile> {
 }
 
 type UserInfo = {
-  uid: string;
   title: string;
   bio: string;
   github: string;
@@ -240,7 +246,10 @@ type UserInfo = {
   bannerPic: string;
 };
 
-async function updateUserPrisma(user: UserInfo): Promise<UserProfile> {
+async function updateUserPrisma(
+  userId: string,
+  user: UserInfo
+): Promise<UserProfile> {
   try {
     const data = {
       title: user.title,
@@ -251,7 +260,7 @@ async function updateUserPrisma(user: UserInfo): Promise<UserProfile> {
     };
 
     const result = await prisma.user.update({
-      where: { uid: user.uid },
+      where: { uid: userId },
       data: data,
     });
     return result;

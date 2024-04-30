@@ -224,21 +224,24 @@ async function createJobPrisma(
   }
 }
 
-async function updateJobPrisma(job: {
-  id: string;
-  title: string;
-  description: string;
-  location: string;
-  skills: string[];
-  tags: string[];
-  salary: number;
-  hourly: number;
-  start: string;
-  end: string;
-}) {
+async function updateJobPrisma(
+  userId: string,
+  job: {
+    id: string;
+    title: string;
+    description: string;
+    location: string;
+    skills: string[];
+    tags: string[];
+    salary: number;
+    hourly: number;
+    start: string;
+    end: string;
+  }
+) {
   try {
     await prisma.job.update({
-      where: { uid: job.id },
+      where: { userId, uid: job.id },
       data: {
         title: job.title,
         description: job.description,
@@ -262,10 +265,10 @@ async function updateJobPrisma(job: {
   }
 }
 
-async function deleteJobPrisma(uid: string) {
+async function deleteJobPrisma(userId: string, uid: string) {
   try {
     await prisma.job.delete({
-      where: { uid },
+      where: { userId, uid },
     });
   } catch (error) {
     throw new Error("Unable To Delete Job");

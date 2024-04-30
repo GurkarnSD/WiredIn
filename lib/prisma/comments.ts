@@ -107,10 +107,14 @@ async function createCommentPrisma(
   }
 }
 
-async function updateCommentPrisma(commentId: number, comment: string) {
+async function updateCommentPrisma(
+  userId: string,
+  commentId: number,
+  comment: string
+) {
   try {
     await prisma.comment.update({
-      where: { id: commentId },
+      where: { userId, id: commentId },
       data: {
         text: comment,
       },
@@ -122,10 +126,10 @@ async function updateCommentPrisma(commentId: number, comment: string) {
   }
 }
 
-async function deleteCommentPrisma(id: number) {
+async function deleteCommentPrisma(userId: string, id: number) {
   try {
     await prisma.comment.delete({
-      where: { id: id },
+      where: { userId, id: id },
     });
   } catch (error) {
     throw new Error("Unable To Delete Comment");

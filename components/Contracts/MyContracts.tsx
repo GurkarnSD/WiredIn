@@ -15,7 +15,7 @@ export default function MyContracts(params: { user: User }) {
 
     const { data: skillOptions } = useSWR('/api/profile/skills', fetcher)
     const { data: tagOptions } = useSWR('/api/tags', fetcher)
-    const { data: userContracts } = useSWR(`/api/contracts/user/?uid=${user.uid}`, fetcher)
+    const { data: userContracts } = useSWR('/api/contracts/user', fetcher)
     const [showContractCreator, setShowContractCreator] = useState(false)
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedContract, setSelectedContract] = useState<UserContract | undefined>();
@@ -40,13 +40,13 @@ export default function MyContracts(params: { user: User }) {
             </div>
             {showContractCreator &&
                 <Modal isOpen={showContractCreator} onClose={() => setShowContractCreator(false)}>
-                    <ContractCreator user={user} skillOptions={skillOptions} tagOptions={tagOptions} setModal={setShowContractCreator} toastTrigger={() => toast.success("Contract Created")} />
+                    <ContractCreator skillOptions={skillOptions} tagOptions={tagOptions} setModal={setShowContractCreator} toastTrigger={() => toast.success("Contract Created")} />
                 </Modal>
             }
 
             {isEditModalOpen && (
                 <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-                    <ContractCreator user={user} skillOptions={skillOptions} tagOptions={tagOptions} setModal={setShowContractCreator} toastTrigger={() => toast.success("Contract Updated")} editMode contract={selectedContract} />
+                    <ContractCreator skillOptions={skillOptions} tagOptions={tagOptions} setModal={setIsEditModalOpen} toastTrigger={() => toast.success("Contract Updated")} editMode contract={selectedContract} />
                 </Modal>
             )}
         </>

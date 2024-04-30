@@ -2,11 +2,11 @@ import styles from '../styles/Profile/ProfileProjectsEditor.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsLeftRight } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
-import { UserProfile, UserProject, UserSkill } from '@/types';
+import { UserProject, UserSkill } from '@/types';
 
-export default function ProfileProjectsEditor(params: { user: UserProfile, skills: UserSkill[], setModal?: (isOpen: boolean) => void, editMode?: boolean, project?: UserProject }) {
+export default function ProfileProjectsEditor(params: { skills: UserSkill[], setModal?: (isOpen: boolean) => void, editMode?: boolean, project?: UserProject }) {
 
-    const { user, skills, setModal, editMode, project } = params;
+    const { skills, setModal, editMode, project } = params;
 
     const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
@@ -16,7 +16,7 @@ export default function ProfileProjectsEditor(params: { user: UserProfile, skill
         title: editMode && project ? project.title : '',
         deployment: editMode && project ? project.deployment : '',
         start: editMode && project ? new Date(project.start).toISOString().slice(0, 7) : '',
-        end: editMode && project ? new Date(project.end).toISOString().slice(0, 7) : '',
+        end: editMode && project && project.end !== null ? new Date(project.end).toISOString().slice(0, 7) : '',
         current: editMode && project ? project.current : false,
         source: editMode && project ? project.source : '',
         desc: editMode && project ? project.description : '',
@@ -48,7 +48,7 @@ export default function ProfileProjectsEditor(params: { user: UserProfile, skill
             description: projForm.desc,
             deployment: projForm.deployment,
             start: projForm.start + '-01T00:00:00.000Z',
-            end: projForm.end + '-01T00:00:00.000Z',
+            end: projForm.end !== '' ? projForm.end + '-01T00:00:00.000Z' : null,
             current: projForm.current,
             source: projForm.source,
             skills: skillIds,
@@ -61,7 +61,6 @@ export default function ProfileProjectsEditor(params: { user: UserProfile, skill
                 method: 'POST',
                 body: JSON.stringify({
                     project: project,
-                    uid: user.uid
                 })
             })
         } else {

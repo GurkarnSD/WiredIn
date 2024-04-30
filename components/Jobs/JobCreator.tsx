@@ -3,11 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faArrowsLeftRight } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react';
 import Modal from '../Modal';
-import { User, UserJob } from '@/types';
+import { UserJob } from '@/types';
 
-export default function JobCreator(params: { user: User, skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void, toastTrigger?: () => void, editMode?: boolean, job?: UserJob }) {
+export default function JobCreator(params: { skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void, toastTrigger?: () => void, editMode?: boolean, job?: UserJob }) {
 
-    const { user, skillOptions, tagOptions, setModal, toastTrigger, editMode, job } = params;
+    const { skillOptions, tagOptions, setModal, toastTrigger, editMode, job } = params;
 
     const [jobForm, setJobForm] = useState({
         title: editMode && job ? job.title : '',
@@ -86,7 +86,7 @@ export default function JobCreator(params: { user: User, skillOptions: { skill: 
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ userId: user.uid, job })
+                body: JSON.stringify({ job })
             })
         } else {
             res = await fetch(`/api/jobs`, {

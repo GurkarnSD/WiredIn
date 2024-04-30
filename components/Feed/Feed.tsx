@@ -1,14 +1,14 @@
 'use client';
 import styles from "../styles/Feed/Feed.module.css";
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Modal from "../Modal";
 import PostCreator from "./PostCreator";
 import Post from "./Post";
 import { User, UserPost } from "@/types";
 import { Toaster, toast } from 'sonner'
 
-const fetchPosts = async (uid: string, page: number = 1, pageSize: number = 10) => {
-    const res = await fetch(`/api/feed/posts/?uid=${uid}&page=${page}&pageSize=${pageSize}`)
+const fetchPosts = async (page: number = 1, pageSize: number = 10) => {
+    const res = await fetch(`/api/feed/posts/?page=${page}&pageSize=${pageSize}`)
 
     if (!res.ok) {
         throw new Error("Failed to fetch posts")
@@ -33,7 +33,7 @@ export default function Feed(params: { user: User }) {
 
     useEffect(() => {
         const fetchMorePosts = async () => {
-            const newPosts = await fetchPosts(user.uid, page);
+            const newPosts = await fetchPosts(page);
             if (newPosts.length < 10) {
                 setShowLoadMore(false);
             } else {
@@ -61,13 +61,13 @@ export default function Feed(params: { user: User }) {
 
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                    <PostCreator user={user} setModal={setIsModalOpen} toastTrigger={() => toast.success('Post Created')} />
+                    <PostCreator setModal={setIsModalOpen} toastTrigger={() => toast.success('Post Created')} />
                 </Modal>
             )}
 
             {isEditModalOpen && (
                 <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-                    <PostCreator user={user} setModal={setIsEditModalOpen} toastTrigger={() => toast.success('Post Updated')} editMode post={selectedPost} />
+                    <PostCreator setModal={setIsEditModalOpen} toastTrigger={() => toast.success('Post Updated')} editMode post={selectedPost} />
                 </Modal>
             )}
         </div>

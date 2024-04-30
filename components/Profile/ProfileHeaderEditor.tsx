@@ -88,7 +88,6 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
         e.preventDefault()
 
         const data = {
-            uid: user.uid,
             title: profileForm.title,
             bio: profileForm.bio,
             github: profileForm.github,
@@ -99,8 +98,7 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
         if (profileFile && profilePic !== `${process.env.S3ENDPOINT}${user.profilePic}`) {
             const profilePicData = new FormData();
             profilePicData.append('image', profileFile);
-            profilePicData.append('type', profileFile.type)
-            profilePicData.append('uid', user.uid);
+            profilePicData.append('type', profileFile.type);
             const profilePicURL = await axios.post('/api/image', profilePicData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -113,7 +111,6 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
             const bannerPicData = new FormData();
             bannerPicData.append('image', bannerFile);
             bannerPicData.append('type', bannerFile.type);
-            bannerPicData.append('uid', user.uid);
             const bannerPicURL = await axios.post('/api/image', bannerPicData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'

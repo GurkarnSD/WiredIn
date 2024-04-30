@@ -263,15 +263,18 @@ async function createPostPrisma(
   }
 }
 
-async function updatePostPrisma(post: {
-  id: string;
-  text: string;
-  images: string[];
-  oldImages: string[];
-}) {
+async function updatePostPrisma(
+  userId: string,
+  post: {
+    id: string;
+    text: string;
+    images: string[];
+    oldImages: string[];
+  }
+) {
   try {
     const updatedPost = await prisma.post.update({
-      where: { uid: post.id },
+      where: { userId, uid: post.id },
       data: {
         text: post.text,
       },
@@ -315,10 +318,10 @@ async function updatePostPrisma(post: {
   }
 }
 
-async function deletePostPrisma(uid: string) {
+async function deletePostPrisma(userId: string, uid: string) {
   try {
     await prisma.post.delete({
-      where: { uid },
+      where: { userId, uid },
     });
   } catch (error) {
     throw new Error("Unable To Delete Post");

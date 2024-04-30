@@ -4,11 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import Modal from '../Modal';
-import { UserProfile, UserSkill } from '@/types';
+import { UserSkill } from '@/types';
 
-export default function ProfileSkillsEditor(params: { user: UserProfile, skills: UserSkill[], skillOptions: { skill: string }[] }) {
+export default function ProfileSkillsEditor(params: { skills: UserSkill[], skillOptions: { skill: string }[] }) {
 
-    const { user, skills, skillOptions } = params;
+    const { skills, skillOptions } = params;
 
     const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
@@ -39,16 +39,16 @@ export default function ProfileSkillsEditor(params: { user: UserProfile, skills:
 
             {addSkillOpen && (
                 <Modal isOpen={addSkillOpen} onClose={() => setAddSkillOpen(false)}>
-                    <AddSkillMenu uid={user.uid} controlModal={setAddSkillOpen} skills={currentSkills} skillOptions={skillOptions} />
+                    <AddSkillMenu controlModal={setAddSkillOpen} skills={currentSkills} skillOptions={skillOptions} />
                 </Modal>
             )}
         </div>
     )
 }
 
-function AddSkillMenu(params: { uid: string, controlModal: (toggle: boolean) => void, skills: string[], skillOptions: { skill: string }[] }) {
+function AddSkillMenu(params: { controlModal: (toggle: boolean) => void, skills: string[], skillOptions: { skill: string }[] }) {
 
-    const { uid, controlModal, skills, skillOptions } = params;
+    const { controlModal, skills, skillOptions } = params;
 
     const skillsList = skillOptions.map((skill: { skill: string }) => skill.skill).filter((skill: string) => !skills.includes(skill));
 
@@ -88,7 +88,6 @@ function AddSkillMenu(params: { uid: string, controlModal: (toggle: boolean) => 
             method: "POST",
             body: JSON.stringify({
                 skill: skill,
-                user: uid
             })
         })
 

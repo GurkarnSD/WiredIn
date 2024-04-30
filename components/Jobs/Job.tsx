@@ -18,7 +18,6 @@ export default function Job(params: { job: UserJob, user: User, selectJob?: (job
         const res = await fetch('/api/jobs/apply', {
             body: JSON.stringify({
                 jobId: job.uid,
-                userId: user.uid
             }),
             headers: {
                 'Content-Type': 'application/json'

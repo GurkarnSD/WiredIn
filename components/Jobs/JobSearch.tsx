@@ -10,8 +10,8 @@ import Modal from '../Modal';
 import useSWR from 'swr';
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-const fetchJobs = async (uid: string, page: number = 1, pageSize: number = 10) => {
-    const res = await fetch(`/api/jobs/?uid=${uid}&page=${page}&pageSize=${pageSize}`)
+const fetchJobs = async (page: number = 1, pageSize: number = 10) => {
+    const res = await fetch(`/api/jobs/?page=${page}&pageSize=${pageSize}`)
 
     if (!res.ok) {
         throw new Error("Failed to fetch jobs")
@@ -20,9 +20,9 @@ const fetchJobs = async (uid: string, page: number = 1, pageSize: number = 10) =
     return res.json()
 }
 
-const searchJobs = async (uid: string, title: string, skills: string[], tags: string[], page: number = 1, pageSize: number = 10) => {
+const searchJobs = async (title: string, skills: string[], tags: string[], page: number = 1, pageSize: number = 10) => {
 
-    let url = `/api/jobs/search/?uid=${uid}&page=${page}&pageSize=${pageSize}`
+    let url = `/api/jobs/search/?page=${page}&pageSize=${pageSize}`
 
     if (title.length > 0) {
         url += `&title=${title}`;
@@ -66,7 +66,7 @@ export default function JobSearch(params: { user: User }) {
     useEffect(() => {
         const fetchMoreJobs = async () => {
             if (!searchMode) {
-                const newJobs = await fetchJobs(user.uid, page);
+                const newJobs = await fetchJobs(page);
                 if (newJobs.length < 10) {
                     setShowLoadMore(false);
                 } else {
@@ -74,7 +74,7 @@ export default function JobSearch(params: { user: User }) {
                 }
                 setJobs((prevJobs: UserJob[]) => [...prevJobs, ...newJobs]);
             } else {
-                const newJobs = await searchJobs(user.uid, searchInput, selectedSkills, selectedTags, page);
+                const newJobs = await searchJobs(searchInput, selectedSkills, selectedTags, page);
                 if (newJobs.length < 10) {
                     setShowLoadMore(false);
                 } else {
@@ -88,7 +88,7 @@ export default function JobSearch(params: { user: User }) {
 
     const handleSearch = async () => {
         if (searchInput === '' && selectedSkills.length === 0 && selectedTags.length === 0) {
-            const newJobs = await fetchJobs(user.uid, page);
+            const newJobs = await fetchJobs(page);
             setJobs(newJobs);
             if (newJobs.length < 10) {
                 setShowLoadMore(false);
@@ -97,7 +97,7 @@ export default function JobSearch(params: { user: User }) {
             }
             setSearchMode(false);
         } else {
-            const newJobs = await searchJobs(user.uid, searchInput, selectedSkills, selectedTags, page);
+            const newJobs = await searchJobs(searchInput, selectedSkills, selectedTags, page);
             setJobs(newJobs);
             if (newJobs.length < 10) {
                 setShowLoadMore(false);

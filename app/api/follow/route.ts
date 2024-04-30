@@ -4,12 +4,21 @@ import {
   followUserPrisma,
   unfollowUserPrisma,
 } from "@/lib/prisma/follow";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
+import { UserSession } from "@/types";
 
 export async function GET(req: NextRequest) {
+  const session = (await getServerSession(authOptions)) as UserSession;
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const user = session.user.uid;
   const searchParams = req.nextUrl.searchParams;
-  const user = searchParams.get("user");
   const otherUser = searchParams.get("otherUser");
-  if (user === null || otherUser === null) {
+  if (otherUser === null) {
     return NextResponse.error();
   }
   const checkReturn = await checkFollowing(user, otherUser);
@@ -18,15 +27,27 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: Request) {
+  const session = (await getServerSession(authOptions)) as UserSession;
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
-  await followUserPrisma(body.user, body.otherUser);
+  await followUserPrisma(session.user.uid, body.otherUser);
 
   return NextResponse.json({ response: "Followed User" });
 }
 
 export async function PUT(req: Request) {
+  const session = (await getServerSession(authOptions)) as UserSession;
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
-  await unfollowUserPrisma(body.user, body.otherUser);
+  await unfollowUserPrisma(session.user.uid, body.otherUser);
 
   return NextResponse.json({ response: "Unfollowed User" });
 }

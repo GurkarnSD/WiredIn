@@ -5,6 +5,9 @@ import {
   updateUserPrisma,
 } from "../../../lib/prisma/user";
 import { hash } from "bcrypt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
+import { UserSession } from "@/types";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -57,9 +60,15 @@ export async function POST(req: Request) {
 }
 
 export async function PUT(req: Request) {
+  const session = (await getServerSession(authOptions)) as UserSession;
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
 
-  await updateUserPrisma(body);
+  await updateUserPrisma(session.user.uid, body);
 
   return NextResponse.json({ response: "ok" });
 }

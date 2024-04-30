@@ -223,17 +223,20 @@ async function createContractPrisma(
   }
 }
 
-async function updateContractPrisma(contract: {
-  id: string;
-  title: string;
-  description: string;
-  location: string;
-  skills: string[];
-  tags: string[];
-}) {
+async function updateContractPrisma(
+  userId: string,
+  contract: {
+    id: string;
+    title: string;
+    description: string;
+    location: string;
+    skills: string[];
+    tags: string[];
+  }
+) {
   try {
     await prisma.contract.update({
-      where: { uid: contract.id },
+      where: { userId, uid: contract.id },
       data: {
         title: contract.title,
         description: contract.description,
@@ -253,10 +256,10 @@ async function updateContractPrisma(contract: {
   }
 }
 
-async function deleteContractPrisma(uid: string) {
+async function deleteContractPrisma(userId: string, uid: string) {
   try {
     await prisma.contract.delete({
-      where: { uid },
+      where: { userId, uid },
     });
   } catch (error) {
     throw new Error("Unable To Delete Contract");

@@ -67,7 +67,7 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
                                 <div className={styles.experienceInfo}>
                                     <div className={styles.experienceTitle}>{experience.title}</div>
                                     <div className={styles.experienceCompany}>{experience.company}</div>
-                                    <div className={styles.experienceDate}>{new Date(experience.start).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })} - {experience.current ? "Present" : new Date(experience.end).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}</div>
+                                    <div className={styles.experienceDate}>{new Date(experience.start).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}{experience.current ? " - Present" : experience.end && " - " + new Date(experience.end).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}</div>
                                     {experience.skills && experience.skills.length > 0 &&
                                         <div className={styles.skills}>
                                             <div>Skills:&nbsp;</div>
@@ -95,13 +95,13 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
 
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
-                    <ProfileExperienceEditor user={pageUser} skills={skillsData} setModal={setIsModalOpen} />
+                    <ProfileExperienceEditor skills={skillsData} setModal={setIsModalOpen} />
                 </Modal>
             )}
 
             {isEditModalOpen && (
                 <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} backIcon disableClickOff>
-                    <ProfileExperienceEditor user={pageUser} skills={skillsData} setModal={setIsEditModalOpen} editMode experience={selectedExperience} />
+                    <ProfileExperienceEditor skills={skillsData} setModal={setIsEditModalOpen} editMode experience={selectedExperience} />
                 </Modal>
             )}
         </div>

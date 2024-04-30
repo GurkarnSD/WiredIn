@@ -19,19 +19,32 @@ async function init() {
   await init();
 })();
 
-async function getMessagesPrisma(chatRoomId: string) {
+async function getMessagesPrisma(userId: string, chatRoomId: string) {
   try {
-    const messages = await prisma.message.findMany({
+    const chatroom = await prisma.chatRoom.findFirst({
       where: {
-        chatRoomId: chatRoomId,
+        users: {
+          some: {
+            uid: userId,
+          },
+        },
+        uid: chatRoomId,
       },
       include: {
-        attachments: true,
+        messages: {
+          include: {
+            attachments: true,
+          },
+        },
       },
     });
 
+    if (!chatroom) {
+      throw new Error("Chatroom Not Found");
+    }
+
     const updatedMessages = await Promise.all(
-      messages.map(async (message) => {
+      chatroom.messages.map(async (message) => {
         const attachments = await Promise.all(
           message.attachments.map(async (attachment) => {
             const res = await fetch(
@@ -109,10 +122,11 @@ async function createMessagePrisma(
   }
 }
 
-async function deleteMessagePrisma(messageId: number) {
+async function deleteMessagePrisma(userId: string, messageId: number) {
   try {
     await prisma.message.delete({
       where: {
+        userId: userId,
         id: messageId,
       },
     });

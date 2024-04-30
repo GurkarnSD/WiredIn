@@ -61,12 +61,12 @@ async function addSkillPrisma(
   }
 }
 
-async function deleteSkillPrisma(id: string) {
+async function deleteSkillPrisma(userId: string, id: string) {
   try {
     const queryId = parseInt(id, 10);
 
     await prisma.skill.delete({
-      where: { id: queryId },
+      where: { userId, id: queryId },
     });
   } catch (error) {
     throw new Error("Unable To Delete Skill");
