@@ -61,6 +61,24 @@ async function addSkillPrisma(
   }
 }
 
+async function updateSkillPrisma(
+  userId: string,
+  skill: { id: number; name: string; learnedIn: number }
+) {
+  try {
+    await prisma.skill.update({
+      where: { userId, id: skill.id },
+      data: {
+        learnedIn: skill.learnedIn,
+      },
+    });
+  } catch (error) {
+    throw new Error("Unable To Update Skill");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function deleteSkillPrisma(userId: string, id: string) {
   try {
     const queryId = parseInt(id, 10);
@@ -79,5 +97,6 @@ export {
   getSkillOptionsPrisma,
   getSkillsPrisma,
   addSkillPrisma,
+  updateSkillPrisma,
   deleteSkillPrisma,
 };

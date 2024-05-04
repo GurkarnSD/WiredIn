@@ -230,6 +230,13 @@ export default function Post(params: { post: PostWithStats, user: User }) {
         if (user) fetchImage();
     }, [user?.profilePic]);
 
+    useEffect(() => {
+        const getComments = async () => {
+            setComments(await fetchComments(post.uid));
+        };
+        getComments();
+    }, []);
+
     const [liked, setLiked] = useState(post.likes.some((like: { uid: string }) => like.uid === user.uid))
     const [numLikes, setNumLikes] = useState(post._count.likes);
     const numComments = post._count.comments;
@@ -332,6 +339,11 @@ export default function Post(params: { post: PostWithStats, user: User }) {
             } else {
                 setInput('');
                 setCharCount(0);
+                const refreshedResponses = await fetchResponses(selectedComment.id);
+                setResponses((prev) => ({
+                    ...prev,
+                    [selectedComment.id]: refreshedResponses,
+                }));
                 setSelectedComment(null);
             }
 
@@ -350,6 +362,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
             } else {
                 setInput('');
                 setCharCount(0);
+                fetchComments(post.uid).then((comments) => setComments(comments));
             }
 
             return res.json();
@@ -393,14 +406,14 @@ export default function Post(params: { post: PostWithStats, user: User }) {
         const newLiked: Record<number, boolean> = {};
         const newNumLikes: Record<number, number> = {};
 
-        post.comments.forEach((comment: PostCommentWithStats) => {
+        comments.forEach((comment: PostCommentWithStats) => {
             newLiked[comment.id] = comment.likes.some((like: { uid: string }) => like.uid === user.uid);
             newNumLikes[comment.id] = comment._count.likes;
         });
 
         setLikedComments(newLiked);
         setCommentNumLikes(newNumLikes);
-    }, [post.comments]);
+    }, [comments]);
 
     const likeCommentHook = async (commentId: number) => {
         try {
@@ -551,14 +564,14 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                     </div>
                 </div>
                 <div className={styles.commentBody}>
-                    {post.comments.map((comment: PostCommentWithStats) => (
+                    {comments.map((comment: PostCommentWithStats) => (
                         <div className={styles.comment} key={comment.id}>
                             <div className={styles.commentHeader}>
                                 <Image className={styles.profilePic} src={comment.user.profilePic} width={40} height={40} alt='Profile Pic' />
                                 <div className={styles.commenterName}>{comment.user.displayName}</div>
                                 <div className={styles.commentTime} suppressHydrationWarning={true}>{formatTimeDifference(comment.createdAt)}</div>
                             </div>
-                            {comment.createdAt.getTime() !== comment.updatedAt.getTime() && <div className={styles.editedComment}>Edited</div>}
+                            {comment.createdAt !== comment.updatedAt && <div className={styles.editedComment}>Edited</div>}
                             <div className={styles.commentContent}>
                                 <div className={styles.commentText}>{comment.text}</div>
                                 <div className={styles.commentControls}>

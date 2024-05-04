@@ -8,6 +8,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPencil } from "@fortawesome/free-solid-svg-icons";
 import ConfirmationPopup from "../ConfirmationPopup";
+import { Toaster, toast } from 'sonner'
 
 export default function Contract(params: { contract: UserContract, user: User, selectContract?: (contract: UserContract) => void, openEditModal?: (isOpen: boolean) => void }) {
 
@@ -29,6 +30,8 @@ export default function Contract(params: { contract: UserContract, user: User, s
             throw new Error("Failed to Apply to Contract")
         }
 
+        toast.success('Successfully Applied to Contract')
+
         return res.json()
     }
 
@@ -47,6 +50,8 @@ export default function Contract(params: { contract: UserContract, user: User, s
             throw new Error("Failed to Delete Contract")
         }
 
+        toast.success('Contract Deleted')
+
         return res.json()
     }
 
@@ -54,6 +59,7 @@ export default function Contract(params: { contract: UserContract, user: User, s
 
     return (
         <div className={styles.contractContainer}>
+            <Toaster position='top-right' />
             <div className={styles.contract}>
                 {user.uid === contract.user.uid &&
                     <div className={styles.settings}>

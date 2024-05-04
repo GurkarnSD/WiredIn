@@ -7,11 +7,18 @@ import Modal from '../Modal';
 import useSWR from 'swr';
 import Image from 'next/image';
 import { User, UserProfile, UserSkill, WorkExperience } from '@/types';
-
+import { Toaster, toast } from 'sonner'
+import ConfirmationPopup from '../ConfirmationPopup';
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
 const deleteExperience = async (id: number) => {
     const res = await fetch(`/api/profile/experiences/?id=${id}`, { method: 'DELETE' })
+
+    if (!res.ok) {
+        throw new Error("Failed to Delete Experience")
+    }
+
+    toast.success('Experience Deleted')
 
     return res.json();
 }
@@ -28,6 +35,7 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
     const [isEditExperiences, setIsEditExperiences] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedExperience, setSelectedExperience] = useState<WorkExperience | undefined>(undefined);
+    const [confirmationPopup, setConfirmationPopup] = useState(false);
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
@@ -39,6 +47,7 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
 
     return (
         <div className={styles.container}>
+            <Toaster position='top-right' />
             <div className={styles.header}>
                 <div className={styles.title}>Experience</div>
                 {user?.uid === pageUser?.uid &&
@@ -86,7 +95,10 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
                                     </div>
                                 </>
                             }
-                            {isEditExperiences && <><FontAwesomeIcon className={styles.editIcon} icon={faPen} onClick={() => { setSelectedExperience(experience); setIsEditModalOpen(true) }} /><FontAwesomeIcon className={styles.deleteIcon} icon={faTrash} onClick={() => deleteExperience(experience.id)} /></>}
+                            {isEditExperiences && <>
+                                <FontAwesomeIcon className={styles.editIcon} icon={faPen} onClick={() => { setSelectedExperience(experience); setIsEditModalOpen(true) }} />
+                                <FontAwesomeIcon className={styles.deleteIcon} icon={faTrash} onClick={() => { setSelectedExperience(experience); setConfirmationPopup(true) }} />
+                            </>}
                         </div>
                         {index !== experiencesData.length - 1 && <div className={styles.horizontalDivider} />}
                     </div>
@@ -95,15 +107,25 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
 
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
-                    <ProfileExperienceEditor skills={skillsData} setModal={setIsModalOpen} />
+                    <ProfileExperienceEditor skills={skillsData} setModal={setIsModalOpen} toastTrigger={() => toast.success("Experience Added")} />
                 </Modal>
             )}
 
             {isEditModalOpen && (
                 <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} backIcon disableClickOff>
-                    <ProfileExperienceEditor skills={skillsData} setModal={setIsEditModalOpen} editMode experience={selectedExperience} />
+                    <ProfileExperienceEditor skills={skillsData} setModal={setIsEditModalOpen} editMode experience={selectedExperience} toastTrigger={() => toast.success("Experience Updated")} />
                 </Modal>
             )}
+
+            {confirmationPopup &&
+                <ConfirmationPopup
+                    showPopup={confirmationPopup}
+                    setShowPopup={setConfirmationPopup}
+                    onConfirm={() => { if (selectedExperience) deleteExperience(selectedExperience.id) }}
+                    onCancel={() => setConfirmationPopup(false)}
+                    message='delete your experience'
+                />
+            }
         </div>
     )
 }

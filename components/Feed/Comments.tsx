@@ -234,6 +234,11 @@ export default function Comments(params: { postId: string, user: User }) {
             } else {
                 setInput('');
                 setCharCount(0);
+                const refreshedResponses = await fetchResponses(selectedComment.id);
+                setResponses((prev) => ({
+                    ...prev,
+                    [selectedComment.id]: refreshedResponses,
+                }));
                 setSelectedComment(null);
             }
 

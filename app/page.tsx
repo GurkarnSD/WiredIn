@@ -97,7 +97,7 @@ export default function Home() {
               </Link>
             </div>
           }
-          {user ? <NavbarDropdown user={user} lightMode={true} nav /> : <><Link className={styles.signupButton} href='/signup'>Sign Up</Link><Link className={styles.loginButton} href='/login'>Login</Link></>}
+          {user ? <NavbarDropdown user={user} lightMode={true} nav /> : <><Link className={styles.signupButton} href='/signup'>Sign Up</Link><Link className={styles.loginButton} href='/login'>Log In</Link></>}
         </div>
       </div>
       <div className={styles.mainSection}>

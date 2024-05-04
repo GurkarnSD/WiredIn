@@ -86,13 +86,13 @@ const Signup: React.FC = () => {
                 <input required className={styles.input} name='confirmPassword' type="password" placeholder="Confirm Password" value={signupForm.confirmPassword} onChange={handleChange} />
                 {error && <div className={styles.error}>{error}</div>}
                 {success && <div className={styles.success}>{success}</div>}
-                <button className={styles.signupButton} type='submit'>Signup</button>
+                <button className={styles.signupButton} type='submit'>Sign Up</button>
                 <div className={styles.divider}>
                     <div className={styles.dividerLine}></div>
                     <div className={styles.dividerText}>OR</div>
                     <div className={styles.dividerLine}></div>
                 </div>
-                <Link href='/login' className={styles.googleButton}>Login With&nbsp;
+                <Link href='/login' className={styles.googleButton}>Log In With&nbsp;
                     <span className={styles.googleBlue}>G</span>
                     <span className={styles.googleRed}>o</span>
                     <span className={styles.googleYellow}>o</span>
@@ -102,7 +102,7 @@ const Signup: React.FC = () => {
                 </Link>
             </form>
             <div className={styles.additional}>
-                <div>Already Have An Account?&nbsp;<Link href='/login' className={styles.login}>Login</Link></div>
+                <div>Already Have An Account?&nbsp;<Link href='/login' className={styles.login}>Log In</Link></div>
             </div>
         </div>
     )

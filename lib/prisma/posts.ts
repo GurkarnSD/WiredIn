@@ -63,22 +63,20 @@ async function getPostsPrisma(userId: string, page: number, pageSize: number) {
       take: pageSize,
     });
 
-    const imageCache: Record<string, string> = {};
+    const imageCache: Record<string, Promise<string>> = {};
 
     const updatedPosts = await Promise.all(
       posts.map(async (post) => {
         if (post.user.profilePic) {
-          let profilePicUrl;
-          if (imageCache[post.user.profilePic]) {
-            profilePicUrl = imageCache[post.user.profilePic];
-          } else {
-            const res = await fetch(
+          if (!imageCache[post.user.profilePic]) {
+            imageCache[post.user.profilePic] = fetch(
               `${process.env.API_URL}/api/image/${post.user.profilePic}`
-            );
-            const image = await res.json();
-            profilePicUrl = image.url;
-            imageCache[post.user.profilePic] = profilePicUrl;
+            )
+              .then((res) => res.json())
+              .then((image) => image.url);
           }
+
+          const profilePicUrl = await imageCache[post.user.profilePic];
 
           if (post.images.length > 0) {
             const imageUrls = await Promise.all(
@@ -130,28 +128,6 @@ async function getPostPrisma(postId: string) {
             uid: true,
           },
         },
-        comments: {
-          include: {
-            user: {
-              select: {
-                uid: true,
-                displayName: true,
-                profilePic: true,
-              },
-            },
-            likes: {
-              select: {
-                uid: true,
-              },
-            },
-            _count: {
-              select: {
-                likes: true,
-                responses: true,
-              },
-            },
-          },
-        },
         _count: {
           select: {
             likes: true,
@@ -170,31 +146,7 @@ async function getPostPrisma(postId: string) {
         `${process.env.API_URL}/api/image/${post.user.profilePic}`
       );
       const image = await res.json();
-      const imageCache: Record<string, string> = {};
-      imageCache[post.user.profilePic] = image.url;
       const profilePicUrl = image.url;
-
-      const updatedComments = await Promise.all(
-        post.comments.map(async (comment) => {
-          let commentProfilePicUrl;
-          if (comment.user.profilePic) {
-            if (imageCache[comment.user.profilePic]) {
-              commentProfilePicUrl = imageCache[comment.user.profilePic];
-            } else {
-              const res = await fetch(
-                `${process.env.API_URL}/api/image/${comment.user.profilePic}`
-              );
-              const image = await res.json();
-              commentProfilePicUrl = image.url;
-              imageCache[comment.user.profilePic] = commentProfilePicUrl;
-            }
-          }
-          return {
-            ...comment,
-            user: { ...comment.user, profilePic: commentProfilePicUrl },
-          };
-        })
-      );
 
       if (post.images.length > 0) {
         const imageUrls = await Promise.all(
@@ -210,13 +162,11 @@ async function getPostPrisma(postId: string) {
           ...post,
           user: { ...post.user, profilePic: profilePicUrl },
           images: imageUrls,
-          comments: updatedComments,
         };
       }
       return {
         ...post,
         user: { ...post.user, profilePic: profilePicUrl },
-        comments: updatedComments,
       };
     }
   } catch (error) {

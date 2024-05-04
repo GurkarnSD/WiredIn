@@ -6,9 +6,9 @@ import { useState } from 'react'
 import Modal from '../Modal';
 import { UserSkill } from '@/types';
 
-export default function ProfileSkillsEditor(params: { skills: UserSkill[], skillOptions: { skill: string }[] }) {
+export default function ProfileSkillsEditor(params: { skills: UserSkill[], skillOptions: { skill: string }[], toastTrigger?: () => void }) {
 
-    const { skills, skillOptions } = params;
+    const { skills, skillOptions, toastTrigger } = params;
 
     const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
@@ -39,22 +39,22 @@ export default function ProfileSkillsEditor(params: { skills: UserSkill[], skill
 
             {addSkillOpen && (
                 <Modal isOpen={addSkillOpen} onClose={() => setAddSkillOpen(false)}>
-                    <AddSkillMenu controlModal={setAddSkillOpen} skills={currentSkills} skillOptions={skillOptions} />
+                    <AddSkillMenu controlModal={setAddSkillOpen} skills={currentSkills} skillOptions={skillOptions} toastTrigger={toastTrigger} />
                 </Modal>
             )}
         </div>
     )
 }
 
-function AddSkillMenu(params: { controlModal: (toggle: boolean) => void, skills: string[], skillOptions: { skill: string }[] }) {
+export function AddSkillMenu(params: { controlModal: (toggle: boolean) => void, skills: string[], skillOptions: { skill: string }[], editMode?: boolean, skill?: UserSkill, toastTrigger?: () => void }) {
 
-    const { controlModal, skills, skillOptions } = params;
+    const { controlModal, skills, skillOptions, editMode, skill, toastTrigger } = params;
 
     const skillsList = skillOptions.map((skill: { skill: string }) => skill.skill).filter((skill: string) => !skills.includes(skill));
 
     const [inputValue, setInputValue] = useState('');
-    const [selectedSkill, setSelectedSkill] = useState('');
-    const [learnedIn, setLearnedIn] = useState<number>();
+    const [selectedSkill, setSelectedSkill] = useState(editMode && skill ? skill.name : '');
+    const [learnedIn, setLearnedIn] = useState<number>(editMode && skill ? skill.learnedIn : Number(new Date().getFullYear().toString()));
     const [submitting, setSubmitting] = useState(false);
 
     const filteredSkills = skillsList.filter(skill =>
@@ -79,23 +79,39 @@ function AddSkillMenu(params: { controlModal: (toggle: boolean) => void, skills:
 
         setSubmitting(true);
 
-        const skill = {
+        const skillData = {
+            id: editMode && skill ? skill.id : undefined,
             name: selectedSkill,
             learnedIn: learnedIn,
         };
 
-        const res = await fetch('/api/profile/skills/user', {
-            method: "POST",
-            body: JSON.stringify({
-                skill: skill,
-            })
-        })
+        let res = null;
 
-        if (!res.ok) {
-            throw new Error("Failed to Add Skill")
+        if (!editMode) {
+            res = await fetch('/api/profile/skills/user', {
+                method: "POST",
+                body: JSON.stringify({
+                    skill: skillData,
+                })
+            })
+        } else {
+            res = await fetch('/api/profile/skills/user', {
+                method: "PUT",
+                body: JSON.stringify({
+                    skill: skillData,
+                })
+            })
         }
 
+        if (!res.ok) {
+            if (!editMode) {
+                throw new Error("Failed to Add Skill")
+            } else {
+                throw new Error("Failed to Update Skill")
+            }
+        }
 
+        if (toastTrigger) toastTrigger();
         controlModal(false);
         setSubmitting(false);
         return res.json()
@@ -103,7 +119,7 @@ function AddSkillMenu(params: { controlModal: (toggle: boolean) => void, skills:
 
     return (
         <form className={styles.addSkillMenu} onSubmit={handleSubmit}>
-            <div className={styles.title}>Add A Skill</div>
+            <div className={styles.title}>{!editMode ? "Add" : "Edit"} A Skill</div>
             <div className={styles.inputContainer}>
                 <input
                     className={styles.input}
@@ -119,6 +135,7 @@ function AddSkillMenu(params: { controlModal: (toggle: boolean) => void, skills:
                                 type="checkbox"
                                 value={skill}
                                 checked={selectedSkill === skill}
+                                disabled={editMode && skill ? true : false}
                                 onChange={() => handleSkillSelection(skill)}
                                 className={styles.customCheckbox}
                             />
@@ -130,11 +147,11 @@ function AddSkillMenu(params: { controlModal: (toggle: boolean) => void, skills:
             </div>
             <div className={styles.skillFooter}>
                 <span className={styles.text}>Learned In&nbsp;
-                    <input className={styles.smallInput} type='number' min='1920' max='2120'
+                    <input className={styles.smallInput} type='number' min='1920' max={new Date().getFullYear().toString()}
                         value={learnedIn !== undefined ? learnedIn.toString() : ''}
                         onChange={handleLearnedInChange} />
                 </span>
-                <button className={styles.addButton} type='submit' disabled={submitting}>Add</button>
+                <button className={styles.addButton} type='submit' disabled={submitting}>{!editMode ? "Add" : "Save"}</button>
             </div>
         </form>
     )

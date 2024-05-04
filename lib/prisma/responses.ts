@@ -19,7 +19,6 @@ async function init() {
 })();
 
 async function getResponsesPrisma(commentId: number) {
-  const imageCache: Record<string, string> = {};
   try {
     const responses = await prisma.response.findMany({
       where: { commentId: commentId },
@@ -43,31 +42,27 @@ async function getResponsesPrisma(commentId: number) {
       throw new Error("Responses Not Found");
     }
 
+    const imageCache: Record<string, Promise<string>> = {};
+
     const updatedResponses = await Promise.all(
       responses.map(async (response) => {
         if (response.user.profilePic) {
-          if (imageCache[response.user.profilePic]) {
-            return {
-              ...response,
-              user: {
-                ...response.user,
-                profilePic: imageCache[response.user.profilePic],
-              },
-            };
-          } else {
-            const res = await fetch(
+          if (!imageCache[response.user.profilePic]) {
+            imageCache[response.user.profilePic] = fetch(
               `${process.env.API_URL}/api/image/${response.user.profilePic}`
-            );
-            const image = await res.json();
-            imageCache[response.user.profilePic] = image.url;
-
-            return {
-              ...response,
-              user: { ...response.user, profilePic: image.url },
-            };
+            )
+              .then((res) => res.json())
+              .then((image) => image.url);
           }
+
+          return {
+            ...response,
+            user: {
+              ...response.user,
+              profilePic: await imageCache[response.user.profilePic],
+            },
+          };
         }
-        return response;
       })
     );
 

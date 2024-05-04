@@ -8,6 +8,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPencil } from "@fortawesome/free-solid-svg-icons";
 import ConfirmationPopup from "../ConfirmationPopup";
+import { Toaster, toast } from 'sonner'
 
 export default function Job(params: { job: UserJob, user: User, selectJob?: (job: UserJob) => void, openEditModal?: (isOpen: boolean) => void }) {
 
@@ -29,6 +30,8 @@ export default function Job(params: { job: UserJob, user: User, selectJob?: (job
             throw new Error("Failed to Apply to Job")
         }
 
+        toast.success('Successfully Applied to Job')
+
         return res.json()
     }
 
@@ -47,6 +50,8 @@ export default function Job(params: { job: UserJob, user: User, selectJob?: (job
             throw new Error("Failed to Delete Job")
         }
 
+        toast.success('Job Deleted')
+
         return res.json()
     }
 
@@ -54,6 +59,7 @@ export default function Job(params: { job: UserJob, user: User, selectJob?: (job
 
     return (
         <div className={styles.jobContainer}>
+            <Toaster position='top-right' />
             <div className={styles.job}>
                 {user.uid === job.user.uid &&
                     <div className={styles.settings}>

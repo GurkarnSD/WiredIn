@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   getSkillsPrisma,
   addSkillPrisma,
+  updateSkillPrisma,
   deleteSkillPrisma,
 } from "@/lib/prisma/skills";
 import { getServerSession } from "next-auth";
@@ -33,6 +34,19 @@ export async function POST(req: Request) {
   await addSkillPrisma(session.user.uid, body.skill);
 
   return NextResponse.json({ response: "Added Skill" });
+}
+
+export async function PUT(req: Request) {
+  const session = (await getServerSession(authOptions)) as UserSession;
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const body = await req.json();
+  await updateSkillPrisma(session.user.uid, body.skill);
+
+  return NextResponse.json({ response: "Updated Skill" });
 }
 
 export async function DELETE(req: Request) {

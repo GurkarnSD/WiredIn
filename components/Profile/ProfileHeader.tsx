@@ -251,6 +251,21 @@ function UserList(params: { followers?: boolean, following?: boolean, pageUser: 
         }
     };
 
+    const unfollowUserAndUpdateList = async (userId: string) => {
+        try {
+            await unfollowUser(userId);
+            const updatedList = userList.map(member => {
+                if (member.uid === userId) {
+                    return { ...member, sessionUserFollows: false };
+                }
+                return member;
+            });
+            setUserList(updatedList);
+        } catch (error) {
+            console.error("Error following user:", error);
+        }
+    };
+
     return (
         <div className={styles.usersContainer}>
             <div className={styles.usersHeader}>
@@ -270,7 +285,7 @@ function UserList(params: { followers?: boolean, following?: boolean, pageUser: 
                             </Link>
                             {member.uid !== user ? !member.sessionUserFollows ?
                                 <button className={styles.follow} onClick={() => { followUserAndUpdateList(member.uid); }}>Follow</button>
-                                : <button className={styles.follow} onClick={() => { followUserAndUpdateList(member.uid); }}>Unfollow</button>
+                                : <button className={styles.follow} onClick={() => { unfollowUserAndUpdateList(member.uid); }}>Unfollow</button>
                                 : null}
                         </div>
                     )

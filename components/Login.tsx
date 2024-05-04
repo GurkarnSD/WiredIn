@@ -87,7 +87,7 @@ export default function Login({ user }: { user: User | null }) {
                     <div className={styles.dividerText}>OR</div>
                     <div className={styles.dividerLine}></div>
                 </div>
-                <button className={styles.googleButton} onClick={() => signIn('google')}>Log In With&nbsp;
+                <button className={styles.googleButton} type="button" onClick={() => signIn('google')}>Log In With&nbsp;
                     <span className={styles.googleBlue}>G</span>
                     <span className={styles.googleRed}>o</span>
                     <span className={styles.googleYellow}>o</span>

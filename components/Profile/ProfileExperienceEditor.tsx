@@ -7,9 +7,9 @@ import Modal from '../Modal';
 import axios from 'axios';
 import { UserSkill, WorkExperience } from '@/types';
 
-export default function ProfileExperienceEditor(params: { skills: UserSkill[], setModal?: (isOpen: boolean) => void, editMode?: boolean, experience?: WorkExperience }) {
+export default function ProfileExperienceEditor(params: { skills: UserSkill[], setModal?: (isOpen: boolean) => void, editMode?: boolean, experience?: WorkExperience, toastTrigger?: () => void }) {
 
-    const { skills, setModal, editMode, experience } = params;
+    const { skills, setModal, editMode, experience, toastTrigger } = params;
 
     const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
@@ -70,6 +70,30 @@ export default function ProfileExperienceEditor(params: { skills: UserSkill[], s
 
         setSubmitting(true);
 
+        if (!expForm.title) {
+            setError('Title is required');
+            setSubmitting(false);
+            return;
+        }
+
+        if (!expForm.company) {
+            setError('Company is required');
+            setSubmitting(false);
+            return;
+        }
+
+        if (!expForm.start) {
+            setError('Start date is required');
+            setSubmitting(false);
+            return;
+        }
+
+        if (expForm.start && expForm.end && expForm.start > expForm.end) {
+            setError('Start date must be before end date');
+            setSubmitting(false);
+            return;
+        }
+
         const skillIds = selectedSkills.map((skill: string) => {
             const foundSkill = skills.find((s: UserSkill) => s.name === skill);
             if (foundSkill) {
@@ -129,6 +153,9 @@ export default function ProfileExperienceEditor(params: { skills: UserSkill[], s
                 throw new Error("Failed to Edit Experience")
             }
         } else {
+            if (toastTrigger) {
+                toastTrigger();
+            }
             setExpForm({
                 id: null,
                 prevSkills: [],
@@ -154,7 +181,10 @@ export default function ProfileExperienceEditor(params: { skills: UserSkill[], s
 
     return (
         <div className={styles.container}>
-            <div className={styles.title}>{editMode && "Edit "}Experience</div>
+            <div className={styles.header}>
+                <div className={styles.title}>{editMode && "Edit "}Experience</div>
+                {error && <div className={styles.error}>{error}</div>}
+            </div>
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
                     <div className={styles.formGroupUpper}>

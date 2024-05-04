@@ -79,7 +79,6 @@ async function getFollowers(user: string, otherUser: string) {
     }
 
     const followers = userData.followers;
-    const imageCache: Record<string, string> = {};
 
     const otherUserData = await prisma.user.findUnique({
       where: { uid: otherUser },
@@ -94,19 +93,18 @@ async function getFollowers(user: string, otherUser: string) {
       otherUserData.following.map((user) => user.uid)
     );
 
+    const imageCache: Record<string, Promise<string>> = {};
     const updatedFollowers = await Promise.all(
       followers.map(async (user: UserProfile) => {
-        let profilePicUrl;
-        if (imageCache[user.profilePic]) {
-          profilePicUrl = imageCache[user.profilePic];
-        } else {
-          const res = await fetch(
+        if (!imageCache[user.profilePic]) {
+          imageCache[user.profilePic] = await fetch(
             `${process.env.API_URL}/api/image/${user.profilePic}`
-          );
-          const image = await res.json();
-          profilePicUrl = image.url;
-          imageCache[user.profilePic] = profilePicUrl;
+          )
+            .then((res) => res.json())
+            .then((image) => image.url);
         }
+        const profilePicUrl = await imageCache[user.profilePic];
+
         const isFollowedByOtherUser = otherUserFollowing.has(user.uid);
 
         return {
@@ -137,7 +135,6 @@ async function getFollowing(user: string, otherUser: string) {
     }
 
     const following = userData.following;
-    const imageCache: Record<string, string> = {};
 
     const otherUserData = await prisma.user.findUnique({
       where: { uid: otherUser },
@@ -152,19 +149,19 @@ async function getFollowing(user: string, otherUser: string) {
       otherUserData.following.map((user) => user.uid)
     );
 
+    const imageCache: Record<string, Promise<string>> = {};
     const updatedFollowing = await Promise.all(
       following.map(async (user: UserProfile) => {
-        let profilePicUrl;
-        if (imageCache[user.profilePic]) {
-          profilePicUrl = imageCache[user.profilePic];
-        } else {
-          const res = await fetch(
+        if (!imageCache[user.profilePic]) {
+          imageCache[user.profilePic] = fetch(
             `${process.env.API_URL}/api/image/${user.profilePic}`
-          );
-          const image = await res.json();
-          profilePicUrl = image.url;
-          imageCache[user.profilePic] = profilePicUrl;
+          )
+            .then((res) => res.json())
+            .then((image) => image.url);
         }
+
+        const profilePicUrl = await imageCache[user.profilePic];
+
         const isFollowedByOtherUser = otherUserFollowing.has(user.uid);
 
         return {

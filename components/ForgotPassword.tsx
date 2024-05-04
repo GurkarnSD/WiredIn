@@ -50,7 +50,7 @@ const ForgotPassword: React.FC = () => {
                 }
                 <div className={styles.additional}>
                     <div>Don&apos;t Have An Account?&nbsp;<Link href='/signup' className={styles.signup}>Sign Up</Link></div>
-                    <div>Already Have An Account?&nbsp;<Link href='/login' className={styles.login}>Login</Link></div>
+                    <div>Already Have An Account?&nbsp;<Link href='/login' className={styles.login}>Log In</Link></div>
                 </div>
             </div>
         </>

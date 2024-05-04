@@ -86,21 +86,19 @@ async function getContractsPrisma(
       take: pageSize,
     });
 
-    const imageCache: Record<string, string> = {};
+    const imageCache: Record<string, Promise<string>> = {};
 
     const updatedContracts = await Promise.all(
       contracts.map(async (contract) => {
-        let profilePicUrl;
-        if (imageCache[contract.user.profilePic]) {
-          profilePicUrl = imageCache[contract.user.profilePic];
-        } else {
-          const res = await fetch(
+        if (!imageCache[contract.user.profilePic]) {
+          imageCache[contract.user.profilePic] = fetch(
             `${process.env.API_URL}/api/image/${contract.user.profilePic}`
-          );
-          const image = await res.json();
-          profilePicUrl = image.url;
-          imageCache[contract.user.profilePic] = profilePicUrl;
+          )
+            .then((res) => res.json())
+            .then((image) => image.url);
         }
+        const profilePicUrl = await imageCache[contract.user.profilePic];
+
         return {
           ...contract,
           user: { ...contract.user, profilePic: profilePicUrl },
@@ -159,17 +157,16 @@ async function searchContractsPrisma(
 
     const updatedContracts = await Promise.all(
       contracts.map(async (contract) => {
-        let profilePicUrl;
-        if (imageCache[contract.user.profilePic]) {
-          profilePicUrl = imageCache[contract.user.profilePic];
-        } else {
-          const res = await fetch(
+        if (!imageCache[contract.user.profilePic]) {
+          imageCache[contract.user.profilePic] = await fetch(
             `${process.env.API_URL}/api/image/${contract.user.profilePic}`
-          );
-          const image = await res.json();
-          profilePicUrl = image.url;
-          imageCache[contract.user.profilePic] = profilePicUrl;
+          )
+            .then((res) => res.json())
+            .then((image) => image.url);
         }
+
+        const profilePicUrl = await imageCache[contract.user.profilePic];
+
         return {
           ...contract,
           user: { ...contract.user, profilePic: profilePicUrl },

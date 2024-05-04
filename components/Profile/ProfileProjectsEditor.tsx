@@ -4,9 +4,9 @@ import { faArrowsLeftRight } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { UserProject, UserSkill } from '@/types';
 
-export default function ProfileProjectsEditor(params: { skills: UserSkill[], setModal?: (isOpen: boolean) => void, editMode?: boolean, project?: UserProject }) {
+export default function ProfileProjectsEditor(params: { skills: UserSkill[], setModal?: (isOpen: boolean) => void, editMode?: boolean, project?: UserProject, toastTrigger?: () => void }) {
 
-    const { skills, setModal, editMode, project } = params;
+    const { skills, setModal, editMode, project, toastTrigger } = params;
 
     const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
@@ -23,6 +23,7 @@ export default function ProfileProjectsEditor(params: { skills: UserSkill[], set
     })
     const [selectedSkills, setSelectedSkills] = useState<string[]>(editMode && project ? project.skills?.map((skill) => skill.name) ?? [] : []);
     const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState('');
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setProjForm((prev) => ({
@@ -35,6 +36,24 @@ export default function ProfileProjectsEditor(params: { skills: UserSkill[], set
         e.preventDefault()
 
         setSubmitting(true);
+
+        if (!projForm.title) {
+            setError('Title is required');
+            setSubmitting(false);
+            return;
+        }
+
+        if (!projForm.start) {
+            setError('Start date is required');
+            setSubmitting(false);
+            return;
+        }
+
+        if (projForm.start && projForm.end && projForm.start > projForm.end) {
+            setError('Start date must be before end date');
+            setSubmitting(false);
+            return;
+        }
 
         const skillIds = selectedSkills.map((skill: string) => {
             const foundSkill = skills.find((s: UserSkill) => s.name === skill);
@@ -83,6 +102,9 @@ export default function ProfileProjectsEditor(params: { skills: UserSkill[], set
                 throw new Error("Failed to Update Project")
             }
         } else {
+            if (toastTrigger) {
+                toastTrigger();
+            }
             setProjForm({
                 id: null,
                 prevSkills: [],
@@ -114,7 +136,10 @@ export default function ProfileProjectsEditor(params: { skills: UserSkill[], set
 
     return (
         <div className={styles.container}>
-            <div className={styles.title}>Projects</div>
+            <div className={styles.header}>
+                <div className={styles.title}>{editMode && "Edit "}Projects</div>
+                {error && <div className={styles.error}>{error}</div>}
+            </div>
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
                     <div className={styles.formGroupUpper}>

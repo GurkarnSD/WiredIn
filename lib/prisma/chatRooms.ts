@@ -67,7 +67,7 @@ async function getChatRoomsPrisma(userId: string) {
       },
     });
 
-    const imageCache: Record<string, string> = {};
+    const imageCache: Record<string, Promise<string>> = {};
 
     const updatedChatRooms = await Promise.all(
       chatRooms.map(async (chatRoom) => {
@@ -75,17 +75,15 @@ async function getChatRoomsPrisma(userId: string) {
           chatRoom.users
             .filter((user) => user.uid !== userId)
             .map(async (user) => {
-              let userImageURL;
-              if (imageCache[user.profilePic]) {
-                userImageURL = imageCache[user.profilePic];
-              } else {
-                const res = await fetch(
+              if (!imageCache[user.profilePic]) {
+                imageCache[user.profilePic] = fetch(
                   `${process.env.API_URL}/api/image/${user.profilePic}`
-                );
-                const image = await res.json();
-                userImageURL = image.url;
-                imageCache[user.profilePic] = image.url;
+                )
+                  .then((res) => res.json())
+                  .then((image) => image.url);
               }
+              const userImageURL = await imageCache[user.profilePic];
+
               return { ...user, profilePic: userImageURL };
             })
         );

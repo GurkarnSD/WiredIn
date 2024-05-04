@@ -7,11 +7,18 @@ import Modal from '../../components/Modal';
 import useSWR from 'swr';
 import Link from 'next/link';
 import { User, UserProfile, UserProject } from '@/types';
-
+import { Toaster, toast } from 'sonner'
+import ConfirmationPopup from '../ConfirmationPopup';
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
 const deleteProject = async (id: number) => {
     const res = await fetch(`/api/profile/projects/?id=${id}`, { method: 'DELETE' })
+
+    if (!res.ok) {
+        throw new Error("Failed to Delete Project")
+    }
+
+    toast.success('Project Deleted')
 
     return res.json();
 }
@@ -28,6 +35,7 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
     const [isEditProjects, setIsEditProjects] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedProject, setSelectedProject] = useState<UserProject | undefined>(undefined);
+    const [confirmationPopup, setConfirmationPopup] = useState(false);
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
@@ -39,6 +47,7 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
 
     return (
         <div className={styles.container}>
+            <Toaster position='top-right' />
             <div className={styles.header}>
                 <div className={styles.title}>Projects</div>
                 {user?.uid === pageUser?.uid &&
@@ -61,7 +70,10 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
                             {project.source && <Link href={project.source}>
                                 <FontAwesomeIcon className={styles.projectIcon} icon={faCode} />
                             </Link>}
-                            {isEditProjects && <><FontAwesomeIcon className={styles.editIcon} icon={faPen} onClick={() => { setSelectedProject(project); setIsEditModalOpen(true) }} /><FontAwesomeIcon className={styles.deleteIcon} icon={faTrash} onClick={() => deleteProject(project.id)} /></>}
+                            {isEditProjects && <>
+                                <FontAwesomeIcon className={styles.editIcon} icon={faPen} onClick={() => { setSelectedProject(project); setIsEditModalOpen(true) }} />
+                                <FontAwesomeIcon className={styles.deleteIcon} icon={faTrash} onClick={() => { setSelectedProject(project); setConfirmationPopup(true) }} />
+                            </>}
                         </div>
                         <div className={styles.projectDate}>{new Date(project.start).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}{project.current ? " - Present" : project.end && " - " + new Date(project.end).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}</div>
                         <div className={styles.projectDescription}>
@@ -77,15 +89,25 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
 
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
-                    <ProfileProjectsEditor skills={skillsData} setModal={setIsModalOpen} />
+                    <ProfileProjectsEditor skills={skillsData} setModal={setIsModalOpen} toastTrigger={() => toast.success("Project Added")} />
                 </Modal>
             )}
 
             {isEditModalOpen && (
                 <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} backIcon disableClickOff>
-                    <ProfileProjectsEditor skills={skillsData} setModal={setIsEditModalOpen} editMode project={selectedProject} />
+                    <ProfileProjectsEditor skills={skillsData} setModal={setIsEditModalOpen} editMode project={selectedProject} toastTrigger={() => toast.success("Project Updated")} />
                 </Modal>
             )}
+
+            {confirmationPopup &&
+                <ConfirmationPopup
+                    showPopup={confirmationPopup}
+                    setShowPopup={setConfirmationPopup}
+                    onConfirm={() => { if (selectedProject) deleteProject(selectedProject.id) }}
+                    onCancel={() => setConfirmationPopup(false)}
+                    message='delete your project'
+                />
+            }
         </div>
     )
 }

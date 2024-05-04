@@ -80,21 +80,20 @@ async function getJobsPrisma(userId: string, page: number, pageSize: number) {
       take: pageSize,
     });
 
-    const imageCache: Record<string, string> = {};
+    const imageCache: Record<string, Promise<string>> = {};
 
     const updatedJobs = await Promise.all(
       jobs.map(async (job) => {
-        let profilePicUrl;
-        if (imageCache[job.user.profilePic]) {
-          profilePicUrl = imageCache[job.user.profilePic];
-        } else {
-          const res = await fetch(
+        if (!imageCache[job.user.profilePic]) {
+          imageCache[job.user.profilePic] = fetch(
             `${process.env.API_URL}/api/image/${job.user.profilePic}`
-          );
-          const image = await res.json();
-          profilePicUrl = image.url;
-          imageCache[job.user.profilePic] = profilePicUrl;
+          )
+            .then((res) => res.json())
+            .then((image) => image.url);
         }
+
+        const profilePicUrl = await imageCache[job.user.profilePic];
+
         return {
           ...job,
           user: { ...job.user, profilePic: profilePicUrl },
@@ -149,21 +148,20 @@ async function searchJobsPrisma(
       take: pageSize,
     });
 
-    const imageCache: Record<string, string> = {};
+    const imageCache: Record<string, Promise<string>> = {};
 
     const updatedJobs = await Promise.all(
       jobs.map(async (job) => {
-        let profilePicUrl;
-        if (imageCache[job.user.profilePic]) {
-          profilePicUrl = imageCache[job.user.profilePic];
-        } else {
-          const res = await fetch(
+        if (!imageCache[job.user.profilePic]) {
+          imageCache[job.user.profilePic] = fetch(
             `${process.env.API_URL}/api/image/${job.user.profilePic}`
-          );
-          const image = await res.json();
-          profilePicUrl = image.url;
-          imageCache[job.user.profilePic] = profilePicUrl;
+          )
+            .then((res) => res.json())
+            .then((image) => image.url);
         }
+
+        const profilePicUrl = await imageCache[job.user.profilePic];
+
         return {
           ...job,
           user: { ...job.user, profilePic: profilePicUrl },

@@ -4,6 +4,7 @@ import { faTrash, faPencil, faFlag } from "@fortawesome/free-solid-svg-icons";
 import { useState } from 'react';
 import ConfirmationPopup from "../ConfirmationPopup";
 import { UserPost } from "@/types";
+import { Toaster, toast } from 'sonner'
 
 export default function PostSettings(params: { uid: string, post: UserPost, selectPost?: (post: UserPost) => void, openEditModal: (isOpen: boolean) => void }) {
 
@@ -17,11 +18,14 @@ export default function PostSettings(params: { uid: string, post: UserPost, sele
             throw new Error("Failed to Delete Post")
         }
 
+        toast.success('Post Deleted')
+
         return res.json()
     }
 
     return (
         <div className={styles.settings}>
+            <Toaster position='top-right' />
             <FontAwesomeIcon className={styles.settingsOption} icon={faFlag} />
             {post.user.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faPencil} onClick={() => { if (selectPost) selectPost(post); openEditModal(true); }} />}
             {post.user.uid === uid && <FontAwesomeIcon className={styles.settingsOption} icon={faTrash} onClick={() => setConfirmationPopup(true)} />}
