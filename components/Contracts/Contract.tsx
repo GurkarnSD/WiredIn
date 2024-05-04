@@ -8,7 +8,8 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPencil } from "@fortawesome/free-solid-svg-icons";
 import ConfirmationPopup from "../ConfirmationPopup";
-import { Toaster, toast } from 'sonner'
+import { toast } from 'sonner'
+import { Fragment } from "react";
 
 export default function Contract(params: { contract: UserContract, user: User, selectContract?: (contract: UserContract) => void, openEditModal?: (isOpen: boolean) => void }) {
 
@@ -59,7 +60,6 @@ export default function Contract(params: { contract: UserContract, user: User, s
 
     return (
         <div className={styles.contractContainer}>
-            <Toaster position='top-right' />
             <div className={styles.contract}>
                 {user.uid === contract.user.uid &&
                     <div className={styles.settings}>
@@ -85,7 +85,14 @@ export default function Contract(params: { contract: UserContract, user: User, s
                     {contract.skills.length > 0 && <div className={styles.contractSkills}>
                         <h4>Skills:</h4>&nbsp;{contract.skills.map(skill => skill.skill).join(', ')}
                     </div>}
-                    <div className={styles.contractDescription}>{contract.description}</div>
+                    <div className={styles.contractDescription}>
+                        {contract.description.split('\n').map((line, i) => (
+                            <Fragment key={i}>
+                                {line}
+                                <br />
+                            </Fragment>
+                        ))}
+                    </div>
                     <div className={styles.contractInfoFooter}>
                         <div className={styles.contractTags}>
                             {contract.tags.map(tag => {

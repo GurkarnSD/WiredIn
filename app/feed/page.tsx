@@ -7,6 +7,12 @@ import Feed from "@/components/Feed/Feed";
 import ProfileCard from "@/components/Feed/ProfileCard";
 import { UserSession } from "@/types";
 import { redirect } from "next/navigation";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Feed | WiredIn',
+};
+
 
 export const revalidate = 0;
 

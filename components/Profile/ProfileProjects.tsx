@@ -7,7 +7,7 @@ import Modal from '../../components/Modal';
 import useSWR from 'swr';
 import Link from 'next/link';
 import { User, UserProfile, UserProject } from '@/types';
-import { Toaster, toast } from 'sonner'
+import { toast } from 'sonner'
 import ConfirmationPopup from '../ConfirmationPopup';
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
@@ -47,7 +47,6 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
 
     return (
         <div className={styles.container}>
-            <Toaster position='top-right' />
             <div className={styles.header}>
                 <div className={styles.title}>Projects</div>
                 {user?.uid === pageUser?.uid &&

@@ -6,7 +6,7 @@ import JobCreator from './JobCreator'
 import Job from './Job';
 import useSWR from 'swr';
 import { UserJob, User } from '@/types';
-import { Toaster, toast } from 'sonner'
+import { toast } from 'sonner'
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
 export default function MyJobs(params: { user: User }) {
@@ -23,7 +23,6 @@ export default function MyJobs(params: { user: User }) {
     return (
         <>
             <div className={styles.container}>
-                <Toaster position='top-right' />
                 <div className={styles.header}>
                     <div className={styles.headerRow}>
                         <h1 className={styles.title}>My Jobs</h1>

@@ -41,7 +41,6 @@ export default function Home() {
   useEffect(() => {
     const fetchSession = async () => {
       const session = await getClientSession();
-      console.log(session.user);
       setUser(session.user);
     };
 
@@ -279,195 +278,193 @@ export default function Home() {
           <div className={styles.content}>
             <h1 className={styles.contentTitle}>Plug Into The Feed</h1>
             <h2 className={styles.contentSubtitle}>Start your journey, gain insights, and build lasting connections.</h2>
-            <div className={styles.feedShowcase}>
-              <div className={styles.postsContainer}>
-                <div className={styles.postGroup1}>
-                  <div className={styles.postContainer}>
-                    <div className={styles.postHeader}>
-                      <div className={styles.postHeaderLeft}>
-                        <Image className={styles.postProfile} src={AliceSmith} alt={"Profile Pic"} height={50} width={50} />
-                        <div className={styles.postInfo}>
-                          <div className={styles.displayName}>AliceSmith</div>
-                          <div className={styles.profileTitle}>Data Analyst</div>
-                        </div>
-                      </div>
-                      <div className={styles.postHeaderRight}>
-                        <div className={styles.time}>2 Days Ago</div>
+            <div className={styles.postsContainer}>
+              <div className={styles.postGroup1}>
+                <div className={styles.postContainer}>
+                  <div className={styles.postHeader}>
+                    <div className={styles.postHeaderLeft}>
+                      <Image className={styles.postProfile} src={AliceSmith} alt={"Profile Pic"} height={50} width={50} />
+                      <div className={styles.postInfo}>
+                        <div className={styles.displayName}>AliceSmith</div>
+                        <div className={styles.profileTitle}>Data Analyst</div>
                       </div>
                     </div>
-                    <div className={styles.postBody}>
-                      <div className={styles.text}>
-                        Exploring the world of data analysis! Each dataset is a unique adventure, and I love turning raw data into meaningful insights.
-                      </div>
-                      <div className={styles.images}>
-                        <div className={`${styles.imagesContainer} ${styles.twoImages}`}>
-                          <div className={styles.imageContainer}>
-                            <Image className={`${styles.image} ${styles.medImage}`} src={DataAn1} alt={'Data Analysis Image 1'} width={0} height={0} unoptimized />
-                          </div>
-                          <div className={styles.imagesContainer2}>
-                            <div className={styles.imageContainer}>
-                              <Image className={`${styles.image} ${styles.medImage}`} src={DataAn2} alt={'Data Analysis Image 2'} width={0} height={0} unoptimized />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                    <div className={styles.postHeaderRight}>
+                      <div className={styles.time}>2 Days Ago</div>
                     </div>
                   </div>
-                  <div className={styles.postContainer}>
-                    <div className={styles.postHeader}>
-                      <div className={styles.postHeaderLeft}>
-                        <Image className={styles.postProfile} src={BobJohnson} alt={"Profile Pic"} height={50} width={50} />
-                        <div className={styles.postInfo}>
-                          <div className={styles.displayName}>BobJohnson</div>
-                          <div className={styles.profileTitle}>Software Engineer</div>
-                        </div>
-                      </div>
-                      <div className={styles.postHeaderRight}>
-                        <div className={styles.time}>1 Day Ago</div>
-                      </div>
+                  <div className={styles.postBody}>
+                    <div className={styles.text}>
+                      Exploring the world of data analysis! Each dataset is a unique adventure, and I love turning raw data into meaningful insights.
                     </div>
-                    <div className={styles.postBody}>
-                      <div className={styles.text}>
-                        Coding is my superpower! Crafting software solutions that empower and innovate. Excited about the endless possibilities in the world of technology!
-                      </div>
-                      <div className={styles.images}>
-                        <div className={`${styles.imagesContainer} ${styles.oneImage}`}>
+                    <div className={styles.images}>
+                      <div className={`${styles.imagesContainer} ${styles.twoImages}`}>
+                        <div className={styles.imageContainer}>
+                          <Image className={`${styles.image} ${styles.medImage}`} src={DataAn1} alt={'Data Analysis Image 1'} width={0} height={0} unoptimized />
+                        </div>
+                        <div className={styles.imagesContainer2}>
                           <div className={styles.imageContainer}>
-                            <Image className={`${styles.image} ${styles.largeImage}`} src={Software1} alt={'Software Engineering Image 1'} width={0} height={0} unoptimized />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.postContainer}>
-                    <div className={styles.postHeader}>
-                      <div className={styles.postHeaderLeft}>
-                        <Image className={styles.postProfile} src={CharlieBrown} alt={"Profile Pic"} height={50} width={50} />
-                        <div className={styles.postInfo}>
-                          <div className={styles.displayName}>CharlieBrown</div>
-                          <div className={styles.profileTitle}>Data Scientist</div>
-                        </div>
-                      </div>
-                      <div className={styles.postHeaderRight}>
-                        <div className={styles.time}>3 Hours Ago</div>
-                      </div>
-                    </div>
-                    <div className={styles.postBody}>
-                      <div className={styles.text}>
-                        In the realm of data science, I navigate through the data jungle to uncover hidden gems. Algorithms, insights, and a touch of magic make it all happen!
-                      </div>
-                      <div className={styles.images}>
-                        <div className={`${styles.imagesContainer} ${styles.fourImages}`}>
-                          <div className={styles.imageContainer}>
-                            <Image className={`${styles.image} ${styles.largeImage}`} src={DataSci1} alt={'Data Science Image 1'} width={0} height={0} unoptimized />
-                          </div>
-                          <div className={styles.imagesContainer2}>
-                            <div className={styles.imageContainer}>
-                              <Image className={`${styles.image} ${styles.smallImage}`} src={DataSci2} alt={'Data Science Image 2'} width={0} height={0} unoptimized />
-                            </div>
-                            <div className={styles.imageContainer}>
-                              <Image className={`${styles.image} ${styles.smallImage}`} src={DataSci3} alt={'Data Science Image 2'} width={0} height={0} unoptimized />
-                            </div>
-                            <div className={styles.imageContainer}>
-                              <Image className={`${styles.image} ${styles.smallImage}`} src={DataSci4} alt={'Data Science Image 2'} width={0} height={0} unoptimized />
-                            </div>
+                            <Image className={`${styles.image} ${styles.medImage}`} src={DataAn2} alt={'Data Analysis Image 2'} width={0} height={0} unoptimized />
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                {/* Duplicated Posts For Infinite Scroll */}
-                <div className={styles.postGroup2}>
-                  <div className={styles.postContainer}>
-                    <div className={styles.postHeader}>
-                      <div className={styles.postHeaderLeft}>
-                        <Image className={styles.postProfile} src={AliceSmith} alt={"Profile Pic"} height={50} width={50} />
-                        <div className={styles.postInfo}>
-                          <div className={styles.displayName}>AliceSmith</div>
-                          <div className={styles.profileTitle}>Data Analyst</div>
-                        </div>
-                      </div>
-                      <div className={styles.postHeaderRight}>
-                        <div className={styles.time}>2 Days Ago</div>
+                <div className={styles.postContainer}>
+                  <div className={styles.postHeader}>
+                    <div className={styles.postHeaderLeft}>
+                      <Image className={styles.postProfile} src={BobJohnson} alt={"Profile Pic"} height={50} width={50} />
+                      <div className={styles.postInfo}>
+                        <div className={styles.displayName}>BobJohnson</div>
+                        <div className={styles.profileTitle}>Software Engineer</div>
                       </div>
                     </div>
-                    <div className={styles.postBody}>
-                      <div className={styles.text}>
-                        Exploring the world of data analysis! Each dataset is a unique adventure, and I love turning raw data into meaningful insights.
+                    <div className={styles.postHeaderRight}>
+                      <div className={styles.time}>1 Day Ago</div>
+                    </div>
+                  </div>
+                  <div className={styles.postBody}>
+                    <div className={styles.text}>
+                      Coding is my superpower! Crafting software solutions that empower and innovate. Excited about the endless possibilities in the world of technology!
+                    </div>
+                    <div className={styles.images}>
+                      <div className={`${styles.imagesContainer} ${styles.oneImage}`}>
+                        <div className={styles.imageContainer}>
+                          <Image className={`${styles.image} ${styles.largeImage}`} src={Software1} alt={'Software Engineering Image 1'} width={0} height={0} unoptimized />
+                        </div>
                       </div>
-                      <div className={styles.images}>
-                        <div className={`${styles.imagesContainer} ${styles.twoImages}`}>
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.postContainer}>
+                  <div className={styles.postHeader}>
+                    <div className={styles.postHeaderLeft}>
+                      <Image className={styles.postProfile} src={CharlieBrown} alt={"Profile Pic"} height={50} width={50} />
+                      <div className={styles.postInfo}>
+                        <div className={styles.displayName}>CharlieBrown</div>
+                        <div className={styles.profileTitle}>Data Scientist</div>
+                      </div>
+                    </div>
+                    <div className={styles.postHeaderRight}>
+                      <div className={styles.time}>3 Hours Ago</div>
+                    </div>
+                  </div>
+                  <div className={styles.postBody}>
+                    <div className={styles.text}>
+                      In the realm of data science, I navigate through the data jungle to uncover hidden gems. Algorithms, insights, and a touch of magic make it all happen!
+                    </div>
+                    <div className={styles.images}>
+                      <div className={`${styles.imagesContainer} ${styles.fourImages}`}>
+                        <div className={styles.imageContainer}>
+                          <Image className={`${styles.image} ${styles.largeImage}`} src={DataSci1} alt={'Data Science Image 1'} width={0} height={0} unoptimized />
+                        </div>
+                        <div className={styles.imagesContainer2}>
                           <div className={styles.imageContainer}>
-                            <Image className={`${styles.image} ${styles.medImage}`} src={DataAn1} alt={'Data Analysis Image 1'} width={0} height={0} unoptimized />
+                            <Image className={`${styles.image} ${styles.smallImage}`} src={DataSci2} alt={'Data Science Image 2'} width={0} height={0} unoptimized />
                           </div>
-                          <div className={styles.imagesContainer2}>
-                            <div className={styles.imageContainer}>
-                              <Image className={`${styles.image} ${styles.medImage}`} src={DataAn2} alt={'Data Analysis Image 2'} width={0} height={0} unoptimized />
-                            </div>
+                          <div className={styles.imageContainer}>
+                            <Image className={`${styles.image} ${styles.smallImage}`} src={DataSci3} alt={'Data Science Image 2'} width={0} height={0} unoptimized />
+                          </div>
+                          <div className={styles.imageContainer}>
+                            <Image className={`${styles.image} ${styles.smallImage}`} src={DataSci4} alt={'Data Science Image 2'} width={0} height={0} unoptimized />
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className={styles.postContainer}>
-                    <div className={styles.postHeader}>
-                      <div className={styles.postHeaderLeft}>
-                        <Image className={styles.postProfile} src={BobJohnson} alt={"Profile Pic"} height={50} width={50} />
-                        <div className={styles.postInfo}>
-                          <div className={styles.displayName}>BobJohnson</div>
-                          <div className={styles.profileTitle}>Software Engineer</div>
-                        </div>
-                      </div>
-                      <div className={styles.postHeaderRight}>
-                        <div className={styles.time}>1 Day Ago</div>
+                </div>
+              </div>
+              {/* Duplicated Posts For Infinite Scroll */}
+              <div className={styles.postGroup2}>
+                <div className={styles.postContainer}>
+                  <div className={styles.postHeader}>
+                    <div className={styles.postHeaderLeft}>
+                      <Image className={styles.postProfile} src={AliceSmith} alt={"Profile Pic"} height={50} width={50} />
+                      <div className={styles.postInfo}>
+                        <div className={styles.displayName}>AliceSmith</div>
+                        <div className={styles.profileTitle}>Data Analyst</div>
                       </div>
                     </div>
-                    <div className={styles.postBody}>
-                      <div className={styles.text}>
-                        Coding is my superpower! Crafting software solutions that empower and innovate. Excited about the endless possibilities in the world of technology!
-                      </div>
-                      <div className={styles.images}>
-                        <div className={`${styles.imagesContainer} ${styles.oneImage}`}>
+                    <div className={styles.postHeaderRight}>
+                      <div className={styles.time}>2 Days Ago</div>
+                    </div>
+                  </div>
+                  <div className={styles.postBody}>
+                    <div className={styles.text}>
+                      Exploring the world of data analysis! Each dataset is a unique adventure, and I love turning raw data into meaningful insights.
+                    </div>
+                    <div className={styles.images}>
+                      <div className={`${styles.imagesContainer} ${styles.twoImages}`}>
+                        <div className={styles.imageContainer}>
+                          <Image className={`${styles.image} ${styles.medImage}`} src={DataAn1} alt={'Data Analysis Image 1'} width={0} height={0} unoptimized />
+                        </div>
+                        <div className={styles.imagesContainer2}>
                           <div className={styles.imageContainer}>
-                            <Image className={`${styles.image} ${styles.largeImage}`} src={Software1} alt={'Software Engineering Image 1'} width={0} height={0} unoptimized />
+                            <Image className={`${styles.image} ${styles.medImage}`} src={DataAn2} alt={'Data Analysis Image 2'} width={0} height={0} unoptimized />
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className={styles.postContainer}>
-                    <div className={styles.postHeader}>
-                      <div className={styles.postHeaderLeft}>
-                        <Image className={styles.postProfile} src={CharlieBrown} alt={"Profile Pic"} height={50} width={50} />
-                        <div className={styles.postInfo}>
-                          <div className={styles.displayName}>CharlieBrown</div>
-                          <div className={styles.profileTitle}>Data Scientist</div>
-                        </div>
-                      </div>
-                      <div className={styles.postHeaderRight}>
-                        <div className={styles.time}>3 Hours Ago</div>
+                </div>
+                <div className={styles.postContainer}>
+                  <div className={styles.postHeader}>
+                    <div className={styles.postHeaderLeft}>
+                      <Image className={styles.postProfile} src={BobJohnson} alt={"Profile Pic"} height={50} width={50} />
+                      <div className={styles.postInfo}>
+                        <div className={styles.displayName}>BobJohnson</div>
+                        <div className={styles.profileTitle}>Software Engineer</div>
                       </div>
                     </div>
-                    <div className={styles.postBody}>
-                      <div className={styles.text}>
-                        In the realm of data science, I navigate through the data jungle to uncover hidden gems. Algorithms, insights, and a touch of magic make it all happen!
+                    <div className={styles.postHeaderRight}>
+                      <div className={styles.time}>1 Day Ago</div>
+                    </div>
+                  </div>
+                  <div className={styles.postBody}>
+                    <div className={styles.text}>
+                      Coding is my superpower! Crafting software solutions that empower and innovate. Excited about the endless possibilities in the world of technology!
+                    </div>
+                    <div className={styles.images}>
+                      <div className={`${styles.imagesContainer} ${styles.oneImage}`}>
+                        <div className={styles.imageContainer}>
+                          <Image className={`${styles.image} ${styles.largeImage}`} src={Software1} alt={'Software Engineering Image 1'} width={0} height={0} unoptimized />
+                        </div>
                       </div>
-                      <div className={styles.images}>
-                        <div className={`${styles.imagesContainer} ${styles.fourImages}`}>
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.postContainer}>
+                  <div className={styles.postHeader}>
+                    <div className={styles.postHeaderLeft}>
+                      <Image className={styles.postProfile} src={CharlieBrown} alt={"Profile Pic"} height={50} width={50} />
+                      <div className={styles.postInfo}>
+                        <div className={styles.displayName}>CharlieBrown</div>
+                        <div className={styles.profileTitle}>Data Scientist</div>
+                      </div>
+                    </div>
+                    <div className={styles.postHeaderRight}>
+                      <div className={styles.time}>3 Hours Ago</div>
+                    </div>
+                  </div>
+                  <div className={styles.postBody}>
+                    <div className={styles.text}>
+                      In the realm of data science, I navigate through the data jungle to uncover hidden gems. Algorithms, insights, and a touch of magic make it all happen!
+                    </div>
+                    <div className={styles.images}>
+                      <div className={`${styles.imagesContainer} ${styles.fourImages}`}>
+                        <div className={styles.imageContainer}>
+                          <Image className={`${styles.image} ${styles.largeImage}`} src={DataSci1} alt={'Data Science Image 1'} width={0} height={0} unoptimized />
+                        </div>
+                        <div className={styles.imagesContainer2}>
                           <div className={styles.imageContainer}>
-                            <Image className={`${styles.image} ${styles.largeImage}`} src={DataSci1} alt={'Data Science Image 1'} width={0} height={0} unoptimized />
+                            <Image className={`${styles.image} ${styles.smallImage}`} src={DataSci2} alt={'Data Science Image 2'} width={0} height={0} unoptimized />
                           </div>
-                          <div className={styles.imagesContainer2}>
-                            <div className={styles.imageContainer}>
-                              <Image className={`${styles.image} ${styles.smallImage}`} src={DataSci2} alt={'Data Science Image 2'} width={0} height={0} unoptimized />
-                            </div>
-                            <div className={styles.imageContainer}>
-                              <Image className={`${styles.image} ${styles.smallImage}`} src={DataSci3} alt={'Data Science Image 2'} width={0} height={0} unoptimized />
-                            </div>
-                            <div className={styles.imageContainer}>
-                              <Image className={`${styles.image} ${styles.smallImage}`} src={DataSci4} alt={'Data Science Image 2'} width={0} height={0} unoptimized />
-                            </div>
+                          <div className={styles.imageContainer}>
+                            <Image className={`${styles.image} ${styles.smallImage}`} src={DataSci3} alt={'Data Science Image 2'} width={0} height={0} unoptimized />
+                          </div>
+                          <div className={styles.imageContainer}>
+                            <Image className={`${styles.image} ${styles.smallImage}`} src={DataSci4} alt={'Data Science Image 2'} width={0} height={0} unoptimized />
                           </div>
                         </div>
                       </div>
@@ -476,7 +473,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
           </div>
         </div >
         <div className={styles.contractsSection}>
@@ -487,8 +483,188 @@ export default function Home() {
           <div className={styles.content}>
             <h1 className={styles.contentTitle}>Collaborate on Your Terms</h1>
             <h2 className={styles.contentSubtitle}>Post projects, connect with like-minded individuals, and form your ideal team for shared success.</h2>
-            <div className={styles.contractsShowcase}>
 
+            <div className={styles.contractsContainer}>
+              <div className={styles.contractGroup1}>
+                <div className={styles.contractContainer}>
+                  <div className={styles.contract}>
+                    <div className={styles.userInfo}>
+                      <Image className={styles.userImage} src={AliceSmith} alt='User Image' width={100} height={100} />
+                      <h2 className={styles.userName}>AliceSmith</h2>
+                    </div>
+                    <div className={styles.contractInfo}>
+                      <div className={styles.contractInfoHeader}>
+                        <div>
+                          <h2 className={styles.contractTitle}>Online Store Project</h2>
+                          <h4 className={styles.contractLocation}>Remote</h4>
+                        </div>
+                      </div>
+                      <div className={styles.contractSkills}>
+                        <h4>Skills:</h4>&nbsp;JavaScript, React, Node.js
+                      </div>
+                      <div className={styles.contractDescription}>
+                        This contract involves building a web application using React and Node.js.
+                      </div>
+                      <div className={styles.contractInfoFooter}>
+                        <div className={styles.contractTags}>
+                          <div className={styles.tag}>Discord</div>
+                          <div className={styles.tag}>Web Development</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.contractContainer}>
+                  <div className={styles.contract}>
+                    <div className={styles.userInfo}>
+                      <Image className={styles.userImage} src={BobJohnson} alt='User Image' width={100} height={100} />
+                      <h2 className={styles.userName}>BobJohnson</h2>
+                    </div>
+                    <div className={styles.contractInfo}>
+                      <div className={styles.contractInfoHeader}>
+                        <div>
+                          <h2 className={styles.contractTitle}>Exciting Project</h2>
+                          <h4 className={styles.contractLocation}>On-site</h4>
+                        </div>
+                      </div>
+                      <div className={styles.contractSkills}>
+                        <h4>Skills:</h4>&nbsp;Python, Django, PostgreSQL
+                      </div>
+                      <div className={styles.contractDescription}>
+                        This project requires building a Django web application with PostgreSQL database.
+                      </div>
+                      <div className={styles.contractInfoFooter}>
+                        <div className={styles.contractTags}>
+                          <div className={styles.tag}>Python</div>
+                          <div className={styles.tag}>Django</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.contractContainer}>
+                  <div className={styles.contract}>
+                    <div className={styles.userInfo}>
+                      <Image className={styles.userImage} src={CharlieBrown} alt='User Image' width={100} height={100} />
+                      <h2 className={styles.userName}>CharlieBrown</h2>
+                    </div>
+                    <div className={styles.contractInfo}>
+                      <div className={styles.contractInfoHeader}>
+                        <div>
+                          <h2 className={styles.contractTitle}>Data Analysis Project</h2>
+                          <h4 className={styles.contractLocation}>Remote</h4>
+                        </div>
+                      </div>
+                      <div className={styles.contractSkills}>
+                        <h4>Skills:</h4>&nbsp;Python, Pandas, SQL
+                      </div>
+                      <div className={styles.contractDescription}>
+                        This project involves analyzing large datasets using Python and SQL for actionable insights.
+                      </div>
+                      <div className={styles.contractInfoFooter}>
+                        <div className={styles.contractTags}>
+                          <div className={styles.tag}>Data Analysis</div>
+                          <div className={styles.tag}>Python</div>
+                          <div className={styles.tag}>SQL</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Duplicated Contracts For Infinite Scroll */}
+              <div className={styles.contractGroup2}>
+                <div className={styles.contractContainer}>
+                  <div className={styles.contract}>
+                    <div className={styles.userInfo}>
+                      <Image className={styles.userImage} src={AliceSmith} alt='User Image' width={100} height={100} />
+                      <h2 className={styles.userName}>AliceSmith</h2>
+                    </div>
+                    <div className={styles.contractInfo}>
+                      <div className={styles.contractInfoHeader}>
+                        <div>
+                          <h2 className={styles.contractTitle}>Online Store Project</h2>
+                          <h4 className={styles.contractLocation}>Remote</h4>
+                        </div>
+                      </div>
+                      <div className={styles.contractSkills}>
+                        <h4>Skills:</h4>&nbsp;JavaScript, React, Node.js
+                      </div>
+                      <div className={styles.contractDescription}>
+                        This contract involves building a web application using React and Node.js.
+                      </div>
+                      <div className={styles.contractInfoFooter}>
+                        <div className={styles.contractTags}>
+                          <div className={styles.tag}>Discord</div>
+                          <div className={styles.tag}>Web Development</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.contractContainer}>
+                  <div className={styles.contract}>
+                    <div className={styles.userInfo}>
+                      <Image className={styles.userImage} src={BobJohnson} alt='User Image' width={100} height={100} />
+                      <h2 className={styles.userName}>BobJohnson</h2>
+                    </div>
+                    <div className={styles.contractInfo}>
+                      <div className={styles.contractInfoHeader}>
+                        <div>
+                          <h2 className={styles.contractTitle}>Exciting Project</h2>
+                          <h4 className={styles.contractLocation}>On-site</h4>
+                        </div>
+                      </div>
+                      <div className={styles.contractSkills}>
+                        <h4>Skills:</h4>&nbsp;Python, Django, PostgreSQL
+                      </div>
+                      <div className={styles.contractDescription}>
+                        This project requires building a Django web application with PostgreSQL database.
+                      </div>
+                      <div className={styles.contractInfoFooter}>
+                        <div className={styles.contractTags}>
+                          <div className={styles.tag}>Python</div>
+                          <div className={styles.tag}>Django</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.contractContainer}>
+                  <div className={styles.contract}>
+                    <div className={styles.userInfo}>
+                      <Image className={styles.userImage} src={CharlieBrown} alt='User Image' width={100} height={100} />
+                      <h2 className={styles.userName}>CharlieBrown</h2>
+                    </div>
+                    <div className={styles.contractInfo}>
+                      <div className={styles.contractInfoHeader}>
+                        <div>
+                          <h2 className={styles.contractTitle}>Data Analysis Project</h2>
+                          <h4 className={styles.contractLocation}>Remote</h4>
+                        </div>
+                      </div>
+                      <div className={styles.contractSkills}>
+                        <h4>Skills:</h4>&nbsp;Python, Pandas, SQL
+                      </div>
+                      <div className={styles.contractDescription}>
+                        This project involves analyzing large datasets using Python and SQL for actionable insights.
+                      </div>
+                      <div className={styles.contractInfoFooter}>
+                        <div className={styles.contractTags}>
+                          <div className={styles.tag}>Data Analysis</div>
+                          <div className={styles.tag}>Python</div>
+                          <div className={styles.tag}>SQL</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -500,8 +676,245 @@ export default function Home() {
           <div className={styles.content}>
             <h1 className={styles.contentTitle}>Unlock Opportunities</h1>
             <h2 className={styles.contentSubtitle}>Discover and post job opportunities, connecting talent with ambition. Find your perfect match here.</h2>
-            <div className={styles.jobsShowcase}>
+            <div className={styles.jobsContainer}>
+              <div className={styles.jobGroup1}>
+                <div className={styles.jobContainer}>
+                  <div className={styles.job}>
+                    <div className={styles.userInfo}>
+                      <Image className={styles.userImage} src={AliceSmith} alt='User Image' width={100} height={100} />
+                      <h2 className={styles.userName}>AliceSmith</h2>
+                    </div>
+                    <div className={styles.jobInfo}>
+                      <div className={styles.jobInfoHeader}>
+                        <div>
+                          <h2 className={styles.jobTitle}>Software Developer</h2>
+                          <h4 className={styles.jobLocation}>Remote</h4>
+                        </div>
+                      </div>
+                      <div className={styles.jobSkills}>
+                        <h4>Skills:</h4>&nbsp;JavaScript, React, Node.js
+                      </div>
+                      <div className={styles.jobDetails}>
+                        <h4>Salary:</h4>&nbsp;$120,000
+                      </div>
+                      <div className={styles.jobDetails}>
+                        <h4>Start:</h4>&nbsp;{new Date(2024, 0, 15).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
+                        <div className={styles.jobDetails}>
+                          &nbsp;<h4>End:</h4>&nbsp;{new Date(2024, 3, 15).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
+                        </div>
+                      </div>
+                      <div className={styles.jobDescription}>
+                        A seasoned software developer with expertise in building scalable web applications using modern JavaScript frameworks.
+                      </div>
+                      <div className={styles.jobInfoFooter}>
+                        <div className={styles.jobTags}>
+                          <div className={styles.tag}>JavaScript</div>
+                          <div className={styles.tag}>React</div>
+                          <div className={styles.tag}>Node.js</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
+                <div className={styles.jobContainer}>
+                  <div className={styles.job}>
+                    <div className={styles.userInfo}>
+                      <Image className={styles.userImage} src={BobJohnson} alt='User Image' width={100} height={100} />
+                      <h2 className={styles.userName}>BobJohnson</h2>
+                    </div>
+                    <div className={styles.jobInfo}>
+                      <div className={styles.jobInfoHeader}>
+                        <div>
+                          <h2 className={styles.jobTitle}>Frontend Developer</h2>
+                          <h4 className={styles.jobLocation}>Remote</h4>
+                        </div>
+                      </div>
+                      <div className={styles.jobSkills}>
+                        <h4>Skills:</h4>&nbsp;HTML, CSS, JavaScript
+                      </div>
+                      <div className={styles.jobDetails}>
+                        <h4>Hourly Rate:</h4>&nbsp;$50
+                      </div>
+                      <div className={styles.jobDetails}>
+                        <h4>Start:</h4>&nbsp;{new Date(2024, 6, 10).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
+                        <div className={styles.jobDetails}>
+                          &nbsp;<h4>End:</h4>&nbsp;{new Date(2024, 10, 10).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
+                        </div>
+                      </div>
+                      <div className={styles.jobDescription}>
+                        An experienced frontend developer proficient in building responsive and visually appealing user interfaces.
+                      </div>
+                      <div className={styles.jobInfoFooter}>
+                        <div className={styles.jobTags}>
+                          <div className={styles.tag}>HTML</div>
+                          <div className={styles.tag}>CSS</div>
+                          <div className={styles.tag}>JavaScript</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.jobContainer}>
+                  <div className={styles.job}>
+                    <div className={styles.userInfo}>
+                      <Image className={styles.userImage} src={CharlieBrown} alt='User Image' width={100} height={100} />
+                      <h2 className={styles.userName}>CharlieBrown</h2>
+                    </div>
+                    <div className={styles.jobInfo}>
+                      <div className={styles.jobInfoHeader}>
+                        <div>
+                          <h2 className={styles.jobTitle}>Backend Developer</h2>
+                          <h4 className={styles.jobLocation}>Remote</h4>
+                        </div>
+                      </div>
+                      <div className={styles.jobSkills}>
+                        <h4>Skills:</h4>&nbsp;Java, Spring Boot, SQL
+                      </div>
+                      <div className={styles.jobDetails}>
+                        <h4>Salary:</h4>&nbsp;$100,000
+                      </div>
+                      <div className={styles.jobDetails}>
+                        <h4>Start:</h4>&nbsp;{new Date(2024, 2, 5).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
+                        <div className={styles.jobDetails}>
+                          &nbsp;<h4>End:</h4>&nbsp;{new Date(2024, 6, 5).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
+                        </div>
+                      </div>
+                      <div className={styles.jobDescription}>
+                        A skilled backend developer experienced in designing and implementing robust server-side systems.
+                      </div>
+                      <div className={styles.jobInfoFooter}>
+                        <div className={styles.jobTags}>
+                          <div className={styles.tag}>Java</div>
+                          <div className={styles.tag}>Spring Boot</div>
+                          <div className={styles.tag}>SQL</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Duplicated Jobs For Infinite Scroll */}
+              <div className={styles.jobGroup2}>
+                <div className={styles.jobContainer}>
+                  <div className={styles.job}>
+                    <div className={styles.userInfo}>
+                      <Image className={styles.userImage} src={AliceSmith} alt='User Image' width={100} height={100} />
+                      <h2 className={styles.userName}>AliceSmith</h2>
+                    </div>
+                    <div className={styles.jobInfo}>
+                      <div className={styles.jobInfoHeader}>
+                        <div>
+                          <h2 className={styles.jobTitle}>Software Developer</h2>
+                          <h4 className={styles.jobLocation}>Remote</h4>
+                        </div>
+                      </div>
+                      <div className={styles.jobSkills}>
+                        <h4>Skills:</h4>&nbsp;JavaScript, React, Node.js
+                      </div>
+                      <div className={styles.jobDetails}>
+                        <h4>Salary:</h4>&nbsp;$120,000
+                      </div>
+                      <div className={styles.jobDetails}>
+                        <h4>Start:</h4>&nbsp;{new Date(2024, 0, 15).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
+                        <div className={styles.jobDetails}>
+                          &nbsp;<h4>End:</h4>&nbsp;{new Date(2024, 3, 15).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
+                        </div>
+                      </div>
+                      <div className={styles.jobDescription}>
+                        A seasoned software developer with expertise in building scalable web applications using modern JavaScript frameworks.
+                      </div>
+                      <div className={styles.jobInfoFooter}>
+                        <div className={styles.jobTags}>
+                          <div className={styles.tag}>JavaScript</div>
+                          <div className={styles.tag}>React</div>
+                          <div className={styles.tag}>Node.js</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.jobContainer}>
+                  <div className={styles.job}>
+                    <div className={styles.userInfo}>
+                      <Image className={styles.userImage} src={BobJohnson} alt='User Image' width={100} height={100} />
+                      <h2 className={styles.userName}>BobJohnson</h2>
+                    </div>
+                    <div className={styles.jobInfo}>
+                      <div className={styles.jobInfoHeader}>
+                        <div>
+                          <h2 className={styles.jobTitle}>Frontend Developer</h2>
+                          <h4 className={styles.jobLocation}>Remote</h4>
+                        </div>
+                      </div>
+                      <div className={styles.jobSkills}>
+                        <h4>Skills:</h4>&nbsp;HTML, CSS, JavaScript
+                      </div>
+                      <div className={styles.jobDetails}>
+                        <h4>Hourly Rate:</h4>&nbsp;$50
+                      </div>
+                      <div className={styles.jobDetails}>
+                        <h4>Start:</h4>&nbsp;{new Date(2024, 6, 10).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
+                        <div className={styles.jobDetails}>
+                          &nbsp;<h4>End:</h4>&nbsp;{new Date(2024, 10, 10).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
+                        </div>
+                      </div>
+                      <div className={styles.jobDescription}>
+                        An experienced frontend developer proficient in building responsive and visually appealing user interfaces.
+                      </div>
+                      <div className={styles.jobInfoFooter}>
+                        <div className={styles.jobTags}>
+                          <div className={styles.tag}>HTML</div>
+                          <div className={styles.tag}>CSS</div>
+                          <div className={styles.tag}>JavaScript</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.jobContainer}>
+                  <div className={styles.job}>
+                    <div className={styles.userInfo}>
+                      <Image className={styles.userImage} src={CharlieBrown} alt='User Image' width={100} height={100} />
+                      <h2 className={styles.userName}>CharlieBrown</h2>
+                    </div>
+                    <div className={styles.jobInfo}>
+                      <div className={styles.jobInfoHeader}>
+                        <div>
+                          <h2 className={styles.jobTitle}>Backend Developer</h2>
+                          <h4 className={styles.jobLocation}>Remote</h4>
+                        </div>
+                      </div>
+                      <div className={styles.jobSkills}>
+                        <h4>Skills:</h4>&nbsp;Java, Spring Boot, SQL
+                      </div>
+                      <div className={styles.jobDetails}>
+                        <h4>Salary:</h4>&nbsp;$100,000
+                      </div>
+                      <div className={styles.jobDetails}>
+                        <h4>Start:</h4>&nbsp;{new Date(2024, 2, 5).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
+                        <div className={styles.jobDetails}>
+                          &nbsp;<h4>End:</h4>&nbsp;{new Date(2024, 6, 5).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })}
+                        </div>
+                      </div>
+                      <div className={styles.jobDescription}>
+                        A skilled backend developer experienced in designing and implementing robust server-side systems.
+                      </div>
+                      <div className={styles.jobInfoFooter}>
+                        <div className={styles.jobTags}>
+                          <div className={styles.tag}>Java</div>
+                          <div className={styles.tag}>Spring Boot</div>
+                          <div className={styles.tag}>SQL</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

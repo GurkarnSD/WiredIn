@@ -7,7 +7,7 @@ import Modal from '../Modal';
 import useSWR from 'swr';
 import Image from 'next/image';
 import { User, UserProfile, UserSkill, WorkExperience } from '@/types';
-import { Toaster, toast } from 'sonner'
+import { toast } from 'sonner'
 import ConfirmationPopup from '../ConfirmationPopup';
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
@@ -47,7 +47,6 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
 
     return (
         <div className={styles.container}>
-            <Toaster position='top-right' />
             <div className={styles.header}>
                 <div className={styles.title}>Experience</div>
                 {user?.uid === pageUser?.uid &&

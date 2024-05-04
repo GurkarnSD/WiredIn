@@ -85,6 +85,7 @@ model User {
   chatRooms  ChatRoom[]   @relation("ChatRoomUsers")
   contractApps Contract[] @relation("ContractApplicants")
   jobApps     Job[]       @relation("JobApplicants")
+  contactForms ContactForm[]
 }
 
 model Skill {
@@ -232,9 +233,9 @@ model Attachment {
 model Contract {
   id        Int      @id @default(autoincrement())
   uid       String   @unique @default(uuid())
-  title     String
-  description String? @db.VarChar(1000)
-  location  String?
+  title     String    @db.VarChar(100)
+  description String? @db.VarChar(2000)
+  location  String?   @db.VarChar(50)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [uid], onDelete: Cascade)
@@ -249,9 +250,9 @@ model Contract {
 model Job {
   id        Int      @id @default(autoincrement())
   uid       String   @unique @default(uuid())
-  title     String
-  description String? @db.VarChar(1000)
-  location  String?
+  title     String    @db.VarChar(100)
+  description String? @db.VarChar(2000)
+  location  String?   @db.VarChar(50)
   hourly    Float?
   salary    Int?
   start DateTime?
@@ -278,4 +279,15 @@ model TagOption {
   tag      String   @id
   contracts Contract[] @relation("ContractTags")
   jobs     Job[]      @relation("JobTags")
+}
+
+model ContactForm {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  type      String
+  message   String
+  user      User     @relation(fields: [userId], references: [uid])
+  userId    String
+  createdAt DateTime @default(now())
 }

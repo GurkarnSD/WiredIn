@@ -218,10 +218,6 @@
   width: 60vw;
 }
 
-.feedShowcase {
-  overflow: hidden;
-}
-
 .feedTimeline {
   display: flex;
   justify-content: center;
@@ -242,7 +238,6 @@
 .contractsSection {
   display: flex;
   width: 60vw;
-  height: 600px;
 }
 
 .contractsTimeline {
@@ -261,10 +256,113 @@
   background: linear-gradient(to bottom, #79c314, #487de7);
 }
 
+.contractsContainer {
+  height: 440px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.contractContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
+}
+
+.contract {
+  padding: 20px;
+  gap: 20px;
+  display: flex;
+  width: 100%;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.contractInfo {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.contractInfoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.userImage {
+  border-radius: 50px;
+}
+
+.userName {
+  font-size: 24px;
+  color: #000;
+}
+
+.contractTitle {
+  font-size: 24px;
+  color: #000;
+}
+
+.contractLocation {
+  font-size: 14px;
+  color: #909090;
+}
+
+.contractSkills {
+  margin-top: 5px;
+  display: flex;
+  color: #000;
+  font-weight: 500;
+}
+
+.contractDescription {
+  color: #000;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  word-wrap: break-word;
+}
+
+.contractTags {
+  display: flex;
+  gap: 10px;
+  color: #000;
+  font-weight: 500;
+}
+
+.tag {
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #0096ff;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.contractGroup1 {
+  animation: scroll 8s linear infinite;
+}
+
+.contractGroup2 {
+  animation: scroll 8s linear infinite;
+}
+
 .jobsSection {
   display: flex;
   width: 60vw;
-  height: 600px;
 }
 
 .jobsTimeline {
@@ -281,6 +379,105 @@
   width: 8px;
   border-radius: 10px;
   background: linear-gradient(to bottom, #487de7, #70369d);
+}
+
+.jobsContainer {
+  height: 440px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.jobContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
+}
+
+.job {
+  padding: 20px;
+  gap: 20px;
+  display: flex;
+  width: 100%;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.jobInfo {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.jobInfoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.jobTitle {
+  font-size: 24px;
+  color: #000;
+}
+
+.jobLocation {
+  font-size: 14px;
+  color: #909090;
+}
+
+.jobSkills {
+  margin-top: 5px;
+  display: flex;
+  color: #000;
+  font-weight: 500;
+}
+
+.jobDetails {
+  display: flex;
+  color: #000;
+  font-weight: 500;
+}
+
+.jobDescription {
+  color: #000;
+  margin-top: 10px;
+  word-wrap: break-word;
+}
+
+.jobInfoFooter {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.jobTags {
+  display: flex;
+  gap: 10px;
+  color: #000;
+  font-weight: 500;
+}
+
+.jobGroup1 {
+  animation: scroll 8s linear infinite;
+}
+
+.jobGroup2 {
+  animation: scroll 8s linear infinite;
 }
 
 .closingSection {

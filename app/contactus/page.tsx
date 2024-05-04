@@ -1,18 +1,17 @@
-import styles from "@/styles/Messages.module.css"
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import styles from '@/styles/ContactUs.module.css'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import Navbar from "@/components/Navbar"
-import Messages from "@/components/Messages"
-import { UserSession } from "@/types";
+import { UserSession } from "@/types"
+import ContactForm from '@/components/ContactForm'
 import { redirect } from "next/navigation";
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Messages | WiredIn',
+    title: 'Contact Us | WiredIn',
 };
 
-
-export default async function MessagesPage() {
+export default async function ContactUsPage() {
 
     const session = (await getServerSession(authOptions)) as UserSession;
     if (!session) redirect('/')
@@ -22,7 +21,8 @@ export default async function MessagesPage() {
             {/* @ts-expect-error Async Server Component */}
             <Navbar />
             <div className={styles.container}>
-                <Messages user={session.user} />
+                <ContactForm session={session} />
             </div>
-        </>)
+        </>
+    )
 }

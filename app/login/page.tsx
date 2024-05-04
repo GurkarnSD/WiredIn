@@ -4,6 +4,12 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import Navbar from "@/components/Navbar"
 import { UserSession } from "@/types"
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Login | WiredIn',
+};
+
 
 export default async function LoginPage() {
 

@@ -7,7 +7,7 @@ import { AddSkillMenu } from './ProfileSkillsEditor';
 import Modal from '../Modal';
 import useSWR from 'swr';
 import { User, UserProfile, UserSkill } from '@/types';
-import { Toaster, toast } from 'sonner'
+import { toast } from 'sonner'
 import ConfirmationPopup from '../ConfirmationPopup';
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
@@ -47,7 +47,6 @@ export default function ProfileSkills(params: { pageUser: UserProfile, user: Use
 
     return (
         <div className={styles.container}>
-            <Toaster position='top-right' />
             <div className={styles.header}>
                 <div className={styles.title}>Skills</div>
                 {user?.uid === pageUser?.uid &&

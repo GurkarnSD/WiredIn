@@ -1,0 +1,134 @@
+.container {
+  width: 500px;
+  height: 560px;
+  background-color: #fff;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.contactFormHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error {
+  color: #ff0000;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: 700;
+  color: #000;
+}
+
+.formBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.inputTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #606060;
+}
+
+.input {
+  height: 40px;
+  background-color: #d9d9d9;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  color: #000000;
+  font-weight: 600;
+}
+
+.largeInputContainer {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.message {
+  width: 100%;
+  height: 90%;
+  background-color: #d9d9d9;
+  border: none;
+  border-radius: 10px;
+  color: #000000;
+  resize: none;
+  font-weight: 600;
+  padding: 10px;
+}
+
+.typeButtons {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.typeButton {
+  width: 22.5%;
+  height: 40px;
+  background-color: #d9d9d9;
+  border: none;
+  border-radius: 5px;
+  color: #000000;
+  font-weight: 600;
+}
+
+.typeButton:hover {
+  cursor: pointer;
+  background-color: #bfbfbf;
+}
+
+.selectedButton {
+  background-color: #0096ff;
+  color: #fff;
+}
+
+.submit {
+  background-color: #0096ff;
+  height: 40px;
+  width: 200px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 700;
+  margin-left: auto;
+}
+
+@media screen and (max-width: 500px) {
+  .container {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+
+  .typeButtons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .typeButton {
+    width: 100%;
+  }
+}

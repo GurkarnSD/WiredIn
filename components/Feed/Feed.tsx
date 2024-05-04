@@ -5,7 +5,7 @@ import Modal from "../Modal";
 import PostCreator from "./PostCreator";
 import Post from "./Post";
 import { User, UserPost } from "@/types";
-import { Toaster, toast } from 'sonner'
+import { toast } from 'sonner'
 
 const fetchPosts = async (page: number = 1, pageSize: number = 10) => {
     const res = await fetch(`/api/feed/posts/?page=${page}&pageSize=${pageSize}`)
@@ -46,7 +46,6 @@ export default function Feed(params: { user: User }) {
 
     return (
         <div className={styles.container}>
-            <Toaster position="top-right" />
             <div className={styles.header}>
                 <button className={styles.createPost} onClick={() => { setIsModalOpen(true) }}>Create Post</button>
             </div>

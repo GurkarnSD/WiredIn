@@ -8,7 +8,8 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPencil } from "@fortawesome/free-solid-svg-icons";
 import ConfirmationPopup from "../ConfirmationPopup";
-import { Toaster, toast } from 'sonner'
+import { toast } from 'sonner'
+import { Fragment } from "react";
 
 export default function Job(params: { job: UserJob, user: User, selectJob?: (job: UserJob) => void, openEditModal?: (isOpen: boolean) => void }) {
 
@@ -59,7 +60,6 @@ export default function Job(params: { job: UserJob, user: User, selectJob?: (job
 
     return (
         <div className={styles.jobContainer}>
-            <Toaster position='top-right' />
             <div className={styles.job}>
                 {user.uid === job.user.uid &&
                     <div className={styles.settings}>
@@ -106,7 +106,14 @@ export default function Job(params: { job: UserJob, user: User, selectJob?: (job
                             }
                         </div>
                     }
-                    <div className={styles.jobDescription}>{job.description}</div>
+                    <div className={styles.jobDescription}>
+                        {job.description.split('\n').map((line, i) => (
+                            <Fragment key={i}>
+                                {line}
+                                <br />
+                            </Fragment>
+                        ))}
+                    </div>
                     <div className={styles.jobInfoFooter}>
                         <div className={styles.jobTags}>
                             {job.tags.map(tag => {

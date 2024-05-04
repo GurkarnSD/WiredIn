@@ -5,6 +5,17 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import Navbar from '@/components/Navbar';
 import { UserSession } from '@/types';
 import { notFound, redirect } from 'next/navigation'
+import { Metadata } from 'next';
+
+export async function generateMetadata(
+    { params }: { params: { user: string } },
+): Promise<Metadata> {
+    const pageUser = params.user;
+
+    return {
+        title: `${pageUser} | WiredIn`
+    }
+}
 
 export const revalidate = 0;
 

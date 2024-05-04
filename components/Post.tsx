@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from 'react';
 import { CommentResponse, PostComment, User, UserPost } from "@/types";
 import PostSettings from "./Feed/PostSettings";
 import PostCreator from "./Feed/PostCreator";
-import { Toaster, toast } from 'sonner'
+import { toast } from 'sonner'
 import CommentSettings from "./Feed/CommentSettings";
 import ResponseSettings from "./Feed/ResponseSettings";
 
@@ -502,7 +502,6 @@ export default function Post(params: { post: PostWithStats, user: User }) {
 
     return (
         <div className={styles.container}>
-            <Toaster position="top-right" />
             <div className={styles.postContainer}>
                 <div className={styles.postHeader}>
                     <div className={styles.postHeaderLeft}>

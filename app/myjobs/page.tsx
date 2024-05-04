@@ -4,6 +4,12 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 import { UserSession } from "@/types";
 import MyJobs from "@/components/Jobs/MyJobs";
 import { redirect } from "next/navigation";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'My Jobs | WiredIn',
+};
+
 
 export default async function MyJobsPage() {
 

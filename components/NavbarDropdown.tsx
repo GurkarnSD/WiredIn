@@ -2,7 +2,7 @@
 import styles from './styles/NavbarDropdown.module.css'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faComment, faGear, faFileContract, faMoneyBill, faShare } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faComment, faGear, faFileContract, faSuitcase, faShare, faAddressBook, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons'
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { signOut } from 'next-auth/react';
@@ -70,12 +70,22 @@ export default function NavbarDropdown({ user, lightMode, nav = false }: { user:
                                 </div>
                                 <div className={`${styles.option} ${nav ? styles.links : styles.hidden} ${lightMode ? styles.lightMode : ''}`}>
                                     <Link href={'/jobs'} >
-                                        <FontAwesomeIcon icon={faMoneyBill} className={styles.icon} />Jobs
+                                        <FontAwesomeIcon icon={faSuitcase} className={styles.icon} />Jobs
                                     </Link>
                                 </div>
                                 <div className={`${styles.option} ${lightMode ? styles.lightMode : ''}`}>
                                     <Link href='/messages'>
                                         <FontAwesomeIcon icon={faComment} className={styles.icon} />Messages
+                                    </Link>
+                                </div>
+                                <div className={`${styles.option}  ${lightMode ? styles.lightMode : ''}`}>
+                                    <Link href='/contactus' >
+                                        <FontAwesomeIcon icon={faAddressBook} className={styles.icon} />Contact Us
+                                    </Link>
+                                </div>
+                                <div className={`${styles.option}  ${lightMode ? styles.lightMode : ''}`}>
+                                    <Link href='https://buymeacoffee.com/wiredin' >
+                                        <FontAwesomeIcon icon={faMoneyBillWave} className={styles.icon} />Donate
                                     </Link>
                                 </div>
                                 <div className={`${styles.option}  ${lightMode ? styles.lightMode : ''}`}>

@@ -4,6 +4,12 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 import { UserSession } from "@/types";
 import MyContracts from "@/components/Contracts/MyContracts";
 import { redirect } from "next/navigation";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'My Contracts | WiredIn',
+};
+
 
 export default async function MyContractsPage() {
 

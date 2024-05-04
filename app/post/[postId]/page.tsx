@@ -5,6 +5,18 @@ import { getPostPrisma } from '@/lib/prisma/posts';
 import Post from '@/components/Post';
 import { PostComment, UserPost, UserSession } from "@/types";
 import { notFound, redirect } from 'next/navigation'
+import { Metadata } from 'next';
+
+export async function generateMetadata(
+    { params }: { params: { postId: string } },
+): Promise<Metadata> {
+    const postId = params.postId
+    const postData = await fetchPost(postId) as unknown as PostWithStats;
+
+    return {
+        title: `${postData.user.displayName} on WiredIn ${postData.text ? ": " + "\"" + postData.text + "\"" : ""}`
+    }
+}
 
 export const revalidate = 0;
 

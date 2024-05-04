@@ -6,7 +6,7 @@ import ContractCreator from './ContractCreator'
 import Contract from './Contract';
 import useSWR from 'swr';
 import { UserContract, User } from '@/types';
-import { Toaster, toast } from 'sonner'
+import { toast } from 'sonner'
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
 export default function MyContracts(params: { user: User }) {
@@ -23,7 +23,6 @@ export default function MyContracts(params: { user: User }) {
     return (
         <>
             <div className={styles.container}>
-                <Toaster position='top-right' />
                 <div className={styles.header}>
                     <div className={styles.headerRow}>
                         <h1 className={styles.title}>My Contracts</h1>

@@ -4,6 +4,12 @@ import Navbar from '@/components/Navbar';
 import { UserSession } from "@/types";
 import Settings from "@/components/Settings";
 import { redirect } from "next/navigation";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Settings | WiredIn',
+};
+
 
 export default async function SettingsPage() {
 
