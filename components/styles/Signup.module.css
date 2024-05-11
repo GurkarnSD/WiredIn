@@ -1,43 +1,43 @@
 .signup {
-  height: 1000px;
-  width: 600px;
-  border-radius: 45px;
+  height: 62.5rem;
+  width: 37.5rem;
+  border-radius: 2.8125rem;
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 100px;
-  padding-bottom: 100px;
-  padding-left: 125px;
-  padding-right: 125px;
+  padding-top: 6.25rem;
+  padding-bottom: 6.25rem;
+  padding-left: 7.8125rem;
+  padding-right: 7.8125rem;
 }
 
 .wiredIn {
   color: #000000;
   font-weight: 800;
-  font-size: 80px;
+  font-size: 5rem;
 }
 
 .inputForm {
   display: flex;
   flex-direction: column;
-  margin-top: 30px;
+  margin-top: 1.875rem;
 }
 
 .input {
-  height: 60px;
-  width: 400px;
-  border-radius: 15px;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  padding-left: 25px;
-  padding-right: 25px;
+  height: 3.75rem;
+  width: 25rem;
+  border-radius: 0.9375rem;
+  padding-top: 0.9375rem;
+  padding-bottom: 0.9375rem;
+  padding-left: 1.5625rem;
+  padding-right: 1.5625rem;
   background-color: #f3f3f3;
   border: none;
   color: #000000;
   font-weight: 500;
-  font-size: 25px;
-  margin-bottom: 30px;
+  font-size: 1.5625rem;
+  margin-bottom: 1.875rem;
 }
 
 .input:focus {
@@ -45,12 +45,12 @@
 }
 
 .signupButton {
-  width: 400px;
-  height: 50px;
+  width: 25rem;
+  height: 3.125rem;
   background-color: #0096ff;
-  border-radius: 15px;
+  border-radius: 0.9375rem;
   border: none;
-  font-size: 25px;
+  font-size: 1.5625rem;
   font-weight: 800;
   color: #ffffff;
 }
@@ -63,29 +63,29 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin-top: 1.5625rem;
+  margin-bottom: 1.5625rem;
 }
 
 .dividerLine {
-  width: 150px;
-  height: 0px;
-  border: 2px solid #000000;
+  width: 9.375rem;
+  height: 0rem;
+  border: 0.125rem solid #000000;
 }
 
 .dividerText {
-  font-size: 25px;
+  font-size: 1.5625rem;
   font-weight: 800;
   color: #000000;
 }
 
 .googleButton {
-  width: 400px;
-  height: 50px;
+  width: 25rem;
+  height: 3.125rem;
   background-color: #000000;
-  border-radius: 15px;
+  border-radius: 0.9375rem;
   border: none;
-  font-size: 25px;
+  font-size: 1.5625rem;
   font-weight: 800;
   color: #ffffff;
   display: flex;
@@ -112,15 +112,15 @@
 .additional {
   color: #3f3f3f;
   font-weight: 600;
-  font-size: 20px;
-  margin-top: 50px;
+  font-size: 1.25rem;
+  margin-top: 3.125rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .additional > * {
-  margin-bottom: 25px;
+  margin-bottom: 1.5625rem;
 }
 
 .login {
@@ -129,16 +129,16 @@
 
 .error {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 1.875rem;
   color: #ea4335;
   font-weight: 600;
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 .success {
   color: #0096ff;
   font-weight: 600;
-  font-size: 24px;
-  margin-bottom: 30px;
+  font-size: 1.5rem;
+  margin-bottom: 1.875rem;
   text-align: center;
 }

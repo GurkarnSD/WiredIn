@@ -8,12 +8,12 @@
   padding: 1rem;
   border-radius: 0.5rem;
   background-color: #fff;
-  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
 }
 
 .contract {
-  padding: 20px;
-  gap: 20px;
+  padding: 1.25rem;
+  gap: 1.25rem;
   display: flex;
   width: 100%;
 }
@@ -39,21 +39,21 @@
 }
 
 .userImage {
-  border-radius: 50px;
+  border-radius: 3.125rem;
 }
 
 .userName {
-  font-size: 24px;
+  font-size: 1.5rem;
   color: #000;
 }
 
 .contractTitle {
-  font-size: 24px;
+  font-size: 1.5rem;
   color: #000;
 }
 
 .contractLocation {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #909090;
 }
 
@@ -61,19 +61,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 0.625rem;
+  border-radius: 0.625rem;
   background-color: #f0f0f0;
   color: #000;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
   border: none;
   cursor: pointer;
-  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.4);
 }
 
 .contractSkills {
-  margin-top: 5px;
+  margin-top: 0.3125rem;
   display: flex;
   color: #000;
   font-weight: 500;
@@ -81,12 +81,12 @@
 
 .contractDescription {
   color: #000;
-  margin-top: 10px;
+  margin-top: 0.625rem;
   word-wrap: break-word;
 }
 
 .contractInfoFooter {
-  margin-top: 20px;
+  margin-top: 1.25rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -95,17 +95,17 @@
 
 .contractTags {
   display: flex;
-  gap: 10px;
+  gap: 0.625rem;
   color: #000;
   font-weight: 500;
 }
 
 .tag {
-  padding: 5px;
-  border-radius: 5px;
+  padding: 0.3125rem;
+  border-radius: 0.3125rem;
   background-color: #0096ff;
   color: #fff;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
 }
 
@@ -113,21 +113,21 @@
   display: flex;
   flex-direction: column;
   background-color: #fff;
-  max-height: 600px;
-  max-width: 700px;
-  border-radius: 25px;
-  padding: 20px;
+  max-height: 37.5rem;
+  max-width: 43.75rem;
+  border-radius: 1.5625rem;
+  padding: 1.25rem;
 }
 
 .applicantsHeader {
   display: flex;
   align-items: center;
-  height: 40px;
-  margin-bottom: 10px;
+  height: 2.5rem;
+  margin-bottom: 0.625rem;
 }
 
 .title {
-  font-size: 24px;
+  font-size: 1.5rem;
   color: #000;
 }
 
@@ -135,14 +135,14 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .applicant {
   display: flex;
-  width: 320px;
+  width: 20rem;
   align-items: center;
-  gap: 5px;
+  gap: 0.3125rem;
 }
 
 .applicantInfo {
@@ -156,22 +156,22 @@
 
 .poor {
   color: #ff0000;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .partial {
   color: #ff9900;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .adequate {
   color: #ffff00;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .excellent {
   color: #00ff00;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .view {
@@ -179,13 +179,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 5px;
-  height: 30px;
-  width: 60px;
-  border-radius: 10px;
+  padding: 0.3125rem;
+  height: 1.875rem;
+  width: 3.75rem;
+  border-radius: 0.625rem;
   background-color: #0096ff;
   color: #fff;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
   border: none;
   cursor: pointer;
@@ -195,13 +195,13 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 20px;
+  gap: 1.25rem;
 }
 
 .deleteIcon {
   color: #000;
   cursor: pointer;
-  font-size: 28px;
+  font-size: 1.75rem;
 }
 
 .deleteIcon:hover {
@@ -212,7 +212,7 @@
 .editIcon {
   color: #000;
   cursor: pointer;
-  font-size: 26px;
+  font-size: 1.625rem;
 }
 
 .editIcon:hover {
@@ -220,7 +220,7 @@
   color: #0096ff;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 56.25rem) {
   .contract {
     flex-direction: column;
   }

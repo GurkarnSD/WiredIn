@@ -1,35 +1,35 @@
 .outerContainer {
-  height: 375px;
+  height: 23.4375rem;
 }
 
 .innerContainer {
-  width: 400px;
-  height: 350px;
+  width: 25rem;
+  height: 21.875rem;
   background-color: #fff;
   color: #000;
-  border-radius: 15px;
-  box-shadow: 10px 10px 5px 1px #a1a1a1;
+  border-radius: 0.9375rem;
+  box-shadow: 0.625rem 0.625rem 0.3125rem 0.0625rem #a1a1a1;
 }
 
 .title {
-  font-size: 36px;
+  font-size: 2.25rem;
   font-weight: 700;
-  padding: 20px;
+  padding: 1.25rem;
 }
 
 .usersContainer {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-left: 15px;
-  padding-right: 15px;
+  gap: 0.625rem;
+  padding-left: 0.9375rem;
+  padding-right: 0.9375rem;
 }
 
 .userContainer {
   display: flex;
   align-items: center;
-  padding: 5px;
-  border-radius: 10px;
+  padding: 0.3125rem;
+  border-radius: 0.625rem;
 }
 
 .userContainer:hover {
@@ -38,10 +38,10 @@
 }
 
 .userImage {
-  width: 65px;
-  height: 65px;
+  width: 4.0625rem;
+  height: 4.0625rem;
   border-radius: 50%;
-  margin-right: 10px;
+  margin-right: 0.625rem;
   background-color: #b9b9b9;
 }
 
@@ -52,24 +52,24 @@
 
 .userName {
   color: #060606;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
 }
 
 .userTitle {
   color: #636363;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 500;
 }
 
-@media screen and (max-width: 1600px) {
+@media screen and (max-width: 100rem) {
   .outerContainer {
     height: 100%;
-    margin-bottom: 50px;
+    margin-bottom: 3.125rem;
   }
 
   .innerContainer {
     height: 100%;
-    padding-bottom: 20px;
+    padding-bottom: 1.25rem;
   }
 }

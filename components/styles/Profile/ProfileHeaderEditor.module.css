@@ -1,13 +1,13 @@
 .container {
-  width: 960px;
-  height: 500px;
+  width: 60rem;
+  height: 31.25rem;
   background-color: #ffffff;
-  border-radius: 20px;
-  padding: 25px;
+  border-radius: 1.25rem;
+  padding: 1.5625rem;
 }
 
 .title {
-  font-size: 36px;
+  font-size: 2.25rem;
   font-weight: 800;
   color: #000000;
 }
@@ -16,29 +16,29 @@
   width: 90%;
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 
 .profilePic {
-  width: 150px;
-  height: 150px;
-  border-radius: 75px;
-  border: 8px solid #c4c4c4;
+  width: 9.375rem;
+  height: 9.375rem;
+  border-radius: 4.6875rem;
+  border: 0.5rem solid #c4c4c4;
 }
 
 .banner {
-  width: 576px;
-  height: 160px;
+  width: 36rem;
+  height: 10rem;
   background-color: #c4c4c4;
-  border-radius: 16px;
+  border-radius: 1rem;
 }
 
 .error {
   color: red;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 0.625rem;
+  margin-bottom: 0.625rem;
 }
 
 .form {
@@ -53,23 +53,23 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 
 .inputRow {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
-  gap: 10px;
+  margin-bottom: 1.25rem;
+  gap: 0.625rem;
 }
 
 .input {
-  width: 400px;
-  height: 40px;
+  width: 25rem;
+  height: 2.5rem;
   background-color: #d9d9d9;
   border: none;
-  border-radius: 5px;
-  padding: 10px;
+  border-radius: 0.3125rem;
+  padding: 0.625rem;
   color: #000000;
   font-weight: 600;
 }
@@ -79,12 +79,12 @@
 }
 
 .largeInput {
-  width: 400px;
-  height: 120px;
+  width: 25rem;
+  height: 7.5rem;
   background-color: #d9d9d9;
   border: none;
-  border-radius: 5px;
-  padding: 10px;
+  border-radius: 0.3125rem;
+  padding: 0.625rem;
   color: #000000;
   font-weight: 600;
   resize: none;
@@ -95,12 +95,12 @@
 }
 
 .saveButton {
-  width: 200px;
-  height: 50px;
+  width: 12.5rem;
+  height: 3.125rem;
   background-color: #0096ff;
-  border-radius: 15px;
+  border-radius: 0.9375rem;
   border: none;
-  font-size: 25px;
+  font-size: 1.5625rem;
   font-weight: 800;
   color: #ffffff;
   align-self: flex-end;
@@ -110,23 +110,23 @@
   cursor: pointer;
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 75rem) {
   .container {
     width: 100%;
     height: 100%;
   }
 
   .profilePic {
-    width: 100px;
-    height: 100px;
+    width: 6.25rem;
+    height: 6.25rem;
   }
 
   .banner {
-    width: 400px;
-    height: 100px;
+    width: 25rem;
+    height: 6.25rem;
   }
 
   .input {
-    width: 300px;
+    width: 18.75rem;
   }
 }

@@ -1,11 +1,11 @@
 .container {
-  width: 1152px;
-  height: 464px;
-  border-radius: 20px;
+  width: 72rem;
+  height: 29rem;
+  border-radius: 1.25rem;
   background-color: #ffffff;
-  margin-top: 50px;
-  margin-bottom: 50px;
-  padding: 25px;
+  margin-top: 3.125rem;
+  margin-bottom: 3.125rem;
+  padding: 1.5625rem;
 }
 
 .header {
@@ -14,7 +14,7 @@
 }
 
 .title {
-  font-size: 36px;
+  font-size: 2.25rem;
   font-weight: 800;
   color: #000000;
 }
@@ -23,12 +23,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 80px;
+  width: 5rem;
 }
 
 .icon {
   color: #000000;
-  font-size: 30px;
+  font-size: 1.875rem;
 }
 
 .icon:hover {
@@ -39,30 +39,30 @@
   color: #000;
   display: flex;
   flex-wrap: wrap;
-  gap: 50px;
+  gap: 3.125rem;
 }
 
 .skill {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 
 .skillName {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 600;
 }
 
 .skillLearned {
   color: #909090;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
 }
 
 .deleteIcon {
-  font-size: 20px;
-  margin-left: 20px;
+  font-size: 1.25rem;
+  margin-left: 1.25rem;
 }
 
 .deleteIcon:hover {
@@ -71,8 +71,8 @@
 }
 
 .editIcon {
-  font-size: 20px;
-  margin-left: 20px;
+  font-size: 1.25rem;
+  margin-left: 1.25rem;
 }
 
 .editIcon:hover {
@@ -83,10 +83,10 @@
 .editControls {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 0.3125rem;
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 75rem) {
   .container {
     width: 100%;
   }

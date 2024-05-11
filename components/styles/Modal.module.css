@@ -24,12 +24,12 @@
 .icons {
   margin-right: auto;
   margin-left: 10%;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 
 .icon {
   color: #ffffff;
-  font-size: 50px;
+  font-size: 3.125rem;
 }
 
 .icon:hover {

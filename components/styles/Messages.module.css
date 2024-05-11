@@ -1,36 +1,36 @@
 .messages {
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin-top: 3.125rem;
+  margin-bottom: 3.125rem;
   display: flex;
   background-color: #ffffff;
-  width: 900px;
-  height: 800px;
-  border-radius: 30px;
-  padding: 10px;
+  width: 56.25rem;
+  height: 50rem;
+  border-radius: 1.875rem;
+  padding: 0.625rem;
 }
 
 .recipients {
-  width: 350px;
+  width: 21.875rem;
   height: 100%;
-  border-right: 1px solid #e6e6e6;
-  padding: 20px;
+  border-right: 0.0625rem solid #e6e6e6;
+  padding: 1.25rem;
 }
 
 .chatRooms {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .chatRooms::-webkit-scrollbar {
-  width: 10px;
+  width: 0.625rem;
   height: 80%;
 }
 
 .chatRooms::-webkit-scrollbar-thumb {
   background-color: #888;
-  border-radius: 5px;
+  border-radius: 0.3125rem;
 }
 
 .chatRooms::-webkit-scrollbar-thumb:hover {
@@ -39,13 +39,13 @@
 
 .chatRooms::-webkit-scrollbar-track {
   background-color: #d9d9d9;
-  border-radius: 5px;
+  border-radius: 0.3125rem;
 }
 
 .recipientsHeader {
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: 800;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
   color: #000;
   display: flex;
   align-items: center;
@@ -55,8 +55,8 @@
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 0.625rem;
+  border-radius: 0.625rem;
 }
 
 .recipient:hover {
@@ -65,19 +65,19 @@
 
 .recipientImage {
   border-radius: 50%;
-  margin-right: 20px;
+  margin-right: 1.25rem;
 }
 
 .recipientName {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
   color: #000;
 }
 
 .icon {
-  margin-right: 15px;
-  height: 40px;
-  width: 40px;
+  margin-right: 0.9375rem;
+  height: 2.5rem;
+  width: 2.5rem;
 }
 
 .messenger {
@@ -90,11 +90,11 @@
 .messageHeader {
   display: flex;
   align-items: center;
-  height: 100px;
-  margin-bottom: 20px;
-  padding-left: 20px;
-  padding-right: 20px;
-  border-bottom: 1px solid #e6e6e6;
+  height: 6.25rem;
+  margin-bottom: 1.25rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  border-bottom: 0.0625rem solid #e6e6e6;
 }
 
 .messengerHeaderInfo {
@@ -110,40 +110,40 @@
 }
 
 .messageHeaderName {
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: 800;
   color: #000;
 }
 
 .messageHeaderStatus {
-  margin-left: 10px;
-  font-size: 20px;
+  margin-left: 0.625rem;
+  font-size: 1.25rem;
   font-weight: 400;
   color: #000;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 0.3125rem;
 }
 
 .online {
   background-color: #00ff00;
-  width: 5px;
-  height: 5px;
-  border-radius: 5px;
+  width: 0.3125rem;
+  height: 0.3125rem;
+  border-radius: 0.3125rem;
 }
 
 .offline {
   background-color: #ff0000;
-  width: 5px;
-  height: 5px;
-  border-radius: 5px;
+  width: 0.3125rem;
+  height: 0.3125rem;
+  border-radius: 0.3125rem;
 }
 
 .messengerFooter {
   margin-top: auto;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  padding-bottom: 1.25rem;
 }
 
 .inputControls {
@@ -156,30 +156,30 @@
   color: #000;
   border: none;
   width: 100%;
-  height: 100px;
-  border-radius: 20px;
-  padding: 20px;
-  font-size: 16px;
+  height: 6.25rem;
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  font-size: 1rem;
   resize: none;
   outline: none;
 }
 
 .attachmentButton {
-  width: 40px;
-  height: 40px;
+  width: 2.5rem;
+  height: 2.5rem;
   color: #000;
 }
 
 .sendButton {
   margin-left: auto;
-  margin-top: 10px;
-  width: 100px;
-  height: 40px;
-  border-radius: 30px;
+  margin-top: 0.625rem;
+  width: 6.25rem;
+  height: 2.5rem;
+  border-radius: 1.875rem;
   border: none;
   background-color: #000;
   color: #fff;
-  font-size: 20px;
+  font-size: 1.25rem;
   cursor: pointer;
 }
 
@@ -188,22 +188,22 @@
 }
 
 .messengerBody {
-  height: 480px;
+  height: 30rem;
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 10px;
+  gap: 0.625rem;
   overflow-y: auto;
-  padding: 10px;
+  padding: 0.625rem;
 }
 
 .messengerBody::-webkit-scrollbar {
-  width: 10px;
+  width: 0.625rem;
 }
 
 .messengerBody::-webkit-scrollbar-thumb {
   background-color: #888;
-  border-radius: 5px;
+  border-radius: 0.3125rem;
 }
 
 .messengerBody::-webkit-scrollbar-thumb:hover {
@@ -212,39 +212,39 @@
 
 .messengerBody::-webkit-scrollbar-track {
   background-color: #d9d9d9;
-  border-radius: 5px;
+  border-radius: 0.3125rem;
 }
 
 .sentMessage {
   margin-left: auto;
   max-width: 80%;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 }
 
 .receivedMessage {
   max-width: 80%;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
 }
 
 .date {
-  font-size: 16px;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   color: #000;
-  padding-bottom: 8px;
-  border-bottom: solid 1px #d9d9d9;
-  margin-bottom: 12px;
+  padding-bottom: 0.5rem;
+  border-bottom: solid 0.0625rem #d9d9d9;
+  margin-bottom: 0.75rem;
 }
 
 .sentText {
   background-color: #e6e6e6;
   color: #000;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
-  padding: 20px;
-  border-radius: 10px;
+  padding: 1.25rem;
+  border-radius: 0.625rem;
   word-wrap: break-word;
   width: fit-content;
   margin-left: auto;
@@ -253,29 +253,29 @@
 .receivedText {
   background-color: #0096ff;
   color: #000;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
-  padding: 20px;
-  border-radius: 10px;
+  padding: 1.25rem;
+  border-radius: 0.625rem;
   width: fit-content;
   word-wrap: break-word;
 }
 
 .sentTime {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: #000;
   margin-left: auto;
-  margin-right: 5px;
+  margin-right: 0.3125rem;
   width: fit-content;
 }
 
 .receivedTime {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: #000;
   width: fit-content;
-  margin-left: 5px;
+  margin-left: 0.3125rem;
 }
 
 .imageContainer {
@@ -286,21 +286,21 @@
 .images {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .image {
-  min-height: 100px;
-  min-width: 100px;
-  border-radius: 25px;
+  min-height: 6.25rem;
+  min-width: 6.25rem;
+  border-radius: 1.5625rem;
 }
 
 .removeImageIcon {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  height: 30px;
-  width: 30px;
+  top: 0.5rem;
+  right: 0.5rem;
+  height: 1.875rem;
+  width: 1.875rem;
   color: #959595;
 }
 
@@ -325,25 +325,25 @@
 
 .error {
   color: #ff0000;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   text-align: center;
 }
 
 .attachments {
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .sentAttachmentContainer {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 10px;
-  border-radius: 10px;
+  gap: 0.625rem;
+  padding: 0.625rem;
+  border-radius: 0.625rem;
   background-color: #e6e6e6;
   cursor: pointer;
   width: fit-content;
@@ -354,9 +354,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 10px;
-  border-radius: 10px;
+  gap: 0.625rem;
+  padding: 0.625rem;
+  border-radius: 0.625rem;
   background-color: #0096ff;
   cursor: pointer;
   width: fit-content;
@@ -365,8 +365,8 @@
 .attachment {
   height: 100%;
   width: 100%;
-  max-width: 250px;
-  max-height: 250px;
-  border-radius: 10px;
+  max-width: 15.625rem;
+  max-height: 15.625rem;
+  border-radius: 0.625rem;
   object-fit: cover;
 }

@@ -1,5 +1,5 @@
 .container {
-  width: 770px;
+  width: 48.125rem;
   display: flex;
   flex-direction: column;
 }
@@ -10,13 +10,13 @@
 }
 
 .createPost {
-  width: 200px;
-  height: 60px;
+  width: 12.5rem;
+  height: 3.75rem;
   background-color: #0096ff;
-  font-size: 25px;
+  font-size: 1.5625rem;
   font-weight: 800;
   border: none;
-  border-radius: 15px;
+  border-radius: 0.9375rem;
 }
 
 .createPost:hover {
@@ -28,18 +28,18 @@
 }
 
 .loadMore {
-  width: 150px;
-  height: 40px;
+  width: 9.375rem;
+  height: 2.5rem;
   background-color: #0096ff;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   border: none;
-  border-radius: 10px;
+  border-radius: 0.625rem;
   margin: auto;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 
-@media screen and (max-width: 775px) {
+@media screen and (max-width: 48.4375rem) {
   .container {
     width: 100%;
   }

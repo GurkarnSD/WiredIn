@@ -1,11 +1,11 @@
 .container {
-  width: 1152px;
-  min-height: 464px;
-  border-radius: 20px;
+  width: 72rem;
+  min-height: 29rem;
+  border-radius: 1.25rem;
   background-color: #ffffff;
-  margin-top: 50px;
-  margin-bottom: 50px;
-  padding: 25px;
+  margin-top: 3.125rem;
+  margin-bottom: 3.125rem;
+  padding: 1.5625rem;
 }
 
 .header {
@@ -14,7 +14,7 @@
 }
 
 .title {
-  font-size: 36px;
+  font-size: 2.25rem;
   font-weight: 800;
   color: #000000;
 }
@@ -23,12 +23,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 80px;
+  width: 5rem;
 }
 
 .icon {
   color: #000000;
-  font-size: 30px;
+  font-size: 1.875rem;
 }
 
 .icon:hover {
@@ -38,14 +38,14 @@
 .body {
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 
 .project {
   color: #000;
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 }
 
 .projectHeader {
@@ -54,13 +54,13 @@
 }
 
 .projectTitle {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 
 .projectIcon {
-  font-size: 20px;
-  margin-left: 5px;
+  font-size: 1.25rem;
+  margin-left: 0.3125rem;
   font-weight: 900;
 }
 
@@ -70,26 +70,26 @@
 
 .projectDate {
   color: #909090;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
 }
 
 .projectDescription {
-  margin-top: 10px;
-  margin-left: 50px;
-  font-size: 16px;
+  margin-top: 0.625rem;
+  margin-left: 3.125rem;
+  font-size: 1rem;
   font-weight: 400;
 }
 
 .editIcon {
-  font-size: 30px;
+  font-size: 1.875rem;
   margin-left: auto;
 }
 
 .deleteIcon {
-  font-size: 30px;
-  margin-left: 10px;
-  margin-right: 10px;
+  font-size: 1.875rem;
+  margin-left: 0.625rem;
+  margin-right: 0.625rem;
 }
 
 .deleteIcon:hover {
@@ -97,7 +97,7 @@
   color: #e30000;
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 75rem) {
   .container {
     width: 100%;
   }
