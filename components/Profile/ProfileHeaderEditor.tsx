@@ -2,12 +2,12 @@
 import styles from '../styles/Profile/ProfileHeaderEditor.module.css'
 import Image from 'next/image'
 import { useState, useRef, useEffect } from 'react'
-import axios from 'axios';
 import { UserProfile } from '@/types';
+import { toast } from 'sonner';
 
-export default function ProfileHeaderEditor(params: { user: UserProfile, userImages: { bannerURL: string, profileURL: string } }) {
+export default function ProfileHeaderEditor(params: { user: UserProfile, userImages: { bannerURL: string, profileURL: string }, setModal?: (isOpen: boolean) => void }) {
 
-    const { user, userImages } = params;
+    const { user, userImages, setModal } = params;
 
     const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
@@ -99,33 +99,40 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
             const profilePicData = new FormData();
             profilePicData.append('image', profileFile);
             profilePicData.append('type', profileFile.type);
-            const profilePicURL = await axios.post('/api/image', profilePicData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            data['profilePic'] = profilePicURL.data.key;
+            const profilePicURL = await fetch('/api/image', {
+                method: 'POST',
+                body: profilePicData,
+            }).then(response => response.json());
+            data['profilePic'] = profilePicURL.key;
         }
 
         if (bannerFile && banner !== `${process.env.S3ENDPOINT}${user.bannerPic}`) {
             const bannerPicData = new FormData();
             bannerPicData.append('image', bannerFile);
             bannerPicData.append('type', bannerFile.type);
-            const bannerPicURL = await axios.post('/api/image', bannerPicData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            data['bannerPic'] = bannerPicURL.data.key;
+            const bannerPicURL = await fetch('/api/image', {
+                method: 'POST',
+                body: bannerPicData,
+            }).then(response => response.json());
+            data['bannerPic'] = bannerPicURL.key;
         }
 
         const body = JSON.stringify(data);
 
-        await axios.put('/api/user', body, {
+        const res = await fetch('/api/user', {
+            method: 'PUT',
+            body: body,
             headers: {
                 'Content-Type': 'application/json'
             }
         });
+
+        if (!res.ok) {
+            throw new Error('Failed to Update Profile');
+        } else {
+            toast.success('Profile Updated Successfully');
+            setModal && setModal(false);
+        }
     }
 
     return (

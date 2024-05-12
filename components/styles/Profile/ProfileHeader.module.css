@@ -64,6 +64,9 @@
   font-weight: 800;
   color: #000000;
   margin-right: 1.5625rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .follow {

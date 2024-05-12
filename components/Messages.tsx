@@ -12,6 +12,7 @@ import Modal from "./Modal";
 import axios from "axios";
 import { ChatMessage, User, UserChatRoom } from "@/types";
 import { Members } from "pusher-js";
+import Link from "next/link";
 
 const fetchChatMessages = async (chatRoomId: string) => {
     const response = await fetch(`/api/message?chatRoomId=${chatRoomId}`);
@@ -259,10 +260,10 @@ export default function Messages(params: { user: User }) {
                 {chatRoom?.users &&
                     <div className={styles.messageHeader}>
                         <div className={styles.messengerHeaderInfo}>
-                            <div className={styles.userInfo}>
+                            <Link className={styles.userInfo} href={`/profile/${chatRoom.users[0].displayName}`}>
                                 <Image className={styles.recipientImage} src={chatRoom.users[0].profilePic} alt="Recipient Profile Picture" width={80} height={80} />
                                 <div className={styles.messageHeaderName}>{chatRoom.users[0].displayName}</div>
-                            </div>
+                            </Link>
                             <div className={styles.messageHeaderStatus}>
                                 {onlineUsers.includes(chatRoom.users[0].uid) || numOnlineUsers > 1 ? <div className={styles.online} /> : <div className={styles.offline} />}
                                 {onlineUsers.includes(chatRoom.users[0].uid) || numOnlineUsers > 1 ? 'Online' : 'Offline'}

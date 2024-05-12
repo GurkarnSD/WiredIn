@@ -13,7 +13,7 @@ export default async function Navbar() {
         <>
             <div className={styles.navbar}>
                 <div>
-                    <Link className={styles.wiredIn} href="/">
+                    <Link className={styles.wiredIn} href={session ? '/feed' : '/'}>
                         WiredIn
                     </Link>
                 </div>

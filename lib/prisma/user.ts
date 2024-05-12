@@ -11,10 +11,10 @@ async function init() {
   if (client) return;
   try {
     client = prisma;
-    console.log("Connected to PlanetScale");
+    console.log("Connected to Supabase");
   } catch (error) {
-    console.log("Error connecting to PlanetScale", error);
-    throw new Error("Could not initialize PlanetScale connection");
+    console.log("Error connecting to Supabase", error);
+    throw new Error("Could not initialize Supabase connection");
   }
 }
 
