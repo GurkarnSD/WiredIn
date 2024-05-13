@@ -20,6 +20,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
+    "@types/ua-parser-js": "^0.7.39",
     "@types/uuid": "^9.0.7",
     "@vercel/analytics": "^1.2.2",
     "@vercel/speed-insights": "^1.0.2",
@@ -41,6 +42,7 @@
     "sharp": "^0.33.0",
     "sonner": "^1.4.3",
     "swr": "^2.2.4",
+    "ua-parser-js": "^1.0.37",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

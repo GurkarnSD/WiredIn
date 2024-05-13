@@ -82,8 +82,8 @@ const Signup: React.FC = () => {
             <form className={styles.inputForm} onSubmit={handleSubmit}>
                 <input required className={styles.input} name='username' type="text" placeholder="Username" value={signupForm.username} onChange={handleChange} />
                 <input required className={styles.input} name='email' type="text" placeholder="Email" value={signupForm.email} onChange={handleChange} />
-                <input required className={styles.input} name='password' type="password" placeholder="Password" value={signupForm.password} onChange={handleChange} />
-                <input required className={styles.input} name='confirmPassword' type="password" placeholder="Confirm Password" value={signupForm.confirmPassword} onChange={handleChange} />
+                <input required className={styles.input} name='password' type="password" placeholder="Password" value={signupForm.password} onChange={handleChange} autoComplete='new-password' />
+                <input required className={styles.input} name='confirmPassword' type="password" placeholder="Confirm Password" value={signupForm.confirmPassword} onChange={handleChange} autoComplete='new-password' />
                 {error && <div className={styles.error}>{error}</div>}
                 {success && <div className={styles.success}>{success}</div>}
                 <button className={styles.signupButton} type='submit'>Sign Up</button>

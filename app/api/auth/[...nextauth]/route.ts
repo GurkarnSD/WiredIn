@@ -4,7 +4,6 @@ import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "../../../../lib/prisma/index";
 import { createUserPrisma } from "@/lib/prisma/user";
 import { compare } from "bcrypt";
-import { User } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { Resend } from "resend";
 import ActivateTemplate from "@/emails/activate";
@@ -24,7 +23,7 @@ const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
-        const user = await prisma.credentials.findUnique({
+        const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
 
@@ -32,11 +31,22 @@ const authOptions: NextAuthOptions = {
           throw new Error("User not found");
         }
 
-        if (!user.active) {
-          const token = await prisma.activateToken.create({
-            data: {
+        const loginInfo = await prisma.credentials.findFirst({
+          where: { userId: user.uid },
+          include: {
+            ActivateToken: true,
+          },
+        });
+
+        if (!loginInfo?.ActivateToken?.activatedAt) {
+          const token = await prisma.activateToken.upsert({
+            where: { credsId: user.uid },
+            update: {
               token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
-              credsId: user.id,
+            },
+            create: {
+              token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
+              credsId: user.uid,
             },
           });
 
@@ -58,24 +68,45 @@ const authOptions: NextAuthOptions = {
 
         const isPasswordValid = await compare(
           credentials.password,
-          user.password
+          loginInfo.password
         );
 
         if (!isPasswordValid) {
           throw new Error("Incorrect password");
         }
 
-        const userData = await prisma.user.findUnique({
-          where: { uid: user.uid },
-        });
-
-        return {
-          id: user.id + "",
-          uid: user.uid + "",
-          email: user.email,
-          displayName: user.displayName,
-          profilePic: userData?.profilePic,
+        type UserInfo = {
+          email: string;
+          password: string;
+          userAgent: string;
+          ipAddress: string;
+          location: string;
         };
+
+        const userInfo: UserInfo = credentials as UserInfo;
+
+        try {
+          const session = await prisma.session.create({
+            data: {
+              credentialsId: user.uid,
+              expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+              userAgent: userInfo.userAgent,
+              ipAddress: userInfo.ipAddress,
+              location: userInfo.location,
+            },
+          });
+
+          return {
+            uid: user.uid + "",
+            session: session.id,
+            userAgent: userInfo.userAgent,
+            ipAddress: userInfo.ipAddress,
+            location: userInfo.location,
+            email: user.email,
+          };
+        } catch (e) {
+          throw new Error("Failed to create session");
+        }
       },
     }),
     GoogleProvider({
@@ -84,17 +115,6 @@ const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    session: ({ session, token }) => {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          uid: token.uid,
-          displayName: token.displayName,
-          profilePic: token.profilePic,
-        },
-      };
-    },
     jwt: async ({ token, user, account }) => {
       if (account?.provider === "google") {
         const googleUser = await prisma.user.findUnique({
@@ -110,15 +130,52 @@ const authOptions: NextAuthOptions = {
       }
 
       if (user) {
-        const u = user as unknown as User;
+        const u = user as any;
         return {
           ...token,
           uid: u.uid,
-          displayName: u.displayName,
-          profilePic: u.profilePic,
+          session: u.session,
+          userAgent: u.userAgent,
+          ipAddress: u.ipAddress,
+          location: u.location,
         };
       }
+
       return token;
+    },
+    session: async ({ session, token }) => {
+      const sessionInfo = await prisma.session.findUnique({
+        where: {
+          id: token.session,
+        },
+      });
+
+      if (!sessionInfo || sessionInfo.expiresAt < new Date()) {
+        return null;
+      }
+
+      const userInfo = await prisma.user.findUnique({
+        where: { uid: token.uid },
+      });
+
+      if (!userInfo) {
+        return null;
+      }
+
+      return {
+        ...session,
+        userAgent: token.userAgent,
+        ipAddress: token.ipAddress,
+        location: token.location,
+        session: token.session,
+        user: {
+          ...session.user,
+          uid: token.uid,
+          email: userInfo.email,
+          displayName: userInfo.displayName,
+          profilePic: userInfo.profilePic,
+        },
+      };
     },
     signIn: async ({ user, account }) => {
       if (account?.provider === "google") {

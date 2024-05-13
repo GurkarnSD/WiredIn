@@ -36,10 +36,15 @@ export default function Login({ user }: { user: User | null }) {
             return;
         }
 
+        const locationInfo = await fetch('/api/location').then((res) => res.json());
+
         const response = await signIn('credentials', {
             redirect: false,
             email: loginForm.email.toLowerCase(),
             password: loginForm.password,
+            userAgent: navigator.userAgent,
+            ipAddress: locationInfo.ipAddress,
+            location: locationInfo.location,
         })
 
         if (response && response.status == 401) {
@@ -59,6 +64,21 @@ export default function Login({ user }: { user: User | null }) {
         }
     }
 
+    const googleSignin = async () => {
+        const info = await signIn('google')
+    }
+
+    const handleSignOut = async () => {
+        try {
+            await fetch('/api/auth/session', { method: 'DELETE' })
+
+            await signOut({ callbackUrl: `${process.env.API_URL}/login` })
+
+        } catch (e) {
+            console.error('Failed To Sign Out')
+        }
+    }
+
     if (user) {
         return (
             <div className={styles.loggedIn}>
@@ -68,7 +88,7 @@ export default function Login({ user }: { user: User | null }) {
                         <Image className={styles.profilePic} src={defaultProfile} alt="" />
                         <div className={styles.displayName}>{user.displayName}</div>
                     </div>
-                    <div className={styles.logoutButton} onClick={() => signOut({ callbackUrl: `${process.env.API_URL}/login` })}>Log Out</div>
+                    <div className={styles.logoutButton} onClick={handleSignOut}>Log Out</div>
                 </form>
             </div>
         )
@@ -78,8 +98,8 @@ export default function Login({ user }: { user: User | null }) {
         <div className={styles.login}>
             <div className={styles.wiredIn}>WiredIn</div>
             <form className={styles.inputForm} onSubmit={handleSubmit}>
-                <input className={styles.input} type="text" placeholder="Email" name="email" onChange={handleChange} />
-                <input className={styles.input} type="password" placeholder="Password" name="password" onChange={handleChange} />
+                <input className={styles.input} type="text" placeholder="Email" name="email" onChange={handleChange} autoComplete='email' />
+                <input className={styles.input} type="password" placeholder="Password" name="password" onChange={handleChange} autoComplete='current-password' />
                 {error && <div className={styles.error}>{error}</div>}
                 <button className={styles.loginButton} type='submit'>Log In</button>
                 <div className={styles.divider}>
@@ -87,7 +107,7 @@ export default function Login({ user }: { user: User | null }) {
                     <div className={styles.dividerText}>OR</div>
                     <div className={styles.dividerLine}></div>
                 </div>
-                <button className={styles.googleButton} type="button" onClick={() => signIn('google')}>Log In With&nbsp;
+                <button className={styles.googleButton} type="button" onClick={googleSignin}>Log In With&nbsp;
                     <span className={styles.googleBlue}>G</span>
                     <span className={styles.googleRed}>o</span>
                     <span className={styles.googleYellow}>o</span>

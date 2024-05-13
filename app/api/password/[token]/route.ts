@@ -17,7 +17,7 @@ export async function POST(
     return NextResponse.json({ response: "bad" });
   }
 
-  const user = await prisma.credentials.findFirst({
+  const user = await prisma.user.findFirst({
     where: { email: body.email },
   });
 
@@ -28,7 +28,7 @@ export async function POST(
   const token = await prisma.resetToken.create({
     data: {
       token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
-      credsId: user.id,
+      credsId: user.uid,
     },
   });
 

@@ -31,7 +31,7 @@ export default async function Navbar() {
                             </Link>
                         </div>
                     }
-                    <NavbarDropdown user={session?.user} />
+                    <NavbarDropdown session={session} />
                 </div>
             </div>
         </>

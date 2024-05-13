@@ -2,7 +2,7 @@ import styles from '@/styles/Home.module.css'
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
-import { User } from '@/types';
+import { User, UserSession } from '@/types';
 import NavbarDropdown from '@/components/NavbarDropdown';
 import { ContractsTimeline, FeedTimeline, JobsTimeline, ProfileTimeline } from '@/components/Landing/Timeline';
 import ProfileShowcase from '@/components/Landing/ProfileShowcase';
@@ -15,7 +15,8 @@ import LearnMoreButton from '@/components/Landing/LearnMoreButton';
 
 export default async function Home() {
 
-  const user = (await getServerSession(authOptions))?.user as User;
+  const session = (await getServerSession(authOptions)) as UserSession;
+  const user = session?.user as User;
 
   return (
     <div className={styles.home}>
@@ -37,7 +38,7 @@ export default async function Home() {
               </Link>
             </div>
           }
-          {user ? <NavbarDropdown user={user} lightMode={true} nav /> : <><Link className={styles.signupButton} href='/signup'>Sign Up</Link><Link className={styles.loginButton} href='/login'>Log In</Link></>}
+          {user ? <NavbarDropdown session={session} lightMode={true} nav /> : <><Link className={styles.signupButton} href='/signup'>Sign Up</Link><Link className={styles.loginButton} href='/login'>Log In</Link></>}
         </div>
       </div>
       <div className={styles.mainSection}>

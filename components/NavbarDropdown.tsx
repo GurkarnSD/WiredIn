@@ -6,7 +6,8 @@ import { faUser, faComment, faGear, faFileContract, faSuitcase, faShare, faAddre
 import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { signOut } from 'next-auth/react';
-import { User } from '@/types';
+import { User, UserSession } from '@/types';
+import SessionValidator from '@/lib/SessionValidator';
 
 const fetchProfileImage = async (profileKey: string) => {
     const response = await fetch(`/api/image/${profileKey}`);
@@ -14,7 +15,7 @@ const fetchProfileImage = async (profileKey: string) => {
     return profileURL;
 }
 
-export default function NavbarDropdown({ user, lightMode, nav = false }: { user: User | null, lightMode?: boolean, nav?: boolean }) {
+export default function NavbarDropdown({ session, lightMode, nav = false }: { session: UserSession | null, lightMode?: boolean, nav?: boolean }) {
 
     const [profilePic, setProfilePic] = useState('')
 
@@ -23,8 +24,17 @@ export default function NavbarDropdown({ user, lightMode, nav = false }: { user:
             const image = await fetchProfileImage(user.profilePic);
             setProfilePic(image);
         };
-        if (user) fetchImage(user);
-    }, [user?.profilePic]);
+        if (session?.user) fetchImage(session.user);
+    }, [session?.user?.profilePic]);
+
+    useEffect(() => {
+        const validateSession = async () => {
+            if (session) {
+                const validSession = await SessionValidator(session);
+            }
+        }
+        if (session) validateSession();
+    }, [session]);
 
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
@@ -36,9 +46,20 @@ export default function NavbarDropdown({ user, lightMode, nav = false }: { user:
     const profileRef = useRef(null);
     HandleCloseDropdown(dropdownRef, profileRef, setDropdownVisible);
 
+    const handleSignOut = async () => {
+        try {
+            await fetch('/api/auth/session', { method: 'DELETE' })
+
+            await signOut({ callbackUrl: `${process.env.API_URL}/login` })
+
+        } catch (e) {
+            console.error('Failed To Sign Out')
+        }
+    }
+
     return (
         <>
-            {user ? (
+            {session?.user ? (
                 <div className={styles.profileContainer} onClick={toggleDropdown} ref={profileRef}>
                     <Image className={styles.profilePic} src={profilePic} alt="" width={60} height={60} />
                 </div>
@@ -47,14 +68,14 @@ export default function NavbarDropdown({ user, lightMode, nav = false }: { user:
                     Login
                 </Link>
             )}
-            {dropdownVisible && user && (
+            {dropdownVisible && session?.user && (
                 <div className={styles.dropdownContainer} ref={dropdownRef}>
                     <div className={styles.container}>
                         <div className={`${styles.NavbarDropdown}  ${lightMode ? styles.lightMode : ''}`}>
-                            <div className={styles.displayName}>{user?.displayName}</div>
+                            <div className={styles.displayName}>{session?.user?.displayName}</div>
                             <div className={styles.options}>
                                 <div className={`${styles.option}  ${lightMode ? styles.lightMode : ''}`}>
-                                    <Link href={`/profile/${user.displayName}`} >
+                                    <Link href={`/profile/${session?.user.displayName}`} >
                                         <FontAwesomeIcon icon={faUser} className={styles.icon} />Profile
                                     </Link>
                                 </div>
@@ -94,7 +115,7 @@ export default function NavbarDropdown({ user, lightMode, nav = false }: { user:
                                     </Link>
                                 </div>
                             </div>
-                            <text className={styles.logout} onClick={() => { signOut({ callbackUrl: `${process.env.API_URL}/login` }) }}>Log Out</text>
+                            <text className={styles.logout} onClick={handleSignOut}>Log Out</text>
                         </div>
                     </div>
                 </div>

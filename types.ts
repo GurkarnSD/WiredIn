@@ -1,8 +1,23 @@
 import { Session } from "next-auth";
 
 export interface UserSession extends Session {
+  session: number;
+  userAgent: string;
+  ipAddress: string;
+  location: string;
   user: User;
 }
+
+type SettingsSession = {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  expiresAt: Date;
+  userAgent: string;
+  ipAddress: string;
+  location: string;
+  credentialsId: string;
+};
 
 type User = {
   name?: string;
@@ -199,6 +214,7 @@ type TagOption = {
 };
 
 export type {
+  SettingsSession,
   User,
   UserProfile,
   UserSkill,

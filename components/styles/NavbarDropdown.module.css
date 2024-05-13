@@ -70,6 +70,7 @@
   width: 3.4375rem;
   border-radius: 50%;
   background-color: #ffffff;
+  cursor: pointer;
 }
 
 .dropdownContainer {

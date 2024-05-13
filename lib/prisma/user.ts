@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { prisma } from "./index";
 import { randomUUID } from "crypto";
-import { UserProfile } from "@/types";
+import { UserProfile, UserSession } from "@/types";
 import { Resend } from "resend";
 import ActivateTemplate from "@/emails/activate";
 
@@ -56,7 +56,7 @@ async function checkLastNameChangePrisma(name: string): Promise<boolean> {
 
 async function checkDisplayNamePrisma(name: string): Promise<boolean> {
   try {
-    const result = await prisma.credentials.findUnique({
+    const result = await prisma.user.findUnique({
       where: { displayName: name },
     });
 
@@ -94,13 +94,9 @@ async function changeDisplayNamePrisma(
         where: { name: oldName },
         create: {
           name: newName,
-          credentials: { connect: { displayName: oldName } },
+          credentials: { connect: { userId } },
         },
         update: { name: newName },
-      }),
-      prisma.credentials.update({
-        where: { displayName: oldName },
-        data: { displayName: newName },
       }),
       prisma.user.update({
         where: { uid: userId, displayName: oldName },
@@ -120,41 +116,44 @@ async function createUserPrisma(user: NewUser): Promise<boolean> {
   try {
     console.log("Creating credentials:");
     // Check if email already exists
-    const existingCredsWithEmail = await prisma.credentials.findUnique({
+    const existingUserWithEmail = await prisma.user.findUnique({
       where: { email: user.email },
     });
 
-    if (existingCredsWithEmail) {
+    if (existingUserWithEmail) {
       throw new Error("EMAIL_IN_USE");
     }
 
     // Check if display name already exists
-    const existingCredsWithDisplayName = await prisma.credentials.findUnique({
+    const existingUserWithDisplayName = await prisma.user.findUnique({
       where: { displayName: user.displayName },
     });
 
-    if (existingCredsWithDisplayName) {
+    if (existingUserWithDisplayName) {
       throw new Error("DISPLAY_NAME_IN_USE");
     }
 
-    const authData = {
-      displayName: user.displayName,
-      email: user.email.toLowerCase(),
-      password: user.password,
-    };
-    const credentials = await prisma.credentials.create({ data: authData });
     const userData = {
-      email: user.email,
+      email: user.email.toLowerCase(),
       displayName: user.displayName,
-      uid: credentials.uid,
     };
     const result = await prisma.user.create({ data: userData });
     console.log("User created:", result);
 
+    const authData = {
+      password: user.password,
+    };
+    const credentials = await prisma.credentials.create({
+      data: {
+        password: authData.password,
+        userId: result.uid,
+      },
+    });
+
     const token = await prisma.activateToken.create({
       data: {
         token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
-        credsId: credentials.id,
+        credsId: credentials.userId,
       },
     });
     console.log("Token created:", token);
@@ -163,7 +162,7 @@ async function createUserPrisma(user: NewUser): Promise<boolean> {
 
     await resend.emails.send({
       from: "WiredIn <activation@wiredin.social>",
-      to: user.email,
+      to: user.email.toLowerCase(),
       subject: "Activate Your Account",
       react: ActivateTemplate({
         token: token.token,
@@ -238,6 +237,19 @@ async function getUserPrisma(uid: string, name: string): Promise<UserProfile> {
   }
 }
 
+async function getUserSessions(uid: string) {
+  try {
+    const sessions = await prisma.session.findMany({
+      where: { credentialsId: uid },
+    });
+    return sessions;
+  } catch (error) {
+    throw new Error("Unable to get user sessions");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 type UserInfo = {
   title: string;
   bio: string;
@@ -278,5 +290,6 @@ export {
   createUserPrisma,
   deleteUserPrisma,
   getUserPrisma,
+  getUserSessions,
   updateUserPrisma,
 };
