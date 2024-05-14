@@ -13,4 +13,4 @@ CREATE TABLE "Session" (
 );
 
 -- AddForeignKey
-ALTER TABLE "Session" ADD CONSTRAINT "Session_credentialsId_fkey" FOREIGN KEY ("credentialsId") REFERENCES "Credentials"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Session" ADD CONSTRAINT "Session_credentialsId_fkey" FOREIGN KEY ("credentialsId") REFERENCES "Credentials"("userId") ON DELETE CASCADE ON UPDATE CASCADE;

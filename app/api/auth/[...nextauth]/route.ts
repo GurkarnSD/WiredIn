@@ -1,211 +1,255 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
+import { NextRequest, NextResponse } from "next/server";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "../../../../lib/prisma/index";
-import { createUserPrisma } from "@/lib/prisma/user";
 import { compare } from "bcrypt";
 import { randomUUID } from "crypto";
 import { Resend } from "resend";
 import ActivateTemplate from "@/emails/activate";
 
-const authOptions: NextAuthOptions = {
-  session: {
-    strategy: "jwt",
-  },
-  providers: [
-    CredentialsProvider({
-      name: "Sign In",
-      credentials: {
-        email: { label: "email", type: "email", placeholder: "Email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-        });
+const getOptions = (req: NextRequest): NextAuthOptions => {
+  return {
+    session: {
+      strategy: "jwt",
+    },
+    providers: [
+      CredentialsProvider({
+        name: "Sign In",
+        credentials: {
+          email: { label: "email", type: "email", placeholder: "Email" },
+          password: { label: "Password", type: "password" },
+        },
+        async authorize(credentials) {
+          if (!credentials?.email || !credentials?.password) {
+            return null;
+          }
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email },
+          });
 
-        if (!user) {
-          throw new Error("User not found");
-        }
+          if (!user) {
+            throw new Error("User not found");
+          }
 
-        const loginInfo = await prisma.credentials.findFirst({
-          where: { userId: user.uid },
-          include: {
-            ActivateToken: true,
-          },
-        });
-
-        if (!loginInfo?.ActivateToken?.activatedAt) {
-          const token = await prisma.activateToken.upsert({
-            where: { credsId: user.uid },
-            update: {
-              token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
-            },
-            create: {
-              token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
-              credsId: user.uid,
+          const loginInfo = await prisma.credentials.findFirst({
+            where: { userId: user.uid },
+            include: {
+              ActivateToken: true,
             },
           });
 
-          const resend = new Resend(process.env.RESEND_API_KEY);
+          if (!loginInfo?.ActivateToken?.activatedAt) {
+            const token = await prisma.activateToken.upsert({
+              where: { credsId: user.uid },
+              update: {
+                token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
+              },
+              create: {
+                token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ""),
+                credsId: user.uid,
+              },
+            });
 
-          await resend.emails.send({
-            from: "WiredIn <activation@wiredin.social>",
-            to: user.email,
-            subject: "Activate Your Account",
-            react: ActivateTemplate({
-              token: token.token,
-              siteURL: process.env.API_URL || "",
-              user: user.displayName,
-            }),
+            const resend = new Resend(process.env.RESEND_API_KEY);
+
+            await resend.emails.send({
+              from: "WiredIn <activation@wiredin.social>",
+              to: user.email,
+              subject: "Activate Your Account",
+              react: ActivateTemplate({
+                token: token.token,
+                siteURL: process.env.API_URL || "",
+                user: user.displayName,
+              }),
+            });
+
+            throw new Error("User is not active");
+          }
+
+          const isPasswordValid = await compare(
+            credentials.password,
+            loginInfo.password
+          );
+
+          if (!isPasswordValid) {
+            throw new Error("Incorrect password");
+          }
+
+          try {
+            const { headers, url } = req;
+            const { searchParams } = new URL(url);
+            const ipAddress = searchParams.get("ip");
+            const location = searchParams.get("location");
+            const userAgent = headers.get("user-agent");
+
+            const session = await prisma.session.create({
+              data: {
+                credentialsId: user.uid,
+                expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+                userAgent: userAgent || "",
+                ipAddress: ipAddress || "",
+                location: location || "",
+              },
+            });
+
+            return {
+              uid: user.uid + "",
+              session: session.id,
+              userAgent: userAgent,
+              ipAddress: ipAddress,
+              location: location,
+              email: user.email,
+            };
+          } catch (e) {
+            throw new Error("Failed to create session");
+          }
+        },
+      }),
+      GoogleProvider({
+        clientId: process.env.GOOGLE_CLIENT_ID!,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      }),
+    ],
+    callbacks: {
+      jwt: async ({ token, user, account }) => {
+        if (account?.provider === "google") {
+          const googleUser = await prisma.user.findUnique({
+            where: { email: user.email! },
           });
 
-          throw new Error("User is not active");
-        }
-
-        const isPasswordValid = await compare(
-          credentials.password,
-          loginInfo.password
-        );
-
-        if (!isPasswordValid) {
-          throw new Error("Incorrect password");
-        }
-
-        type UserInfo = {
-          email: string;
-          password: string;
-          userAgent: string;
-          ipAddress: string;
-          location: string;
-        };
-
-        const userInfo: UserInfo = credentials as UserInfo;
-
-        try {
-          const session = await prisma.session.create({
-            data: {
-              credentialsId: user.uid,
-              expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-              userAgent: userInfo.userAgent,
-              ipAddress: userInfo.ipAddress,
-              location: userInfo.location,
-            },
+          const googleSession = await prisma.session.findFirst({
+            where: { credentialsId: googleUser?.uid },
           });
 
           return {
-            uid: user.uid + "",
-            session: session.id,
-            userAgent: userInfo.userAgent,
-            ipAddress: userInfo.ipAddress,
-            location: userInfo.location,
-            email: user.email,
+            uid: googleUser?.uid,
+            session: googleSession?.id,
+            userAgent: "EXTERNAL_PROVIDER",
+            ipAddress: googleSession?.ipAddress,
+            location: googleSession?.location,
           };
-        } catch (e) {
-          throw new Error("Failed to create session");
         }
+
+        if (user) {
+          const u = user as any;
+          return {
+            ...token,
+            uid: u.uid,
+            session: u.session,
+            userAgent: u.userAgent,
+            ipAddress: u.ipAddress,
+            location: u.location,
+          };
+        }
+
+        return token;
       },
-    }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-  ],
-  callbacks: {
-    jwt: async ({ token, user, account }) => {
-      if (account?.provider === "google") {
-        const googleUser = await prisma.user.findUnique({
-          where: { email: user.email! },
+      session: async ({ session, user, token }) => {
+        const sessionInfo = await prisma.session.findUnique({
+          where: {
+            id: token.session,
+          },
         });
 
-        return {
-          email: user.email,
-          uid: googleUser?.uid,
-          displayName: googleUser?.displayName,
-          profilePic: googleUser?.profilePic,
-        };
-      }
-
-      if (user) {
-        const u = user as any;
-        return {
-          ...token,
-          uid: u.uid,
-          session: u.session,
-          userAgent: u.userAgent,
-          ipAddress: u.ipAddress,
-          location: u.location,
-        };
-      }
-
-      return token;
-    },
-    session: async ({ session, token }) => {
-      const sessionInfo = await prisma.session.findUnique({
-        where: {
-          id: token.session,
-        },
-      });
-
-      if (!sessionInfo || sessionInfo.expiresAt < new Date()) {
-        return null;
-      }
-
-      const userInfo = await prisma.user.findUnique({
-        where: { uid: token.uid },
-      });
-
-      if (!userInfo) {
-        return null;
-      }
-
-      return {
-        ...session,
-        userAgent: token.userAgent,
-        ipAddress: token.ipAddress,
-        location: token.location,
-        session: token.session,
-        user: {
-          ...session.user,
-          uid: token.uid,
-          email: userInfo.email,
-          displayName: userInfo.displayName,
-          profilePic: userInfo.profilePic,
-        },
-      };
-    },
-    signIn: async ({ user, account }) => {
-      if (account?.provider === "google") {
-        const userExists = await prisma.user.findUnique({
-          where: { email: user.email! },
-        });
-
-        if (userExists) {
-          return Promise.resolve(true);
+        if (!sessionInfo || sessionInfo.expiresAt < new Date()) {
+          return null;
         }
 
-        const newUser = {
-          email: user.email,
-          displayName: `${user.name}${
-            Math.floor(Math.random() * 900000) + 100000
-          }`,
-          password: "EXTERNAL_PROVIDER",
+        const userInfo = await prisma.user.findUnique({
+          where: { uid: token.uid },
+        });
+
+        if (!userInfo) {
+          return null;
+        }
+
+        return {
+          ...session,
+          userAgent: token.userAgent,
+          ipAddress: token.ipAddress,
+          location: token.location,
+          session: token.session,
+          user: {
+            ...session.user,
+            uid: token.uid,
+            email: userInfo.email,
+            displayName: userInfo.displayName,
+            profilePic: userInfo.profilePic,
+          },
         };
+      },
+      signIn: async ({ user, account }) => {
+        if (account?.provider === "google" && user?.email) {
+          let userExists = await prisma.user.findUnique({
+            where: { email: user.email! },
+          });
 
-        await createUserPrisma(newUser);
-      }
+          if (!userExists) {
+            const userData = {
+              email: user.email.toLowerCase(),
+              displayName: `${user.name}${
+                Math.floor(Math.random() * 900000) + 100000
+              }`,
+            };
+            userExists = await prisma.user.create({ data: userData });
+            console.log("User created:", userExists);
 
-      return Promise.resolve(true);
+            const credentials = await prisma.credentials.create({
+              data: {
+                password: "EXTERNAL_PROVIDER",
+                userId: userExists.uid,
+              },
+            });
+          }
+
+          const { headers, url } = req;
+          const { searchParams } = new URL(url);
+          const ipAddress = searchParams.get("ip");
+          const location = searchParams.get("location");
+          const userAgent = headers.get("user-agent") || "EXTERNAL_PROVIDER";
+
+          // Somehow get user agent here
+          if (process.env.NODE_ENV !== "production") {
+            await prisma.session.create({
+              data: {
+                credentialsId: userExists.uid,
+                expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+                userAgent: userAgent,
+                ipAddress: "Localhost",
+                location: "Developer, Environment, Computer",
+              },
+            });
+          } else {
+            await prisma.session.create({
+              data: {
+                credentialsId: userExists.uid,
+                expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+                userAgent: userAgent,
+                ipAddress: ipAddress || "",
+                location: location || "",
+              },
+            });
+          }
+        }
+
+        return Promise.resolve(true);
+      },
     },
-  },
-  pages: {
-    signIn: "/login",
-  },
+    pages: {
+      signIn: "/login",
+    },
+  };
 };
 
-const handler = NextAuth(authOptions);
+const authOptions: NextAuthOptions = getOptions({} as NextRequest);
 
-export { handler as GET, handler as POST, authOptions };
+export async function GET(req: NextRequest, res: NextResponse) {
+  return NextAuth(req, res, getOptions(req) as NextAuthOptions);
+}
+
+export async function POST(req: NextRequest, res: NextResponse) {
+  return NextAuth(req, res, getOptions(req) as NextAuthOptions);
+}
+
+export { authOptions };

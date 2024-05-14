@@ -36,15 +36,10 @@ export default function Login({ user }: { user: User | null }) {
             return;
         }
 
-        const locationInfo = await fetch('/api/location').then((res) => res.json());
-
         const response = await signIn('credentials', {
             redirect: false,
             email: loginForm.email.toLowerCase(),
             password: loginForm.password,
-            userAgent: navigator.userAgent,
-            ipAddress: locationInfo.ipAddress,
-            location: locationInfo.location,
         })
 
         if (response && response.status == 401) {
@@ -70,7 +65,7 @@ export default function Login({ user }: { user: User | null }) {
 
     const handleSignOut = async () => {
         try {
-            await fetch('/api/auth/session', { method: 'DELETE' })
+            await fetch('/api/session', { method: 'DELETE' })
 
             await signOut({ callbackUrl: `${process.env.API_URL}/login` })
 

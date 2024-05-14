@@ -15,7 +15,7 @@ model Session {
   userAgent String
   ipAddress String
   location  String
-  Credentials   Credentials @relation(fields: [credentialsId], references: [userId])
+  Credentials   Credentials @relation(fields: [credentialsId], references: [userId], onDelete: Cascade)
   credentialsId String
 }
 

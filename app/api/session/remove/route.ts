@@ -11,8 +11,15 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const { searchParams } = new URL(req.url);
+  const id = Number(searchParams.get("id"));
+
+  if (!id) {
+    return NextResponse.json({ error: "Missing ID" }, { status: 400 });
+  }
+
   await prisma.session.delete({
-    where: { id: session.session },
+    where: { id: id, credentialsId: session.user.uid },
   });
 
   return NextResponse.json({ response: "Deleted Contract" });

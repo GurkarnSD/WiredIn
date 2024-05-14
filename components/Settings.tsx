@@ -54,7 +54,7 @@ export default function Settings(params: { user: User, currentSession: number, s
     }
 
     const deleteSession = async (sessionId: number) => {
-        const res = await fetch(`/api/auth/session/remove/?id=${sessionId}`, { method: "DELETE" })
+        const res = await fetch(`/api/session/remove/?id=${sessionId}`, { method: "DELETE" })
 
         if (!res.ok) {
             throw new Error("Failed to Delete Session")
@@ -64,7 +64,7 @@ export default function Settings(params: { user: User, currentSession: number, s
     }
 
     function parseUserAgent(userAgent: string) {
-        return /Mobile|iP(ad|hone|od)|Android/i.test(userAgent) ? 'Mobile' : 'PC';
+        return /Mobile|iOS|Android/i.test(userAgent) ? 'Mobile' : 'PC';
     }
 
     return (

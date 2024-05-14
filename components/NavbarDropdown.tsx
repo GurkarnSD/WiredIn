@@ -7,7 +7,6 @@ import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { signOut } from 'next-auth/react';
 import { User, UserSession } from '@/types';
-import SessionValidator from '@/lib/SessionValidator';
 
 const fetchProfileImage = async (profileKey: string) => {
     const response = await fetch(`/api/image/${profileKey}`);
@@ -27,15 +26,6 @@ export default function NavbarDropdown({ session, lightMode, nav = false }: { se
         if (session?.user) fetchImage(session.user);
     }, [session?.user?.profilePic]);
 
-    useEffect(() => {
-        const validateSession = async () => {
-            if (session) {
-                const validSession = await SessionValidator(session);
-            }
-        }
-        if (session) validateSession();
-    }, [session]);
-
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     const toggleDropdown = () => {
@@ -48,7 +38,7 @@ export default function NavbarDropdown({ session, lightMode, nav = false }: { se
 
     const handleSignOut = async () => {
         try {
-            await fetch('/api/auth/session', { method: 'DELETE' })
+            await fetch('/api/session', { method: 'DELETE' })
 
             await signOut({ callbackUrl: `${process.env.API_URL}/login` })
 
