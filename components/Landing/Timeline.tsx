@@ -2,6 +2,7 @@
 import styles from '@/styles/Home.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBolt, faFileContract, faPlug, faSuitcase } from '@fortawesome/free-solid-svg-icons';
+import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
 import { useInView } from 'react-intersection-observer';
 
 function ProfileTimeline() {
@@ -23,6 +24,7 @@ function FeedTimeline() {
         threshold: 0.05,
         triggerOnce: false,
     });
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
             <FontAwesomeIcon className={styles.timelineIcon} icon={faPlug} />
@@ -36,6 +38,7 @@ function ContractsTimeline() {
         threshold: 0.05,
         triggerOnce: false,
     });
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
             <FontAwesomeIcon className={styles.timelineIcon} icon={faFileContract} />
@@ -58,4 +61,13 @@ function JobsTimeline() {
     )
 }
 
-export { ProfileTimeline, FeedTimeline, ContractsTimeline, JobsTimeline }
+function ClosingTimeline() {
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+            <FontAwesomeIcon className={styles.timelineIcon} icon={faCircleDot} />
+            <div className={styles.timelinePlaceHolder} />
+        </div>
+    )
+}
+
+export { ProfileTimeline, FeedTimeline, ContractsTimeline, JobsTimeline, ClosingTimeline }

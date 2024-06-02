@@ -1,10 +1,8 @@
 import styles from '@/styles/Home.module.css'
 import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleDot } from '@fortawesome/free-regular-svg-icons';
 import { User, UserSession } from '@/types';
 import NavbarDropdown from '@/components/NavbarDropdown';
-import { ContractsTimeline, FeedTimeline, JobsTimeline, ProfileTimeline } from '@/components/Landing/Timeline';
+import { ClosingTimeline, ContractsTimeline, FeedTimeline, JobsTimeline, ProfileTimeline } from '@/components/Landing/Timeline';
 import ProfileShowcase from '@/components/Landing/ProfileShowcase';
 import FeedShowcase from '@/components/Landing/FeedShowcase';
 import ContractsShowcase from '@/components/Landing/ContractsShowcase';
@@ -38,7 +36,7 @@ export default async function Home() {
               </Link>
             </div>
           }
-          {user ? <NavbarDropdown session={session} lightMode={true} nav /> : <><Link className={styles.signupButton} href='/signup'>Sign Up</Link><Link className={styles.loginButton} href='/login'>Log In</Link></>}
+          {user ? <NavbarDropdown session={session} lightMode={true} nav /> : <div className={styles.headerButtons}><Link className={styles.signupButton} href='/signup'>Sign Up</Link><Link className={styles.loginButton} href='/login'>Log In</Link></div>}
         </div>
       </div>
       <div className={styles.mainSection}>
@@ -96,12 +94,10 @@ export default async function Home() {
           </div>
         </div>
         <div className={styles.closingSection}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-            <FontAwesomeIcon className={styles.timelineIcon} icon={faCircleDot} />
-            <div className={styles.timelinePlaceHolder} />
-          </div>
+          <ClosingTimeline />
           <div className={styles.content}>
             <h1 className={styles.contentTitle}>Get Started Today!</h1>
+            <h2 className={styles.contentSubtitle}>Join our community of developers and start building your dream project today.</h2>
           </div>
         </div>
       </div >

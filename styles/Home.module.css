@@ -25,7 +25,13 @@
   padding-right: 3.125rem;
 }
 
+.headerButtons {
+  display: flex;
+  gap: 1rem;
+}
+
 .signupButton {
+  text-wrap: nowrap;
   background-color: #0096ff;
   border-radius: 0.625rem;
   padding: 0.625rem 1.25rem;
@@ -34,10 +40,10 @@
   border: none;
   color: #ffffff;
   cursor: pointer;
-  margin-right: 1.25rem;
 }
 
 .loginButton {
+  text-wrap: nowrap;
   background-color: #0096ff;
   border-radius: 0.625rem;
   padding: 0.625rem 1.25rem;
@@ -76,6 +82,7 @@
 .mainButtons {
   margin-top: 2.5rem;
   display: flex;
+  white-space: nowrap;
   gap: 1.25rem;
 }
 
@@ -112,7 +119,8 @@
   margin-bottom: 1.25rem;
 }
 
-.timelineIcon {
+.timelineIcon,
+.finalTimelineIcon {
   font-size: 3.125rem;
 }
 
@@ -303,6 +311,14 @@
   width: 100%;
 }
 
+.contractInfoFooter {
+  margin-top: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .userImage {
   border-radius: 3.125rem;
 }
@@ -338,6 +354,7 @@
 
 .contractTags {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.625rem;
   color: #000;
   font-weight: 500;
@@ -467,6 +484,7 @@
 
 .jobTags {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.625rem;
   color: #000;
   font-weight: 500;
@@ -483,7 +501,6 @@
 .closingSection {
   display: flex;
   width: 60vw;
-  height: 6.25rem;
 }
 
 .timelinePlaceHolder {
@@ -613,6 +630,7 @@
 
 .skills {
   display: flex;
+  flex-wrap: wrap;
   margin-top: auto;
   font-weight: 600;
 }
@@ -788,12 +806,6 @@
   margin-right: 1.875rem;
 }
 
-@media screen and (max-width: 38.75rem) {
-  .links {
-    display: none;
-  }
-}
-
 @keyframes scroll {
   0% {
     transform: translateY(0);
@@ -820,7 +832,7 @@
 
   .mainSub {
     width: 50vw;
-    font-size: 2vw;
+    font-size: 4vw;
   }
 }
 
@@ -853,38 +865,251 @@
   .experienceInfo {
     font-size: smaller;
   }
+
+  .contract {
+    flex-direction: column;
+  }
+
+  .job {
+    flex-direction: column;
+  }
 }
 
 @media screen and (max-width: 48.4375rem) {
-  .mainHook {
-    font-size: 10vw;
-  }
-
-  .mainSub {
-    font-size: 4vw;
-  }
-
   .mainButton {
+    font-size: 3vw;
+  }
+
+  .postContainer {
+    width: 95vw;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .contractContainer {
+    width: 90vw;
+  }
+
+  .jobContainer {
+    width: 90vw;
+  }
+
+  .creatorContainer {
+    width: 100vw;
+  }
+}
+
+@media screen and (max-width: 44rem) {
+  .contractContainer {
+    width: 95vw;
+  }
+
+  .jobContainer {
+    width: 95vw;
+  }
+}
+
+@media screen and (max-width: 40.625rem) {
+  .largeImage {
+    width: 22.5rem;
+    height: 22.5rem;
+  }
+
+  .medImage {
+    width: 15rem;
+    height: 15rem;
+  }
+
+  .med1Image {
+    width: 18.75rem;
+    height: 18.75rem;
+  }
+
+  .med2Image {
+    width: 8.90625rem;
+    height: 8.90625rem;
+  }
+
+  .smallImage {
+    width: 7.03125rem;
+    height: 7.03125rem;
+  }
+
+  .oneImage {
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+  }
+
+  .twoImages {
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 0.625rem;
+  }
+
+  .threeImages {
+    grid-template-columns: 2fr 0.8fr;
+    grid-gap: 0.625rem;
+  }
+
+  .fourImages {
+    grid-template-columns: 1fr 0.3fr;
+    grid-gap: 0.625rem;
+  }
+}
+
+@media screen and (max-width: 38.75rem) {
+  .links {
+    display: none;
+  }
+
+  .additionalInfo {
+    padding-left: 0rem;
+  }
+
+  .content {
+    margin-left: 2.5vw;
+    margin-right: 2.5vw;
+    width: 95vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .contentTitle {
+    width: 95vw;
+    text-align: center;
+  }
+
+  .profileTimeline {
+    display: none;
+  }
+
+  .profileSection {
+    display: grid;
+  }
+
+  .feedTimeline {
+    display: none;
+  }
+
+  .feedSection {
+    display: grid;
+  }
+
+  .contractsTimeline {
+    display: none;
+  }
+
+  .contractsSection {
+    display: grid;
+  }
+
+  .jobsTimeline {
+    display: none;
+  }
+
+  .jobsSection {
+    display: grid;
+  }
+
+  .additionalInfo {
+    gap: 2rem;
+  }
+
+  .closingSection {
+    display: grid;
+  }
+}
+
+@media screen and (max-width: 32rem) {
+  .twoImages {
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 0.625rem;
+    grid-template-columns: none;
+  }
+
+  .threeImages {
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 0.625rem;
+    grid-template-columns: none;
+  }
+
+  .fourImages {
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 0.625rem;
+    grid-template-columns: none;
+  }
+
+  .imagesContainer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .imagesContainer2 {
+    flex-direction: row;
+  }
+}
+
+@media screen and (max-width: 27.5rem) {
+  .additionalInfo {
+    padding-left: 0rem;
+  }
+
+  .signupButton {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .loginButton {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .contentTitle {
+    font-size: 6vw;
+  }
+
+  .contentSubtitle {
     text-align: center;
     font-size: 4vw;
   }
 
-  .postContainer {
-    width: 100%;
+  .footerTitle {
+    font-size: 6vw;
+  }
+
+  .vision {
+    font-size: 3vw;
+  }
+}
+
+@media screen and (max-width: 25rem) {
+  .contractContainer {
+    padding: 0.5rem;
+  }
+
+  .jobContainer {
+    padding: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 22.5rem) {
+  .time {
+    font-size: smaller;
   }
 
   .largeImage {
-    width: 60vw;
-    height: 60vw;
-  }
-
-  .medImage {
-    width: 25vw;
-    height: 25vw;
+    width: 18rem;
+    height: 18rem;
   }
 
   .smallImage {
-    width: 6vw;
-    height: 6vw;
+    width: 5.625rem;
+    height: 5.625rem;
+  }
+}
+
+@media screen and (max-width: 22rem) {
+  .mainBar {
+    padding-left: 0;
   }
 }
