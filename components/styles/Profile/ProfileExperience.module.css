@@ -11,6 +11,7 @@
 .header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .title {
@@ -23,7 +24,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 5rem;
+  gap: 1.5rem;
 }
 
 .icon {
@@ -39,6 +40,7 @@
   display: flex;
   flex-direction: column;
   margin-top: 1.25rem;
+  gap: 1rem;
 }
 
 .experience {
@@ -47,51 +49,32 @@
   flex-direction: column;
 }
 
-.experienceHeader {
-  color: #000;
+.experienceTop {
   display: flex;
-}
-
-.experienceLeft {
-  display: flex;
-  flex: 1;
 }
 
 .experienceInfo {
+  width: 100%;
   display: flex;
   flex-direction: column;
   margin-left: 1.25rem;
 }
 
 .experienceTitle {
+  display: flex;
+  justify-content: space-between;
   font-size: 1.5rem;
   font-weight: 600;
 }
 
-.experienceRight {
+.experienceBottom {
   display: flex;
   flex-direction: column;
-  flex: 2;
-}
-
-.experienceDivider {
-  height: 5rem;
-  border: #909090 0.0625rem solid;
-  margin-right: 0.625rem;
-  margin-left: 0.625rem;
-}
-
-.horizontalDivider {
-  width: 90%;
-  border: #909090 0.0625rem solid;
-  margin-top: 0.9375rem;
-  margin-bottom: 0.9375rem;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .skills {
   display: flex;
+  flex-wrap: wrap;
   margin-top: 1.25rem;
   font-weight: 600;
 }
@@ -106,6 +89,18 @@
   border-radius: 0.625rem;
   background-color: #f4f4f4;
   border: none;
+}
+
+.experienceDescription {
+  margin-top: 0.625rem;
+  margin-left: 3.125rem;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.icons {
+  display: flex;
+  gap: 1rem;
 }
 
 .editIcon {
@@ -127,6 +122,22 @@
 
 @media screen and (max-width: 75rem) {
   .container {
-    width: 100%;
+    width: 100vw;
+  }
+}
+
+@media screen and (max-width: 22rem) {
+  .header {
+    flex-direction: column;
+  }
+
+  .experienceTop {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .experienceImage {
+    width: 8rem;
+    height: 8rem;
   }
 }

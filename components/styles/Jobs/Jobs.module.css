@@ -1,5 +1,5 @@
 .container {
-  width: 60vw;
+  width: 80vw;
 }
 
 .header {
@@ -37,7 +37,6 @@
   margin-left: 1.25rem;
   margin-right: 0.9375rem;
   border: none;
-  outline: none;
   width: 100%;
   height: 100%;
   font-size: 1rem;
@@ -51,7 +50,6 @@
   width: 12.5rem;
   border-radius: 0.625rem;
   border: none;
-  outline: none;
   cursor: pointer;
   font-size: 1.125rem;
   font-weight: 600;
@@ -78,7 +76,6 @@
   width: 15.625rem;
   border-radius: 0.625rem;
   border: none;
-  outline: none;
   cursor: pointer;
   font-size: 1.125rem;
   font-weight: 600;
@@ -148,6 +145,7 @@
   font-weight: 600;
   display: flex;
   word-wrap: break-word;
+  overflow-y: auto;
 }
 
 .icon {
@@ -188,136 +186,9 @@
   width: 12.5rem;
   border-radius: 0.625rem;
   border: none;
-  outline: none;
   cursor: pointer;
   font-size: 1.125rem;
   font-weight: 700;
-}
-
-.selectOptionsMenu {
-  width: 36.25rem;
-  height: 22.5rem;
-  background-color: #ffffff;
-  border-radius: 1.25rem;
-  padding: 1.5625rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.largeInput {
-  height: 3.75rem;
-  background-color: #d9d9d9;
-  border: none;
-  border-radius: 0.3125rem;
-  padding: 0.625rem;
-  color: #000000;
-  font-size: 1.5625rem;
-  font-weight: 600;
-}
-
-.selectionBox {
-  margin-top: 0.625rem;
-  height: 9.375rem;
-  background-color: #ededed;
-  border: none;
-  border-radius: 0.3125rem;
-  padding: 0.625rem;
-  color: #000000;
-  font-size: 1.5625rem;
-  font-weight: 600;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  overflow-y: auto;
-}
-
-.selectionBox::-webkit-scrollbar {
-  width: 0.625rem;
-}
-
-.selectionBox::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 0.3125rem;
-}
-
-.selectionBox::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
-}
-
-.selectionBox::-webkit-scrollbar-track {
-  background-color: #d9d9d9;
-  border-radius: 0.3125rem;
-}
-
-.selectionBox {
-  scrollbar-width: thin;
-  scrollbar-color: #888 #ededed;
-}
-
-.selectionBox::-moz-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 0.3125rem;
-}
-
-.selectionBox::-moz-scrollbar-thumb:hover {
-  background-color: #555;
-}
-
-.optionFooter {
-  display: flex;
-  justify-content: space-between;
-}
-
-.customCheckbox {
-  display: none;
-}
-
-.checkboxLabel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  padding-left: 1.5625rem;
-  cursor: pointer;
-}
-
-.checkboxCustom {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 1.75rem;
-  height: 1.75rem;
-  border: 0.125rem solid #ccc;
-  border-radius: 0.25rem;
-  background-color: white;
-  transition: border-color 0.3s;
-}
-
-.customCheckbox:checked + .checkboxCustom {
-  border-color: #007bff;
-  background-color: #007bff;
-}
-
-.customCheckbox:checked + .checkboxCustom::after {
-  content: "\2713";
-  display: block;
-  position: absolute;
-  left: 0.1875rem;
-  bottom: -0.125rem;
-  color: white;
-  font-size: 1.5rem;
-}
-
-.selectButton {
-  width: 7.5rem;
-  height: 2.5rem;
-  background-color: #0096ff;
-  border-radius: 0.625rem;
-  border: none;
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: #ffffff;
-  justify-self: flex-end;
 }
 
 .searchResults {
@@ -381,9 +252,9 @@
   gap: 2.5rem;
 }
 
-@media screen and (max-width: 75rem) {
+@media screen and (max-width: 80rem) {
   .container {
-    width: 80vw;
+    width: 90vw;
   }
 }
 
@@ -402,8 +273,7 @@
   }
 
   .jobCreator {
-    min-width: 23.125rem;
-    width: 80vw;
+    width: 90vw;
     height: fit-content;
   }
 
@@ -411,9 +281,29 @@
     flex-direction: column;
     gap: 0.625rem;
   }
+}
 
-  .selectOptionsMenu {
-    min-width: 23.125rem;
-    width: 80vw;
+@media screen and (max-width: 30rem) {
+  .filterFormRow {
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+}
+
+@media screen and (max-width: 25rem) {
+  .container {
+    width: 100vw;
+  }
+
+  .jobCreator {
+    width: 100vw;
+    padding: 1rem;
+    margin: 0;
+  }
+
+  .submit {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
   }
 }

@@ -5,13 +5,14 @@ import { faImage, faArrowsLeftRight, faPlus, faXmark } from '@fortawesome/free-s
 import { useState, useRef } from 'react';
 import Modal from '../Modal';
 import axios from 'axios';
+import SelectOptions from '../SelectOptions';
 import { UserSkill, WorkExperience } from '@/types';
 
 export default function ProfileExperienceEditor(params: { skills: UserSkill[], setModal?: (isOpen: boolean) => void, editMode?: boolean, experience?: WorkExperience, toastTrigger?: () => void }) {
 
     const { skills, setModal, editMode, experience, toastTrigger } = params;
 
-    const currentSkills = skills.map((skill: UserSkill) => skill.name);
+    const currentSkills = skills.map((skill: UserSkill) => ({ label: skill.name, value: skill.name }));
 
     const [expForm, setExpForm] = useState({
         id: editMode && experience ? experience.id : null,
@@ -29,7 +30,7 @@ export default function ProfileExperienceEditor(params: { skills: UserSkill[], s
     const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
     const [error, setError] = useState('');
-    const [image, setImage] = useState(editMode && experience ? experience.image : '');
+    const [image, setImage] = useState(editMode && experience ? experience.image : null);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const imageInputRef = useRef<HTMLInputElement>(null);
 
@@ -109,7 +110,7 @@ export default function ProfileExperienceEditor(params: { skills: UserSkill[], s
             current: expForm.current,
             description: expForm.desc,
             skills: skillIds,
-            image: null,
+            image: image?.includes(`${process.env.S3BUCKET_NAME}`) ? image?.split('.com/')[1].split('?')[0] : null,
         }
 
         if (imageFile) {
@@ -121,7 +122,7 @@ export default function ProfileExperienceEditor(params: { skills: UserSkill[], s
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            experience['image'] = experiencePicURL.data.key;
+            experience.image = experiencePicURL.data.key;
         }
 
         let res = null;
@@ -287,71 +288,9 @@ export default function ProfileExperienceEditor(params: { skills: UserSkill[], s
 
             {selectSkillsOpen && (
                 <Modal isOpen={selectSkillsOpen} onClose={() => setSelectSkillsOpen(false)}>
-                    <SelectSkills skillsList={currentSkills} selector={setSelectedSkills} chosenSkills={selectedSkills} />
+                    <SelectOptions type="Skills" optionsList={currentSkills} selector={setSelectedSkills} chosenOptions={selectedSkills} setSelectOptionsPanel={setSelectSkillsOpen} />
                 </Modal>
             )}
         </div>
-    )
-}
-
-function SelectSkills(params: { skillsList: string[], selector: (skills: string[]) => void, chosenSkills: string[] }) {
-
-    const { skillsList, selector, chosenSkills } = params;
-
-    const [inputValue, setInputValue] = useState('');
-    const [selectedSkills, setSelectedSkills] = useState<string[]>(chosenSkills);
-
-    const filteredSkills = skillsList.filter((skill: string) =>
-        skill.toLowerCase().includes(inputValue.toLowerCase())
-    );
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setInputValue(event.target.value);
-    };
-
-    const handleSkillSelection = (skill: string) => {
-        if (selectedSkills.includes(skill)) {
-            setSelectedSkills(selectedSkills.filter((s) => s !== skill));
-            return;
-        }
-        setSelectedSkills([...selectedSkills, skill]);
-    };
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        selector(selectedSkills);
-    }
-
-    return (
-        <form className={styles.selectSkillsMenu} onSubmit={handleSubmit}>
-            <div className={styles.title}>Select Skills</div>
-            <div className={styles.inputContainer}>
-                <input
-                    className={styles.largeInput}
-                    type="text"
-                    placeholder="Search Skills"
-                    value={inputValue}
-                    onChange={handleInputChange}
-                />
-                <div className={styles.selectionBox}>
-                    {filteredSkills.map((skill: string, index: number) => (
-                        <label key={index} className={styles.checkboxLabel}>
-                            <input
-                                type="checkbox"
-                                value={skill}
-                                checked={selectedSkills.includes(skill)}
-                                onChange={() => handleSkillSelection(skill)}
-                                className={styles.customCheckbox}
-                            />
-                            <span className={styles.checkboxCustom}></span>
-                            &nbsp;{skill}
-                        </label>
-                    ))}
-                </div>
-            </div>
-            <div className={styles.skillFooter}>
-                <button className={styles.selectButton} type='submit'>Add</button>
-            </div>
-        </form>
     )
 }

@@ -1,6 +1,6 @@
 .container {
   width: 60rem;
-  height: 31.25rem;
+  height: fit-content;
   background-color: #ffffff;
   border-radius: 1.25rem;
   padding: 1.5625rem;
@@ -159,16 +159,6 @@
   align-self: flex-end;
 }
 
-.selectSkillsMenu {
-  width: 36.25rem;
-  height: 22.5rem;
-  background-color: #ffffff;
-  border-radius: 1.25rem;
-  padding: 1.5625rem;
-  display: flex;
-  flex-direction: column;
-}
-
 .checkboxContainer {
   font-weight: 600;
 }
@@ -223,135 +213,19 @@
   font-weight: 600;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-}
-
-.largeInput {
-  height: 3.75rem;
-  background-color: #d9d9d9;
-  border: none;
-  border-radius: 0.3125rem;
-  padding: 0.625rem;
-  color: #000000;
-  font-size: 1.5625rem;
-  font-weight: 600;
-}
-
-.selectionBox {
-  margin-top: 0.625rem;
-  height: 9.375rem;
-  background-color: #ededed;
-  border: none;
-  border-radius: 0.3125rem;
-  padding: 0.625rem;
-  color: #000000;
-  font-size: 1.5625rem;
-  font-weight: 600;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  overflow-y: auto;
-}
-
-.selectionBox::-webkit-scrollbar {
-  width: 0.625rem;
-}
-
-.selectionBox::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 0.3125rem;
-}
-
-.selectionBox::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
-}
-
-.selectionBox::-webkit-scrollbar-track {
-  background-color: #d9d9d9;
-  border-radius: 0.3125rem;
-}
-
-.selectionBox {
-  scrollbar-width: thin;
-  scrollbar-color: #888 #ededed;
-}
-
-.selectionBox::-moz-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 0.3125rem;
-}
-
-.selectionBox::-moz-scrollbar-thumb:hover {
-  background-color: #555;
-}
-
-.skillFooter {
-  display: flex;
   justify-content: space-between;
-}
-
-.text {
-  color: #000;
-  font-size: 1.5rem;
-  font-style: normal;
-  font-weight: 500;
-}
-
-.customCheckbox {
-  display: none;
-}
-
-.checkboxLabel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  padding-left: 1.5625rem;
-  cursor: pointer;
-}
-
-.checkboxCustom {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 1.75rem;
-  height: 1.75rem;
-  border: 0.125rem solid #ccc;
-  border-radius: 0.25rem;
-  background-color: white;
-  transition: border-color 0.3s;
-}
-
-.customCheckbox:checked + .checkboxCustom {
-  border-color: #007bff;
-  background-color: #007bff;
-}
-
-.customCheckbox:checked + .checkboxCustom::after {
-  content: "\2713";
-  display: block;
-  position: absolute;
-  left: 0.1875rem;
-  bottom: -0.125rem;
-  color: white;
-  font-size: 1.5rem;
-}
-
-.selectButton {
-  width: 7.5rem;
-  height: 2.5rem;
-  background-color: #0096ff;
-  border-radius: 0.625rem;
-  border: none;
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: #ffffff;
-  justify-self: flex-end;
 }
 
 .skills {
   display: flex;
-  margin-right: auto;
+  overflow-x: auto;
+  width: fit-content;
+  text-wrap: nowrap;
+  margin-right: 0.5rem;
+}
+
+.skills::-webkit-scrollbar {
+  height: 0.5rem;
 }
 
 .header {
@@ -367,8 +241,44 @@
   text-align: center;
 }
 
-@media screen and (max-width: 75rem) {
+@media screen and (max-width: 60rem) {
   .container {
-    width: 100%;
+    width: 100vw;
+  }
+}
+
+@media screen and (max-width: 50rem) {
+  .formGroupUpper {
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 1rem;
+  }
+}
+
+@media screen and (max-width: 34rem) {
+  .formGroupLeftLower {
+    flex-direction: column;
+    gap: 0;
+    margin-top: 0;
+    margin-bottom: 0.625rem;
+  }
+
+  .formGroupUpper {
+    margin-bottom: 0;
+  }
+
+  .desc {
+    height: 10rem;
+  }
+}
+
+@media screen and (max-width: 30rem) {
+  .formGroupLeftUpper {
+    flex-direction: column;
+  }
+
+  .experienceImage {
+    width: 12rem;
+    height: 12rem;
   }
 }

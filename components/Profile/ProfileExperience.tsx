@@ -1,6 +1,6 @@
 import styles from '../styles/Profile/ProfileExperience.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPen, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faPen, faXmark, faTrash, faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import ProfileExperienceEditor from './ProfileExperienceEditor';
 import Modal from '../Modal';
@@ -61,62 +61,71 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
             <div className={styles.body}>
                 {experiencesData?.map((experience: WorkExperience, index: number) => (
                     <div className={styles.experience} key={experience.id}>
-                        <div className={styles.experienceHeader}>
-                            <div className={styles.experienceLeft}>
-                                {experience.image &&
-                                    <Image
-                                        className={styles.experienceImage}
-                                        src={experience.image}
-                                        alt={experience.company}
-                                        width={150}
-                                        height={150}
-                                    />
-                                }
-                                <div className={styles.experienceInfo}>
-                                    <div className={styles.experienceTitle}>{experience.title}</div>
-                                    <div className={styles.experienceCompany}>{experience.company}</div>
-                                    <div className={styles.experienceDate}>{new Date(experience.start).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}{experience.current ? " - Present" : experience.end && " - " + new Date(experience.end).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}</div>
-                                    {experience.skills && experience.skills.length > 0 &&
-                                        <div className={styles.skills}>
-                                            <div>Skills:&nbsp;</div>
-                                            {skillsData?.map((skill: UserSkill, index: number) => (
-                                                <div className={styles.skill} key={skill.id}>{skill.name}{index !== skillsData.length - 1 && ','}&nbsp;</div>
-                                            ))}
+                        <div className={styles.experienceTop}>
+                            {experience.image &&
+                                <Image
+                                    className={styles.experienceImage}
+                                    src={experience.image}
+                                    alt={experience.company}
+                                    width={150}
+                                    height={150}
+                                />
+                            }
+                            <div className={styles.experienceInfo}>
+                                <div className={styles.experienceTitle}>
+                                    {experience.title}
+                                    {isEditExperiences &&
+                                        <div className={styles.icons}>
+                                            <FontAwesomeIcon className={styles.editIcon} icon={faPen} onClick={() => { setSelectedExperience(experience); setIsEditModalOpen(true) }} />
+                                            <FontAwesomeIcon className={styles.deleteIcon} icon={faTrash} onClick={() => { setSelectedExperience(experience); setConfirmationPopup(true) }} />
                                         </div>
                                     }
                                 </div>
-                            </div>
-                            {experience.description &&
-                                <>
-                                    <div className={styles.experienceDivider} />
-                                    <div className={styles.experienceRight}>
-                                        <div className={styles.experienceDescription}>{experience.description}</div>
+                                <div className={styles.experienceCompany}>{experience.company}</div>
+                                <div className={styles.experienceDate}>{new Date(experience.start).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}{experience.current ? " - Present" : experience.end && " - " + new Date(experience.end).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}</div>
+                                {experience.skills && experience.skills.length > 0 &&
+                                    <div className={styles.skills}>
+                                        <div>Skills:&nbsp;</div>
+                                        {experience.skills?.map((skill: UserSkill, index: number) => (
+                                            <div className={styles.skill} key={skill.id}>{skill.name}{index !== (experience.skills ?? []).length - 1 && ','}&nbsp;</div>
+                                        ))}
                                     </div>
-                                </>
-                            }
-                            {isEditExperiences && <>
-                                <FontAwesomeIcon className={styles.editIcon} icon={faPen} onClick={() => { setSelectedExperience(experience); setIsEditModalOpen(true) }} />
-                                <FontAwesomeIcon className={styles.deleteIcon} icon={faTrash} onClick={() => { setSelectedExperience(experience); setConfirmationPopup(true) }} />
-                            </>}
+                                }
+                            </div>
                         </div>
-                        {index !== experiencesData.length - 1 && <div className={styles.horizontalDivider} />}
+                        {experience.description &&
+                            <div className={styles.experienceBottom}>
+                                <div className={styles.experienceDescription}>
+                                    <ul>
+                                        {experience?.description?.split('.').map((point: string, index: number) => (
+                                            point !== " " && point !== "" && <li key={index}>{point.trim()}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        }
                     </div>
                 ))}
             </div>
 
-            {isModalOpen && (
-                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
-                    <ProfileExperienceEditor skills={skillsData} setModal={setIsModalOpen} toastTrigger={() => toast.success("Experience Added")} />
-                </Modal>
-            )}
+            {
+                isModalOpen && (
+                    <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
+                        <ProfileExperienceEditor skills={skillsData} setModal={setIsModalOpen} toastTrigger={() => toast.success("Experience Added")} />
+                    </Modal>
+                )
+            }
 
-            {isEditModalOpen && (
-                <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} backIcon disableClickOff>
-                    <ProfileExperienceEditor skills={skillsData} setModal={setIsEditModalOpen} editMode experience={selectedExperience} toastTrigger={() => toast.success("Experience Updated")} />
-                </Modal>
-            )}
+            {
+                isEditModalOpen && (
+                    <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} backIcon disableClickOff>
+                        <ProfileExperienceEditor skills={skillsData} setModal={setIsEditModalOpen} editMode experience={selectedExperience} toastTrigger={() => toast.success("Experience Updated")} />
+                    </Modal>
+                )
+            }
 
-            {confirmationPopup &&
+            {
+                confirmationPopup &&
                 <ConfirmationPopup
                     showPopup={confirmationPopup}
                     setShowPopup={setConfirmationPopup}
@@ -125,6 +134,6 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
                     message='delete your experience'
                 />
             }
-        </div>
+        </div >
     )
 }

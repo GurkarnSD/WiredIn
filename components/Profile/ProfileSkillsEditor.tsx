@@ -27,9 +27,7 @@ export default function ProfileSkillsEditor(params: { skills: UserSkill[], skill
 
             <div className={styles.body}>
                 {skills?.map((skill: UserSkill) => (
-                    <div className={styles.skill} key={skill.id}>
-                        <div className={styles.skillName}>{skill.name}</div>
-                    </div>
+                    <div key={skill.id} className={styles.skill}>{skill.name}</div>
                 ))}
             </div>
 

@@ -585,7 +585,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                                 </div>
                             </div>
                             <div className={styles.commentFooter}>
-                                <FontAwesomeIcon className={styles.replyIcon} icon={faReply} onClick={() => setSelectedComment(comment)} />
+                                <FontAwesomeIcon className={styles.replyIcon} icon={faReply} onClick={() => { setEditComment(null); setEditResponse(null); setSelectedComment(comment) }} />
                                 {comment._count.responses > 0 && openResponses[comment.id] ?
                                     <div className={styles.replyControl} onClick={() => toggleResponses(comment.id)}>
                                         <FontAwesomeIcon className={styles.responsesIcon} icon={faAngleDown} />
@@ -653,7 +653,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                                     <div className={styles.commentTime} suppressHydrationWarning={true}>{formatTimeDifference(selectedComment.createdAt)}</div>
                                 </div>
                                 <div className={styles.commentContent}>
-                                    <div className={styles.commentText}>{selectedComment.text}</div>
+                                    <div className={styles.selectedText}>{selectedComment.text}</div>
                                 </div>
                             </div>
                         </>
@@ -661,14 +661,14 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                     {editComment &&
                         <>
                             <div className={styles.selectedHeader}>
-                                <FontAwesomeIcon className={styles.closeIcon} icon={faCircleXmark} onClick={() => setEditComment(null)} />
+                                <FontAwesomeIcon className={styles.closeIcon} icon={faCircleXmark} onClick={() => { setEditComment(null); setInput('') }} />
                                 Editing Comment
                             </div>
                             <div className={styles.selectedComment}>
                                 <div className={styles.commentHeader}>
                                     <Image className={styles.profilePic} src={editComment.user.profilePic} width={40} height={40} alt='Profile Pic' />
                                     <div className={styles.commenterName}>{editComment.user.displayName}</div>
-                                    <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(editComment.createdAt)}</div>
+                                    <div className={styles.commentTime} suppressHydrationWarning={true}>{formatTimeDifference(editComment.createdAt)}</div>
                                 </div>
                                 <div className={styles.commentContent}>
                                     <div className={styles.commentText}>{editComment.text}</div>
@@ -679,14 +679,14 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                     {editResponse &&
                         <>
                             <div className={styles.selectedHeader}>
-                                <FontAwesomeIcon className={styles.closeIcon} icon={faCircleXmark} onClick={() => setEditResponse(null)} />
+                                <FontAwesomeIcon className={styles.closeIcon} icon={faCircleXmark} onClick={() => { setEditResponse(null); setInput('') }} />
                                 Editing Response
                             </div>
                             <div className={styles.selectedComment}>
                                 <div className={styles.commentHeader}>
                                     <Image className={styles.profilePic} src={editResponse.user.profilePic} width={40} height={40} alt='Profile Pic' />
                                     <div className={styles.commenterName}>{editResponse.user.displayName}</div>
-                                    <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(editResponse.createdAt)}</div>
+                                    <div className={styles.commentTime} suppressHydrationWarning={true}>{formatTimeDifference(editResponse.createdAt)}</div>
                                 </div>
                                 <div className={styles.commentContent}>
                                     <div className={styles.commentText}>{editResponse.text}</div>
@@ -696,7 +696,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                     }
                     <div className={styles.commentInput}>
                         <Image className={styles.profilePic} src={profilePic} width={50} height={50} alt='Profile Pic' />
-                        <input className={styles.addComment} placeholder={selectedComment ? 'Post a response...' : 'Post a comment...'} name='input' value={input} onChange={handleInputChange} />
+                        <textarea className={styles.addComment} placeholder={selectedComment && 'Post a response...' || editComment && 'Edit a comment...' || editResponse && 'Edit a response...' || 'Post a comment...'} name='input' value={input} onChange={handleInputChange} />
                         <div className={`${styles.charCount} ${charCount > maxChars && styles.overMaxChars}`}>{charCount}/{maxChars}</div>
                         <FontAwesomeIcon className={styles.sendComment} icon={faPaperPlane} onClick={!editComment && !editResponse ? handleSubmit : handleUpdateSubmit} />
                     </div>

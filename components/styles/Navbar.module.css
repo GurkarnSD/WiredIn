@@ -31,8 +31,23 @@
   margin-right: 2.5rem;
 }
 
-@media screen and (max-width: 51.25rem) {
+@media screen and (max-width: 50rem) {
   .links {
     display: none;
+  }
+}
+
+@media screen and (max-width: 22rem) {
+  .navbar {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .wiredIn {
+    font-size: 2rem;
+  }
+
+  .navigation {
+    margin-left: 0;
   }
 }

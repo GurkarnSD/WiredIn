@@ -1,7 +1,7 @@
 .container {
   margin-top: 0.625rem;
   min-height: 23.4375rem;
-  width: 26.5625rem;
+  margin-right: 1.5625rem;
   margin-bottom: 1.25rem;
 }
 
@@ -45,6 +45,7 @@
   font-size: 2rem;
   font-weight: 800;
   color: #ffffff;
+  text-wrap: nowrap;
 }
 
 .icon {
@@ -84,7 +85,6 @@
   color: #ffffff;
   font-weight: 700;
   font-size: 1.875rem;
-  margin-right: 2.5rem;
 }
 
 .lightMode {
@@ -103,5 +103,49 @@
 
   .hidden {
     display: block;
+  }
+}
+
+@media screen and (max-width: 27.5rem) {
+  .NavbarDropdown {
+    width: 95vw;
+  }
+
+  .container {
+    width: 100%;
+    margin-left: 2.5vw;
+    margin-right: 2.5vw;
+  }
+}
+
+@media screen and (max-width: 22rem) {
+  .link {
+    font-size: 1.5rem;
+  }
+
+  .NavbarDropdown {
+    padding: 1.25em;
+  }
+
+  .profilePic {
+    height: 3rem;
+    width: 3rem;
+  }
+
+  .displayName {
+    font-size: 1.75rem;
+  }
+
+  .options {
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .option {
+    font-size: 1.5rem;
+  }
+
+  .logout {
+    font-size: 1.5rem;
   }
 }

@@ -252,7 +252,6 @@ async function getUserSessions(uid: string) {
 
 type UserInfo = {
   title: string;
-  bio: string;
   github: string;
   profilePic: string;
   bannerPic: string;
@@ -265,7 +264,6 @@ async function updateUserPrisma(
   try {
     const data = {
       title: user.title,
-      bio: user.bio,
       github: user.github,
       profilePic: user.profilePic,
       bannerPic: user.bannerPic,

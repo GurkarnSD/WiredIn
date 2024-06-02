@@ -2,6 +2,7 @@ import styles from '../styles/Jobs/Jobs.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faArrowsLeftRight } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react';
+import SelectOptions from '../SelectOptions';
 import Modal from '../Modal';
 import { UserJob } from '@/types';
 
@@ -206,70 +207,5 @@ export default function JobCreator(params: { skillOptions: { skill: string }[], 
                 </Modal>
             )}
         </div>
-    )
-}
-
-function SelectOptions(params: { type: string, optionsList: { [key: string]: string }[], selector: (options: string[]) => void, chosenOptions: string[], setSelectOptionsPanel: (state: boolean) => void }) {
-
-    const { type, optionsList, selector, chosenOptions, setSelectOptionsPanel } = params;
-
-    const [inputValue, setInputValue] = useState('');
-    const [selectedOptions, setSelectedOptions] = useState<string[]>(chosenOptions);
-
-    const options = optionsList.map((option: { [key: string]: string }) => option[Object.keys(option)[0]]);
-
-    const filteredOptions = options.filter((option: string) =>
-        option.toLowerCase().includes(inputValue.toLowerCase())
-    );
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setInputValue(event.target.value);
-    };
-
-    const handleOptionSelection = (skill: string) => {
-        if (selectedOptions.includes(skill)) {
-            setSelectedOptions(selectedOptions.filter((s) => s !== skill));
-            return;
-        }
-        setSelectedOptions([...selectedOptions, skill]);
-    };
-
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        selector(selectedOptions);
-        setSelectOptionsPanel(false);
-    }
-
-    return (
-        <form className={styles.selectOptionsMenu} onSubmit={handleSubmit}>
-            <div className={styles.title}>Select {type}</div>
-            <div className={styles.inputContainer}>
-                <input
-                    className={styles.largeInput}
-                    type="text"
-                    placeholder={`Search ${type}`}
-                    value={inputValue}
-                    onChange={handleInputChange}
-                />
-                <div className={styles.selectionBox}>
-                    {filteredOptions.map((option: string, index: number) => (
-                        <label key={index} className={styles.checkboxLabel}>
-                            <input
-                                type="checkbox"
-                                value={option}
-                                checked={selectedOptions.includes(option)}
-                                onChange={() => handleOptionSelection(option)}
-                                className={styles.customCheckbox}
-                            />
-                            <span className={styles.checkboxCustom}></span>
-                            &nbsp;{option}
-                        </label>
-                    ))}
-                </div>
-            </div>
-            <div className={styles.optionFooter}>
-                <button className={styles.selectButton} type='submit'>Save</button>
-            </div>
-        </form>
     )
 }

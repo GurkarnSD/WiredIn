@@ -391,7 +391,7 @@ export default function Comments(params: { postId: string, user: User }) {
                             </div>
                         </div>
                         <div className={styles.commentFooter}>
-                            <FontAwesomeIcon className={styles.replyIcon} icon={faReply} onClick={() => { setEditComment(null); setSelectedComment(comment) }} />
+                            <FontAwesomeIcon className={styles.replyIcon} icon={faReply} onClick={() => { setEditComment(null); setEditResponse(null); setSelectedComment(comment) }} />
                             {comment._count.responses > 0 && openResponses[comment.id] ?
                                 <div className={styles.replyControl} onClick={() => toggleResponses(comment.id)}>
                                     <FontAwesomeIcon className={styles.responsesIcon} icon={faAngleDown} />
@@ -447,7 +447,7 @@ export default function Comments(params: { postId: string, user: User }) {
             </div>
             <div className={styles.commentsFooter}>
                 {selectedComment &&
-                    <>
+                    <div className={styles.selectedContainer}>
                         <div className={styles.selectedHeader}>
                             <FontAwesomeIcon className={styles.closeIcon} icon={faCircleXmark} onClick={() => setSelectedComment(null)} />
                             Replying To
@@ -459,15 +459,15 @@ export default function Comments(params: { postId: string, user: User }) {
                                 <div className={styles.time} suppressHydrationWarning={true}>{formatTimeDifference(selectedComment.createdAt)}</div>
                             </div>
                             <div className={styles.commentContent}>
-                                <div className={styles.commentText}>{selectedComment.text}</div>
+                                <div className={styles.selectedText}>{selectedComment.text}</div>
                             </div>
                         </div>
-                    </>
+                    </div>
                 }
                 {editComment &&
-                    <>
+                    <div className={styles.selectedContainer}>
                         <div className={styles.selectedHeader}>
-                            <FontAwesomeIcon className={styles.closeIcon} icon={faCircleXmark} onClick={() => setEditComment(null)} />
+                            <FontAwesomeIcon className={styles.closeIcon} icon={faCircleXmark} onClick={() => { setEditComment(null); setInput('') }} />
                             Editing Comment
                         </div>
                         <div className={styles.selectedComment}>
@@ -480,12 +480,12 @@ export default function Comments(params: { postId: string, user: User }) {
                                 <div className={styles.commentText}>{editComment.text}</div>
                             </div>
                         </div>
-                    </>
+                    </div>
                 }
                 {editResponse &&
-                    <>
+                    <div className={styles.selectedContainer}>
                         <div className={styles.selectedHeader}>
-                            <FontAwesomeIcon className={styles.closeIcon} icon={faCircleXmark} onClick={() => setEditResponse(null)} />
+                            <FontAwesomeIcon className={styles.closeIcon} icon={faCircleXmark} onClick={() => { setEditResponse(null); setInput('') }} />
                             Editing Response
                         </div>
                         <div className={styles.selectedComment}>
@@ -498,12 +498,12 @@ export default function Comments(params: { postId: string, user: User }) {
                                 <div className={styles.commentText}>{editResponse.text}</div>
                             </div>
                         </div>
-                    </>
+                    </div>
                 }
 
                 <div className={styles.commentInput}>
                     <Image className={styles.profilePic} src={user.profilePic} width={50} height={50} alt='Profile Pic' />
-                    <input className={styles.addComment} placeholder={selectedComment ? 'Post a response...' : 'Post a comment...'} name='input' value={input} onChange={handleInputChange} />
+                    <textarea className={styles.addComment} placeholder={selectedComment && 'Post a response...' || editComment && 'Edit a comment...' || editResponse && 'Edit a response...' || 'Post a comment...'} name='input' value={input} onChange={handleInputChange} />
                     <div className={`${styles.charCount} ${charCount > maxChars && styles.overMaxChars}`}>{charCount}/{maxChars}</div>
                     <FontAwesomeIcon className={styles.sendComment} icon={faPaperPlane} onClick={!editComment && !editResponse ? handleSubmit : handleUpdateSubmit} />
                 </div>

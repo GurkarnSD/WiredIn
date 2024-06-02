@@ -1,10 +1,9 @@
-.outerContainer {
-  height: 23.4375rem;
-}
-
-.innerContainer {
-  width: 25rem;
-  height: 21.875rem;
+.container {
+  max-width: 25rem;
+  width: 100%;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  height: fit-content;
   background-color: #fff;
   color: #000;
   border-radius: 0.9375rem;
@@ -18,6 +17,7 @@
 }
 
 .usersContainer {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
@@ -26,6 +26,7 @@
 }
 
 .userContainer {
+  width: 100%;
   display: flex;
   align-items: center;
   padding: 0.3125rem;
@@ -34,7 +35,7 @@
 
 .userContainer:hover {
   cursor: pointer;
-  background-color: #f1f1f1;
+  background-color: #f1f1a1;
 }
 
 .userImage {
@@ -46,6 +47,7 @@
 }
 
 .userInfo {
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -54,22 +56,12 @@
   color: #060606;
   font-size: 1.25rem;
   font-weight: 700;
+  width: 90%;
+  padding-right: 0.5rem;
 }
 
 .userTitle {
   color: #636363;
   font-size: 1.25rem;
   font-weight: 500;
-}
-
-@media screen and (max-width: 100rem) {
-  .outerContainer {
-    height: 100%;
-    margin-bottom: 3.125rem;
-  }
-
-  .innerContainer {
-    height: 100%;
-    padding-bottom: 1.25rem;
-  }
 }

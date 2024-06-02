@@ -13,7 +13,6 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
 
     const [profileForm, setProfileForm] = useState({
         title: '',
-        bio: '',
         github: '',
     })
 
@@ -33,7 +32,6 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
         setBanner(userImages.bannerURL);
         setProfileForm({
             title: user.title || '',
-            bio: user.bio || '',
             github: user.github || '',
         })
     }, [user])
@@ -89,13 +87,12 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
 
         const data = {
             title: profileForm.title,
-            bio: profileForm.bio,
             github: profileForm.github,
             profilePic: user.profilePic,
             bannerPic: user.bannerPic,
         }
 
-        if (profileFile && profilePic !== `${process.env.S3ENDPOINT}${user.profilePic}`) {
+        if (profileFile) {
             const profilePicData = new FormData();
             profilePicData.append('image', profileFile);
             profilePicData.append('type', profileFile.type);
@@ -106,7 +103,7 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
             data['profilePic'] = profilePicURL.key;
         }
 
-        if (bannerFile && banner !== `${process.env.S3ENDPOINT}${user.bannerPic}`) {
+        if (bannerFile) {
             const bannerPicData = new FormData();
             bannerPicData.append('image', bannerFile);
             bannerPicData.append('type', bannerFile.type);
@@ -177,13 +174,16 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
                 {error && <div className={styles.error}>{error}</div>}
                 <div className={styles.inputFields}>
                     <div className={styles.inputRow}>
-                        <input className={styles.input} name='title' type='text' placeholder='Title' value={profileForm.title} onChange={handleChange} />
-                        <input className={styles.input} name='github' type='text' placeholder='Github Username' value={profileForm.github} onChange={handleChange} />
+                        <div className={styles.inputContainer}>
+                            <div className={styles.inputTitle}>Title</div>
+                            <input className={styles.input} name='title' type='text' value={profileForm.title} onChange={handleChange} />
+                        </div>
+                        <div className={styles.inputContainer}>
+                            <div className={styles.inputTitle}>Github Username</div>
+                            <input className={styles.input} name='github' type='text' value={profileForm.github} onChange={handleChange} />
+                        </div>
                     </div>
-                    <div className={styles.inputRow}>
-                        <textarea className={styles.largeInput} name='bio' placeholder='Bio' aria-multiline value={profileForm.bio} onChange={handleChange} />
-                        <button className={styles.saveButton} type='submit'>Save</button>
-                    </div>
+                    <button className={styles.saveButton} type='submit'>Save</button>
                 </div>
             </form>
         </div>

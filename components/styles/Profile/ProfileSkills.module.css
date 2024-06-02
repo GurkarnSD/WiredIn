@@ -11,6 +11,7 @@
 .header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .title {
@@ -23,7 +24,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 5rem;
+  gap: 1.5rem;
 }
 
 .icon {
@@ -36,17 +37,19 @@
 }
 
 .body {
+  margin-top: 1rem;
+  width: 100%;
   color: #000;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3.125rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  grid-gap: 1rem;
+  overflow-y: auto;
+  max-height: 85%;
 }
 
 .skill {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1.25rem;
+  justify-content: center;
 }
 
 .skillName {
@@ -88,6 +91,16 @@
 
 @media screen and (max-width: 75rem) {
   .container {
-    width: 100%;
+    width: 100vw;
+  }
+}
+
+@media screen and (max-width: 22rem) {
+  .header {
+    flex-direction: column;
+  }
+
+  .body {
+    max-height: 80%;
   }
 }

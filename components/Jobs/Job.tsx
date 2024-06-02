@@ -61,15 +61,15 @@ export default function Job(params: { job: UserJob, user: User, selectJob?: (job
     return (
         <div className={styles.jobContainer}>
             <div className={styles.job}>
-                {user.uid === job.user.uid &&
-                    <div className={styles.settings}>
-                        <FontAwesomeIcon icon={faPencil} className={styles.editIcon} onClick={() => { if (selectJob) selectJob(job); if (openEditModal) openEditModal(true); }} />
-                        <FontAwesomeIcon icon={faTrash} className={styles.deleteIcon} onClick={() => setConfirmationPopup(true)} />
-                    </div>
-                }
                 <div className={styles.userInfo}>
                     <Image className={styles.userImage} src={job.user.profilePic} alt='User Image' width={100} height={100} />
                     <h2 className={styles.userName}>{job.user.displayName}</h2>
+                    {user.uid === job.user.uid &&
+                        <div className={styles.settings}>
+                            <FontAwesomeIcon icon={faPencil} className={styles.editIcon} onClick={() => { if (selectJob) selectJob(job); if (openEditModal) openEditModal(true); }} />
+                            <FontAwesomeIcon icon={faTrash} className={styles.deleteIcon} onClick={() => setConfirmationPopup(true)} />
+                        </div>
+                    }
                 </div>
                 <div className={styles.jobInfo}>
                     <div className={styles.jobInfoHeader}>

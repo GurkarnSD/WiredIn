@@ -34,6 +34,7 @@
 .jobInfoHeader {
   display: flex;
   justify-content: space-between;
+  gap: 1rem;
   align-items: center;
   width: 100%;
 }
@@ -101,6 +102,7 @@
 
 .jobTags {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.625rem;
   color: #000;
   font-weight: 500;
@@ -121,6 +123,7 @@
   background-color: #fff;
   max-height: 37.5rem;
   max-width: 43.75rem;
+  width: 100vw;
   border-radius: 1.5625rem;
   padding: 1.25rem;
 }
@@ -199,8 +202,8 @@
 
 .settings {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
   gap: 1.25rem;
 }
 
@@ -231,11 +234,13 @@
     flex-direction: column;
   }
 
-  .jobTags {
-    flex-wrap: wrap;
-  }
-
   .button {
-    scale: 0.8;
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 25rem) {
+  .jobContainer {
+    padding: 0.5rem;
   }
 }

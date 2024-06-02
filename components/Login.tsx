@@ -59,10 +59,6 @@ export default function Login({ user }: { user: User | null }) {
         }
     }
 
-    const googleSignin = async () => {
-        const info = await signIn('google')
-    }
-
     const handleSignOut = async () => {
         try {
             await fetch('/api/session', { method: 'DELETE' })
@@ -83,8 +79,8 @@ export default function Login({ user }: { user: User | null }) {
                         <Image className={styles.profilePic} src={defaultProfile} alt="" />
                         <div className={styles.displayName}>{user.displayName}</div>
                     </div>
-                    <div className={styles.logoutButton} onClick={handleSignOut}>Log Out</div>
                 </form>
+                <div className={styles.logoutButton} onClick={handleSignOut}>Log Out</div>
             </div>
         )
     }
@@ -102,7 +98,7 @@ export default function Login({ user }: { user: User | null }) {
                     <div className={styles.dividerText}>OR</div>
                     <div className={styles.dividerLine}></div>
                 </div>
-                <button className={styles.googleButton} type="button" onClick={googleSignin}>Log In With&nbsp;
+                <button className={styles.googleButton} type="button" onClick={() => signIn('google')}>Log In With&nbsp;
                     <span className={styles.googleBlue}>G</span>
                     <span className={styles.googleRed}>o</span>
                     <span className={styles.googleYellow}>o</span>

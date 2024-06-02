@@ -1,5 +1,5 @@
 .container {
-  width: 48.125rem;
+  width: 48rem;
   display: flex;
   flex-direction: column;
 }
@@ -23,10 +23,6 @@
   cursor: pointer;
 }
 
-.posts {
-  width: 100%;
-}
-
 .loadMore {
   width: 9.375rem;
   height: 2.5rem;
@@ -39,8 +35,20 @@
   margin-bottom: 1.25rem;
 }
 
-@media screen and (max-width: 48.4375rem) {
+@media screen and (max-width: 50rem) {
   .container {
     width: 100%;
+  }
+
+  .posts {
+    width: 100%;
+  }
+
+  .header {
+    justify-content: center;
+  }
+
+  .createPost {
+    width: 80%;
   }
 }

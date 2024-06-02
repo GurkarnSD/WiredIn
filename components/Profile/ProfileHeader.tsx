@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { User, UserProfile } from '@/types';
 
 const followUser = async (pageUserId: string) => {
@@ -48,7 +49,7 @@ const messageUser = async (pageUserId: string) => {
     })
 
     if (!res.ok) {
-        throw new Error("Failed to Find Chatroom")
+        throw new Error("Failed to setup chatroom")
     }
 
     return res.json()
@@ -77,11 +78,11 @@ const checkFollowing = async (pageUserId: string) => {
 export default function ProfileHeader(params: { pageUser: UserProfile, user: User }) {
 
     const { pageUser, user } = params;
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [showFollowing, setShowFollowing] = useState(false);
     const [showFollowers, setShowFollowers] = useState(false);
     const [isFollowing, setIsFollowing] = useState(false);
+    const { push } = useRouter();
 
     const [headerImages, setHeaderImages] = useState({
         bannerURL: '',
@@ -115,19 +116,23 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
     return (
         <div className={styles.container}>
             <Image className={styles.banner} src={headerImages.bannerURL} alt={""} height={0} width={0} unoptimized />
+            <div className={styles.icons}>
+                {pageUser.github &&
+                    <Link href={`https://github.com/${pageUser.github}`}>
+                        <FontAwesomeIcon className={styles.icon} icon={faGithub} />
+                    </Link>
+                }
+                {user?.uid === pageUser?.uid &&
+                    <FontAwesomeIcon className={styles.iconEdit} icon={faEdit} onClick={handleOpenModal} />
+                }
+            </div>
             <div className={styles.profile}>
                 <Image className={styles.profilePicture} src={headerImages.profileURL} alt={""} width={224} height={224} />
-
                 <div className={styles.content}>
                     <div className={styles.contentLeft}>
                         <div className={styles.header}>
                             <div className={styles.displayName}>{pageUser?.displayName}</div>
-                            {user?.uid !== pageUser?.uid ? (
-                                !isFollowing ?
-                                    <button className={styles.follow} onClick={() => { followUser(pageUser?.uid); setIsFollowing(true) }}>Follow</button>
-                                    : <button className={styles.follow} onClick={() => { unfollowUser(pageUser?.uid); setIsFollowing(false) }}>Unfollow</button>)
-                                : null}
-                            <Link className={styles.message} onClick={() => messageUser(pageUser?.uid)} href={'/messages'}>Message</Link>
+                            <div className={styles.userTitle}>{pageUser?.title}</div>
                         </div>
                         <div className={styles.stats}>
                             <div className={styles.stat} onClick={() => setShowFollowing(true)}>
@@ -141,21 +146,13 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
                         </div>
                     </div>
 
-                    <div className={styles.dividerLine} />
-
                     <div className={styles.contentRight}>
-                        <div className={styles.row}>
-                            <div className={styles.title}>{pageUser?.title}</div>
-                            <div className={styles.icons}>
-                                <Link href={`https://github.com/${pageUser.github}`}>
-                                    <FontAwesomeIcon className={styles.icon} icon={faGithub} />
-                                </Link>
-                                {user?.uid === pageUser?.uid &&
-                                    <FontAwesomeIcon className={styles.iconEdit} icon={faEdit} onClick={handleOpenModal} />
-                                }
-                            </div>
-                        </div>
-                        <div className={styles.bio}>{pageUser?.bio}</div>
+                        {user?.uid !== pageUser?.uid ? (
+                            !isFollowing ?
+                                <button className={styles.follow} onClick={() => { followUser(pageUser?.uid); setIsFollowing(true) }}>Follow</button>
+                                : <button className={styles.follow} onClick={() => { unfollowUser(pageUser?.uid); setIsFollowing(false) }}>Unfollow</button>)
+                            : null}
+                        <div className={styles.message} onClick={async () => { await messageUser(pageUser?.uid); push('/messages') }}>Message</div>
                     </div>
                 </div>
             </div>

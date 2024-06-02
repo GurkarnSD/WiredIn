@@ -61,15 +61,15 @@ export default function Contract(params: { contract: UserContract, user: User, s
     return (
         <div className={styles.contractContainer}>
             <div className={styles.contract}>
-                {user.uid === contract.user.uid &&
-                    <div className={styles.settings}>
-                        <FontAwesomeIcon icon={faPencil} className={styles.editIcon} onClick={() => { if (selectContract) selectContract(contract); if (openEditModal) openEditModal(true); }} />
-                        <FontAwesomeIcon icon={faTrash} className={styles.deleteIcon} onClick={() => setConfirmationPopup(true)} />
-                    </div>
-                }
                 <div className={styles.userInfo}>
                     <Image className={styles.userImage} src={contract.user.profilePic} alt='User Image' width={100} height={100} />
                     <h2 className={styles.userName}>{contract.user.displayName}</h2>
+                    {user.uid === contract.user.uid &&
+                        <div className={styles.settings}>
+                            <FontAwesomeIcon icon={faPencil} className={styles.editIcon} onClick={() => { if (selectContract) selectContract(contract); if (openEditModal) openEditModal(true); }} />
+                            <FontAwesomeIcon icon={faTrash} className={styles.deleteIcon} onClick={() => setConfirmationPopup(true)} />
+                        </div>
+                    }
                 </div>
                 <div className={styles.contractInfo}>
                     <div className={styles.contractInfoHeader}>

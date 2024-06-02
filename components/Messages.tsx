@@ -45,6 +45,7 @@ export default function Messages(params: { user: User }) {
 
     const ref = useRef<HTMLDivElement>(null);
 
+    // Buggy
     useEffect(() => {
         if (ref.current) {
             ref.current.scrollIntoView({
@@ -234,6 +235,7 @@ export default function Messages(params: { user: User }) {
                 setMessage('');
                 setImageFiles([]);
                 setImages([]);
+                setError('');
             }
         }
     }
@@ -245,10 +247,10 @@ export default function Messages(params: { user: User }) {
                     <FontAwesomeIcon icon={faComment} className={styles.icon} />Messages
                 </div>
                 <div className={styles.chatRooms}>
-                    {chatRooms?.map((chatRoom: UserChatRoom, index: number) => {
-                        const chatRoomUser = chatRoom.users.filter((userInfo: { uid: string }) => userInfo.uid !== user.uid)[0];
+                    {chatRooms?.map((room: UserChatRoom, index: number) => {
+                        const chatRoomUser = room.users.filter((userInfo: { uid: string }) => userInfo.uid !== user.uid)[0];
                         return (
-                            <div key={index} className={styles.recipient} onClick={() => setChatRoom(chatRoom)}>
+                            <div key={index} className={`${styles.recipient} ${room.id === chatRoom?.id && styles.selectedChatRoom}`} onClick={() => setChatRoom(room)}>
                                 <Image className={styles.recipientImage} src={chatRoomUser.profilePic} alt="Recipient Profile Picture" width={50} height={50} />
                                 <div className={styles.recipientName}>{chatRoomUser.displayName}</div>
                             </div>
@@ -259,15 +261,13 @@ export default function Messages(params: { user: User }) {
             <div className={styles.messenger}>
                 {chatRoom?.users &&
                     <div className={styles.messageHeader}>
-                        <div className={styles.messengerHeaderInfo}>
-                            <Link className={styles.userInfo} href={`/profile/${chatRoom.users[0].displayName}`}>
-                                <Image className={styles.recipientImage} src={chatRoom.users[0].profilePic} alt="Recipient Profile Picture" width={80} height={80} />
-                                <div className={styles.messageHeaderName}>{chatRoom.users[0].displayName}</div>
-                            </Link>
-                            <div className={styles.messageHeaderStatus}>
-                                {onlineUsers.includes(chatRoom.users[0].uid) || numOnlineUsers > 1 ? <div className={styles.online} /> : <div className={styles.offline} />}
-                                {onlineUsers.includes(chatRoom.users[0].uid) || numOnlineUsers > 1 ? 'Online' : 'Offline'}
-                            </div>
+                        <Link className={styles.userInfo} href={`/profile/${chatRoom.users[0].displayName}`}>
+                            <Image className={styles.recipientImage} src={chatRoom.users[0].profilePic} alt="Recipient Profile Picture" width={80} height={80} />
+                            <div className={styles.messageHeaderName}>{chatRoom.users[0].displayName}</div>
+                        </Link>
+                        <div className={styles.messageHeaderStatus}>
+                            {onlineUsers.includes(chatRoom.users[0].uid) || numOnlineUsers > 1 ? <div className={styles.online} /> : <div className={styles.offline} />}
+                            {onlineUsers.includes(chatRoom.users[0].uid) || numOnlineUsers > 1 ? 'Online' : 'Offline'}
                         </div>
                     </div>
                 }

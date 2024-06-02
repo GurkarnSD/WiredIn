@@ -43,23 +43,19 @@ export default async function Connect(params: { user: User }) {
     const usersData = await fetchRandomUsers(user.uid);
 
     return (
-        <>
-            <div className={styles.outerContainer}>
-                <div className={styles.innerContainer}>
-                    <div className={styles.title}>Connect</div>
-                    <div className={styles.usersContainer}>
-                        {usersData.map((user: UserProfile) => (
-                            <Link className={styles.userContainer} href={`/profile/${user.displayName}`} key={user.uid}>
-                                <Image className={styles.userImage} src={user.profilePic} alt='User Image' width={65} height={65} />
-                                <div className={styles.userInfo}>
-                                    <div className={styles.userName}>{user.displayName}</div>
-                                    <div className={styles.userTitle}>{user.title}</div>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
+        <div className={styles.container}>
+            <div className={styles.title}>Connect</div>
+            <div className={styles.usersContainer}>
+                {usersData.map((user: UserProfile) => (
+                    <Link className={styles.userContainer} href={`/profile/${user.displayName}`} key={user.uid}>
+                        <Image className={styles.userImage} src={user.profilePic} alt='User Image' width={65} height={65} />
+                        <div className={styles.userInfo}>
+                            <div className={styles.userName}>{user.displayName}</div>
+                            <div className={styles.userTitle}>{user.title}</div>
+                        </div>
+                    </Link>
+                ))}
             </div>
-        </>
+        </div>
     )
 }

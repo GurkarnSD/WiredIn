@@ -34,7 +34,6 @@ type UserProfile = {
   email: string;
   displayName: string;
   title?: string | null;
-  bio?: string | null;
   github?: string | null;
   profilePic: string;
   bannerPic: string;
@@ -76,7 +75,7 @@ type WorkExperience = {
   id: number;
   title: string;
   company: string;
-  image: string;
+  image?: string;
   description: string;
   skills?: UserSkill[];
   start: Date;

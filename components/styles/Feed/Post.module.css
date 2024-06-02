@@ -1,7 +1,6 @@
 .creatorContainer {
-  width: 60rem;
-  min-width: 21.875rem;
-  min-height: 12.5rem;
+  max-width: 60rem;
+  width: calc(100vw - 4rem);
   background-color: #ffffff;
   border-radius: 1.25rem;
   padding: 1.5625rem;
@@ -30,7 +29,6 @@
   resize: none;
   padding: 0.625rem;
   margin: 0.625rem;
-  outline: none;
 }
 
 .postButton {
@@ -87,6 +85,7 @@
 .postHeaderLeft {
   display: flex;
   align-items: center;
+  flex: 1;
 }
 
 .postHeaderRight {
@@ -94,7 +93,14 @@
   align-items: center;
 }
 
+.postInfo {
+  max-width: 70%;
+}
+
 .displayName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: #000000;
   font-weight: 700;
   font-size: 1.375rem;
@@ -181,7 +187,7 @@
 .imagesContainer2 {
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
+  justify-content: space-between;
 }
 
 .oneImage {
@@ -205,8 +211,6 @@
 }
 
 .image {
-  min-height: 6.25rem;
-  min-width: 6.25rem;
   border-radius: 1.5625rem;
 }
 
@@ -327,22 +331,42 @@
   margin-right: 1.125rem;
 }
 
-@media screen and (max-width: 68.75rem) {
-  .creatorContainer {
-    width: 80vw;
-  }
-}
-
-@media screen and (max-width: 48.4375rem) {
+@media screen and (max-width: 48rem) {
   .postContainer {
     width: 100%;
     margin-left: 0;
+    margin-right: 0;
+  }
+
+  .creatorContainer {
+    width: 100vw;
   }
 }
 
 @media screen and (max-width: 40.625rem) {
-  .images {
-    scale: 0.75;
+  .largeImage {
+    width: 22.5rem;
+    height: 22.5rem;
+  }
+
+  .medImage {
+    width: 15rem;
+    height: 15rem;
+  }
+
+  .med1Image {
+    width: 18.75rem;
+    height: 18.75rem;
+  }
+
+  .med2Image {
+    width: 8.90625rem;
+    height: 8.90625rem;
+  }
+
+  .smallImage {
+    width: 7.03125rem;
+    height: 7.03125rem;
   }
 
   .oneImage {
@@ -361,7 +385,59 @@
   }
 
   .fourImages {
-    grid-template-columns: 1fr 0.4fr;
-    grid-gap: 0.3125rem;
+    grid-template-columns: 1fr 0.3fr;
+    grid-gap: 0.625rem;
+  }
+}
+
+@media screen and (max-width: 32rem) {
+  .twoImages {
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 0.625rem;
+    grid-template-columns: none;
+  }
+
+  .threeImages {
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 0.625rem;
+    grid-template-columns: none;
+  }
+
+  .fourImages {
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 0.625rem;
+    grid-template-columns: none;
+  }
+
+  .imagesContainer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .imagesContainer2 {
+    flex-direction: row;
+  }
+}
+
+@media screen and (max-width: 22.5rem) {
+  .time {
+    font-size: smaller;
+  }
+
+  .largeImage {
+    width: 18rem;
+    height: 18rem;
+  }
+
+  .smallImage {
+    width: 5.625rem;
+    height: 5.625rem;
+  }
+}
+
+@media screen and (max-width: 53.75rem) {
+  .settings {
+    left: auto;
+    right: 1.25rem;
   }
 }

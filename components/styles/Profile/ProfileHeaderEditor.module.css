@@ -1,6 +1,6 @@
 .container {
   width: 60rem;
-  height: 31.25rem;
+  min-height: 26rem;
   background-color: #ffffff;
   border-radius: 1.25rem;
   padding: 1.5625rem;
@@ -17,18 +17,19 @@
   display: flex;
   justify-content: space-between;
   margin-top: 1.25rem;
+  gap: 1rem;
 }
 
 .profilePic {
-  width: 9.375rem;
-  height: 9.375rem;
-  border-radius: 4.6875rem;
+  width: 12em;
+  height: 12rem;
+  border-radius: 6rem;
   border: 0.5rem solid #c4c4c4;
 }
 
 .banner {
   width: 36rem;
-  height: 10rem;
+  height: 12rem;
   background-color: #c4c4c4;
   border-radius: 1rem;
 }
@@ -60,11 +61,10 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 1.25rem;
-  gap: 0.625rem;
+  gap: 1rem;
 }
 
 .input {
-  width: 25rem;
   height: 2.5rem;
   background-color: #d9d9d9;
   border: none;
@@ -72,26 +72,6 @@
   padding: 0.625rem;
   color: #000000;
   font-weight: 600;
-}
-
-.input:focus {
-  outline: none;
-}
-
-.largeInput {
-  width: 25rem;
-  height: 7.5rem;
-  background-color: #d9d9d9;
-  border: none;
-  border-radius: 0.3125rem;
-  padding: 0.625rem;
-  color: #000000;
-  font-weight: 600;
-  resize: none;
-}
-
-.largeInput:focus {
-  outline: none;
 }
 
 .saveButton {
@@ -110,23 +90,39 @@
   cursor: pointer;
 }
 
-@media screen and (max-width: 75rem) {
+.inputContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.625rem;
+}
+
+.inputTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #000000;
+}
+
+@media screen and (max-width: 60rem) {
   .container {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
   }
 
-  .profilePic {
-    width: 6.25rem;
-    height: 6.25rem;
+  .images {
+    flex-direction: column;
+    align-items: center;
   }
 
   .banner {
-    width: 25rem;
-    height: 6.25rem;
+    width: 80vw;
   }
 
-  .input {
-    width: 18.75rem;
+  .inputRow {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .inputContainer {
+    width: 100%;
   }
 }

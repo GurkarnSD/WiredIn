@@ -38,7 +38,6 @@ model User {
   email       String       @unique
   displayName String       @unique
   title       String?
-  bio         String?
   github      String?
   profilePic  String       @default("default/Profile.png")
   bannerPic   String       @default("default/Banner.jpg")

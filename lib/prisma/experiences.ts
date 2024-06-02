@@ -55,7 +55,7 @@ async function createExperiencePrisma(
   experience: {
     title: string;
     company: string;
-    image: string;
+    image?: string;
     description: string;
     skills: SkillWhereUniqueInput[];
     current: boolean;
