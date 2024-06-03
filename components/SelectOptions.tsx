@@ -1,9 +1,11 @@
 import styles from './styles/SelectOptions.module.css';
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
-export default function SelectOptions(params: { type: string, optionsList: { [key: string]: string }[], selector: (options: string[]) => void, chosenOptions: string[], setSelectOptionsPanel: (state: boolean) => void }) {
+export default function SelectOptions(params: { type: string, optionsList: { [key: string]: string }[], selector: (options: string[]) => void, chosenOptions: string[], setSelectOptionsPanel: (state: boolean) => void, setAddOptionsPanel?: (state: boolean) => void }) {
 
-    const { type, optionsList, selector, chosenOptions, setSelectOptionsPanel } = params;
+    const { type, optionsList, selector, chosenOptions, setSelectOptionsPanel, setAddOptionsPanel } = params;
 
     const [inputValue, setInputValue] = useState('');
     const [selectedOptions, setSelectedOptions] = useState<string[]>(chosenOptions);
@@ -34,7 +36,10 @@ export default function SelectOptions(params: { type: string, optionsList: { [ke
 
     return (
         <form className={styles.selectOptionsMenu} onSubmit={handleSubmit}>
-            <div className={styles.title}>Select {type}</div>
+            <div className={styles.header}>
+                <div className={styles.title}>Select {type}</div>
+                {setAddOptionsPanel && <FontAwesomeIcon icon={faPlus} className={styles.addSkillIcon} onClick={() => setAddOptionsPanel(true)} />}
+            </div>
             <div className={styles.inputContainer}>
                 <input
                     className={styles.largeInput}

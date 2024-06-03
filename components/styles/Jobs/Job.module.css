@@ -90,13 +90,15 @@
   color: #000;
   margin-top: 0.625rem;
   word-wrap: break-word;
+  margin-bottom: 1.25rem;
 }
 
 .jobInfoFooter {
-  margin-top: 1.25rem;
+  margin-top: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  justify-self: flex-end;
   width: 100%;
 }
 

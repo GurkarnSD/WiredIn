@@ -118,7 +118,7 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
             <Image className={styles.banner} src={headerImages.bannerURL} alt={""} height={0} width={0} unoptimized />
             <div className={styles.icons}>
                 {pageUser.github &&
-                    <Link href={`https://github.com/${pageUser.github}`}>
+                    <Link href={`https://github.com/${pageUser.github}`} target="_blank" rel="noopener noreferrer">
                         <FontAwesomeIcon className={styles.icon} icon={faGithub} />
                     </Link>
                 }
@@ -152,7 +152,7 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
                                 <button className={styles.follow} onClick={() => { followUser(pageUser?.uid); setIsFollowing(true) }}>Follow</button>
                                 : <button className={styles.follow} onClick={() => { unfollowUser(pageUser?.uid); setIsFollowing(false) }}>Unfollow</button>)
                             : null}
-                        <div className={styles.message} onClick={async () => { await messageUser(pageUser?.uid); push('/messages') }}>Message</div>
+                        <button className={styles.message} onClick={async () => { await messageUser(pageUser?.uid); push('/messages') }}>Message</button>
                     </div>
                 </div>
             </div>

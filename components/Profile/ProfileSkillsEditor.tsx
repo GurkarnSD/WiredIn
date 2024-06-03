@@ -5,10 +5,13 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import Modal from '../Modal';
 import { UserSkill } from '@/types';
+import useSWR from 'swr';
+const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-export default function ProfileSkillsEditor(params: { skills: UserSkill[], skillOptions: { skill: string }[], toastTrigger?: () => void }) {
+export default function ProfileSkillsEditor(params: { skills: UserSkill[], toastTrigger?: () => void, onSuccess?: () => void }) {
 
-    const { skills, skillOptions, toastTrigger } = params;
+    const { skills, toastTrigger, onSuccess } = params;
+    const { data: skillOptions } = useSWR('/api/profile/skills', fetcher)
 
     const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
@@ -31,22 +34,18 @@ export default function ProfileSkillsEditor(params: { skills: UserSkill[], skill
                 ))}
             </div>
 
-            <div className={styles.footer}>
-                <button className={styles.saveButton} type='submit'>Save</button>
-            </div>
-
             {addSkillOpen && (
                 <Modal isOpen={addSkillOpen} onClose={() => setAddSkillOpen(false)}>
-                    <AddSkillMenu controlModal={setAddSkillOpen} skills={currentSkills} skillOptions={skillOptions} toastTrigger={toastTrigger} />
+                    <AddSkillMenu controlModal={setAddSkillOpen} skills={currentSkills} skillOptions={skillOptions} toastTrigger={toastTrigger} onSuccess={onSuccess} />
                 </Modal>
             )}
         </div>
     )
 }
 
-export function AddSkillMenu(params: { controlModal: (toggle: boolean) => void, skills: string[], skillOptions: { skill: string }[], editMode?: boolean, skill?: UserSkill, toastTrigger?: () => void }) {
+export function AddSkillMenu(params: { controlModal: (toggle: boolean) => void, skills: string[], skillOptions: { skill: string }[], editMode?: boolean, skill?: UserSkill, toastTrigger?: () => void, onSuccess?: () => void }) {
 
-    const { controlModal, skills, skillOptions, editMode, skill, toastTrigger } = params;
+    const { controlModal, skills, skillOptions, editMode, skill, toastTrigger, onSuccess } = params;
 
     const skillsList = skillOptions.map((skill: { skill: string }) => skill.skill).filter((skill: string) => !skills.includes(skill));
 
@@ -109,7 +108,8 @@ export function AddSkillMenu(params: { controlModal: (toggle: boolean) => void, 
             }
         }
 
-        if (toastTrigger) toastTrigger();
+        toastTrigger && toastTrigger();
+        onSuccess && onSuccess();
         controlModal(false);
         setSubmitting(false);
         return res.json()

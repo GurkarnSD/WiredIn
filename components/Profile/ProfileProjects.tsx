@@ -4,7 +4,7 @@ import { faPlus, faPen, faXmark, faTrash, faLink, faCode } from '@fortawesome/fr
 import { useState } from 'react'
 import ProfileProjectsEditor from './ProfileProjectsEditor';
 import Modal from '../../components/Modal';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import Link from 'next/link';
 import { User, UserProfile, UserProject } from '@/types';
 import { toast } from 'sonner'
@@ -63,16 +63,18 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
                     <div className={styles.project} key={project.id}>
                         <div className={styles.projectHeader}>
                             <div className={styles.projectTitle}>{project.title}</div>
-                            {project.deployment && <Link href={project.deployment}>
+                            {project.deployment && <Link href={project.deployment} target="_blank" rel="noopener noreferrer">
                                 <FontAwesomeIcon className={styles.projectIcon} icon={faLink} />
                             </Link>}
-                            {project.source && <Link href={project.source}>
+                            {project.source && <Link href={project.source} target="_blank" rel="noopener noreferrer">
                                 <FontAwesomeIcon className={styles.projectIcon} icon={faCode} />
                             </Link>}
-                            {isEditProjects && <>
-                                <FontAwesomeIcon className={styles.editIcon} icon={faPen} onClick={() => { setSelectedProject(project); setIsEditModalOpen(true) }} />
-                                <FontAwesomeIcon className={styles.deleteIcon} icon={faTrash} onClick={() => { setSelectedProject(project); setConfirmationPopup(true) }} />
-                            </>}
+                            {isEditProjects &&
+                                <div className={styles.icons}>
+                                    <FontAwesomeIcon className={styles.editIcon} icon={faPen} onClick={() => { setSelectedProject(project); setIsEditModalOpen(true) }} />
+                                    <FontAwesomeIcon className={styles.deleteIcon} icon={faTrash} onClick={() => { setSelectedProject(project); setConfirmationPopup(true) }} />
+                                </div>
+                            }
                         </div>
                         <div className={styles.projectDate}>{new Date(project.start).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}{project.current ? " - Present" : project.end && " - " + new Date(project.end).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}</div>
                         <div className={styles.projectDescription}>
@@ -88,13 +90,13 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
 
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
-                    <ProfileProjectsEditor skills={skillsData} setModal={setIsModalOpen} toastTrigger={() => toast.success("Project Added")} />
+                    <ProfileProjectsEditor skills={skillsData} setModal={setIsModalOpen} updateSkillOptions={() => mutate(`/api/profile/skills/user/?uid=${pageUser.uid}`)} toastTrigger={() => toast.success("Project Added")} onSuccess={() => mutate(`/api/profile/projects/?uid=${pageUser.uid}`)} />
                 </Modal>
             )}
 
             {isEditModalOpen && (
                 <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} backIcon disableClickOff>
-                    <ProfileProjectsEditor skills={skillsData} setModal={setIsEditModalOpen} editMode project={selectedProject} toastTrigger={() => toast.success("Project Updated")} />
+                    <ProfileProjectsEditor skills={skillsData} setModal={setIsEditModalOpen} updateSkillOptions={() => mutate(`/api/profile/skills/user/?uid=${pageUser.uid}`)} editMode project={selectedProject} toastTrigger={() => toast.success("Project Updated")} onSuccess={() => mutate(`/api/profile/projects/?uid=${pageUser.uid}`)} />
                 </Modal>
             )}
 

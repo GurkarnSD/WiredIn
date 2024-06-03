@@ -6,9 +6,9 @@ import Modal from '../Modal';
 import SelectOptions from '../SelectOptions';
 import { UserContract } from '@/types';
 
-export default function ContractCreator(params: { skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void, toastTrigger?: () => void, editMode?: boolean, contract?: UserContract }) {
+export default function ContractCreator(params: { skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void, toastTrigger?: () => void, editMode?: boolean, contract?: UserContract, onSuccess?: () => void }) {
 
-    const { skillOptions, tagOptions, setModal, toastTrigger, editMode, contract } = params;
+    const { skillOptions, tagOptions, setModal, toastTrigger, editMode, contract, onSuccess } = params;
 
     const [contractForm, setContractForm] = useState({
         title: editMode && contract ? contract.title : '',
@@ -99,10 +99,9 @@ export default function ContractCreator(params: { skillOptions: { skill: string 
             });
             setSelectedSkills([]);
             setSelectedTags([]);
-            if (setModal)
-                setModal(false);
-            if (toastTrigger)
-                toastTrigger();
+            setModal && setModal(false);
+            toastTrigger && toastTrigger();
+            onSuccess && onSuccess();
         }
 
         setSubmitting(false);

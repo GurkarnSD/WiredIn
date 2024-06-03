@@ -240,6 +240,7 @@ export default function Comments(params: { postId: string, user: User }) {
                     [selectedComment.id]: refreshedResponses,
                 }));
                 setSelectedComment(null);
+                toggleResponses(selectedComment.id);
             }
 
             return res.json();
@@ -392,12 +393,12 @@ export default function Comments(params: { postId: string, user: User }) {
                         </div>
                         <div className={styles.commentFooter}>
                             <FontAwesomeIcon className={styles.replyIcon} icon={faReply} onClick={() => { setEditComment(null); setEditResponse(null); setSelectedComment(comment) }} />
-                            {comment._count.responses > 0 && openResponses[comment.id] ?
+                            {(comment._count.responses > 0 || (responses[comment.id] && responses[comment.id].length > 0)) && openResponses[comment.id] ?
                                 <div className={styles.replyControl} onClick={() => toggleResponses(comment.id)}>
                                     <FontAwesomeIcon className={styles.responsesIcon} icon={faAngleDown} />
                                     <div className={styles.replyText}>Hide Replies</div>
                                 </div>
-                                : comment._count.responses > 0 &&
+                                : (comment._count.responses > 0 || (responses[comment.id] && responses[comment.id].length > 0)) &&
                                 <div className={styles.replyControl} onClick={() => toggleResponses(comment.id)}>
                                     <FontAwesomeIcon className={styles.responsesIcon} icon={faAngleUp} />
                                     <div className={styles.replyText}>View Replies</div>
@@ -508,7 +509,7 @@ export default function Comments(params: { postId: string, user: User }) {
                     <FontAwesomeIcon className={styles.sendComment} icon={faPaperPlane} onClick={!editComment && !editResponse ? handleSubmit : handleUpdateSubmit} />
                 </div>
             </div>
-        </div >
+        </div>
     )
 }
 

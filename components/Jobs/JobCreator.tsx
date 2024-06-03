@@ -6,9 +6,9 @@ import SelectOptions from '../SelectOptions';
 import Modal from '../Modal';
 import { UserJob } from '@/types';
 
-export default function JobCreator(params: { skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void, toastTrigger?: () => void, editMode?: boolean, job?: UserJob }) {
+export default function JobCreator(params: { skillOptions: { skill: string }[], tagOptions: { tag: string }[], setModal?: (isOpen: boolean) => void, toastTrigger?: () => void, editMode?: boolean, job?: UserJob, onSuccess?: () => void }) {
 
-    const { skillOptions, tagOptions, setModal, toastTrigger, editMode, job } = params;
+    const { skillOptions, tagOptions, setModal, toastTrigger, editMode, job, onSuccess } = params;
 
     const [jobForm, setJobForm] = useState({
         title: editMode && job ? job.title : '',
@@ -117,10 +117,9 @@ export default function JobCreator(params: { skillOptions: { skill: string }[], 
             });
             setSelectedSkills([]);
             setSelectedTags([]);
-            if (setModal)
-                setModal(false);
-            if (toastTrigger)
-                toastTrigger();
+            setModal && setModal(false);
+            toastTrigger && toastTrigger();
+            onSuccess && onSuccess();
         }
 
         setSubmitting(false);

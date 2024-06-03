@@ -1,12 +1,15 @@
 import styles from '../styles/Profile/ProfileProjectsEditor.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowsLeftRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowsLeftRight, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { UserProject, UserSkill } from '@/types';
+import Modal from '../Modal';
+import ProfileSkillsEditor from './ProfileSkillsEditor';
+import { toast } from 'sonner';
 
-export default function ProfileProjectsEditor(params: { skills: UserSkill[], setModal?: (isOpen: boolean) => void, editMode?: boolean, project?: UserProject, toastTrigger?: () => void }) {
+export default function ProfileProjectsEditor(params: { skills: UserSkill[], setModal?: (isOpen: boolean) => void, updateSkillOptions?: () => void, editMode?: boolean, project?: UserProject, toastTrigger?: () => void, onSuccess?: () => void }) {
 
-    const { skills, setModal, editMode, project, toastTrigger } = params;
+    const { skills, setModal, updateSkillOptions, editMode, project, toastTrigger, onSuccess } = params;
 
     const currentSkills = skills.map((skill: UserSkill) => skill.name);
 
@@ -24,6 +27,8 @@ export default function ProfileProjectsEditor(params: { skills: UserSkill[], set
     const [selectedSkills, setSelectedSkills] = useState<string[]>(editMode && project ? project.skills?.map((skill) => skill.name) ?? [] : []);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
+
+    const [addSkillOptions, setAddSkillOptions] = useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setProjForm((prev) => ({
@@ -117,8 +122,8 @@ export default function ProfileProjectsEditor(params: { skills: UserSkill[], set
                 desc: '',
             })
             setSelectedSkills([]);
-            if (setModal)
-                setModal(false);
+            setModal && setModal(false);
+            onSuccess && onSuccess();
         }
 
         setSubmitting(false);
@@ -201,7 +206,10 @@ export default function ProfileProjectsEditor(params: { skills: UserSkill[], set
                             <textarea className={styles.desc} aria-multiline name='desc' value={projForm.desc} onChange={handleChange} />
                         </div>
                         <div className={styles.smallFormGroupRight}>
-                            <div className={styles.inputTitle}>Skills</div>
+                            <div className={styles.inputTitle}>
+                                Skills
+                                <FontAwesomeIcon icon={faPlus} className={styles.addSkillIcon} onClick={() => setAddSkillOptions(true)} />
+                            </div>
                             <div className={styles.selectionBox}>
                                 {currentSkills.map((skill: string, index: number) => (
                                     <label key={index} className={styles.checkboxLabel}>
@@ -221,7 +229,13 @@ export default function ProfileProjectsEditor(params: { skills: UserSkill[], set
                     </div>
                 </div>
                 <button className={styles.saveButton} type='submit' disabled={submitting}>Save</button>
-            </form >
-        </div >
+            </form>
+
+            {addSkillOptions && (
+                <Modal isOpen={addSkillOptions} onClose={() => setAddSkillOptions(false)}>
+                    <ProfileSkillsEditor skills={skills} toastTrigger={() => toast.success('Skill Added')} onSuccess={updateSkillOptions} />
+                </Modal>
+            )}
+        </div>
     )
 }

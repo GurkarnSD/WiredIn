@@ -81,6 +81,10 @@
   font-weight: 600;
 }
 
+.jobsButton:active {
+  transform: translateY(3px);
+}
+
 .jobCreator {
   width: 50rem;
   height: 45rem;

@@ -75,7 +75,7 @@
 .skills {
   display: flex;
   flex-wrap: wrap;
-  margin-top: 1.25rem;
+  margin-top: 0.25rem;
   font-weight: 600;
 }
 
@@ -89,6 +89,7 @@
   border-radius: 0.625rem;
   background-color: #f4f4f4;
   border: none;
+  margin-left: 1.25rem;
 }
 
 .experienceDescription {
@@ -104,15 +105,16 @@
 }
 
 .editIcon {
-  font-size: 1.875rem;
-  margin: auto;
-  margin-right: 0.625rem;
+  font-size: 1.75rem;
+}
+
+.editIcon:hover {
+  cursor: pointer;
+  color: #0096ff;
 }
 
 .deleteIcon {
-  font-size: 1.875rem;
-  margin: auto;
-  margin-right: 0.625rem;
+  font-size: 1.75rem;
 }
 
 .deleteIcon:hover {

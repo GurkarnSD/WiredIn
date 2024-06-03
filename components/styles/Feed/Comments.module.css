@@ -1,6 +1,6 @@
 .container {
   width: 37.5rem;
-  height: fit-content;
+  max-height: 80vh;
   background-color: #ffffff;
   border-radius: 1.5625rem;
   display: flex;

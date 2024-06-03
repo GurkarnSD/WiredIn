@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Modal from '../Modal';
 import JobCreator from './JobCreator'
 import Job from './Job';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { UserJob, User } from '@/types';
 import { toast } from 'sonner'
 const fetcher = (url: string) => fetch(url).then(r => r.json())
@@ -15,7 +15,7 @@ export default function MyJobs(params: { user: User }) {
 
     const { data: skillOptions } = useSWR('/api/profile/skills', fetcher)
     const { data: tagOptions } = useSWR('/api/tags', fetcher)
-    const { data: userJobs } = useSWR(`/api/jobs/user`, fetcher)
+    const { data: userJobs } = useSWR('/api/jobs/user', fetcher)
     const [showJobCreator, setShowJobCreator] = useState(false)
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedJob, setSelectedJob] = useState<UserJob | undefined>();
@@ -39,7 +39,7 @@ export default function MyJobs(params: { user: User }) {
             </div>
             {showJobCreator &&
                 <Modal isOpen={showJobCreator} onClose={() => setShowJobCreator(false)}>
-                    <JobCreator skillOptions={skillOptions} tagOptions={tagOptions} setModal={setShowJobCreator} toastTrigger={() => toast.success("Job Created")} />
+                    <JobCreator skillOptions={skillOptions} tagOptions={tagOptions} setModal={setShowJobCreator} toastTrigger={() => toast.success("Job Created")} onSuccess={() => mutate('/api/jobs/user')} />
                 </Modal>
             }
 

@@ -1,10 +1,10 @@
 import styles from '../styles/Profile/ProfileExperience.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPen, faXmark, faTrash, faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faPen, faXmark, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import ProfileExperienceEditor from './ProfileExperienceEditor';
 import Modal from '../Modal';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import Image from 'next/image';
 import { User, UserProfile, UserSkill, WorkExperience } from '@/types';
 import { toast } from 'sonner'
@@ -111,7 +111,7 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
             {
                 isModalOpen && (
                     <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
-                        <ProfileExperienceEditor skills={skillsData} setModal={setIsModalOpen} toastTrigger={() => toast.success("Experience Added")} />
+                        <ProfileExperienceEditor skills={skillsData} setModal={setIsModalOpen} updateSkillOptions={() => mutate(`/api/profile/skills/user/?uid=${pageUser.uid}`)} toastTrigger={() => toast.success("Experience Added")} onSuccess={() => mutate(`/api/profile/experiences/?uid=${pageUser.uid}`)} />
                     </Modal>
                 )
             }
@@ -119,7 +119,7 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
             {
                 isEditModalOpen && (
                     <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} backIcon disableClickOff>
-                        <ProfileExperienceEditor skills={skillsData} setModal={setIsEditModalOpen} editMode experience={selectedExperience} toastTrigger={() => toast.success("Experience Updated")} />
+                        <ProfileExperienceEditor skills={skillsData} setModal={setIsEditModalOpen} updateSkillOptions={() => mutate(`/api/profile/skills/user/?uid=${pageUser.uid}`)} editMode experience={selectedExperience} toastTrigger={() => toast.success("Experience Updated")} onSuccess={() => mutate(`/api/profile/experiences/?uid=${pageUser.uid}`)} />
                     </Modal>
                 )
             }

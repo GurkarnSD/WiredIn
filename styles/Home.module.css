@@ -42,6 +42,12 @@
   cursor: pointer;
 }
 
+.signupButton:active,
+.loginButton:active,
+.mainButton:active {
+  transform: translateY(3px);
+}
+
 .loginButton {
   text-wrap: nowrap;
   background-color: #0096ff;
@@ -312,7 +318,7 @@
 }
 
 .contractInfoFooter {
-  margin-top: 1.25rem;
+  margin-top: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -348,7 +354,7 @@
 .contractDescription {
   color: #000;
   margin-top: 0.625rem;
-  margin-bottom: 0.625rem;
+  margin-bottom: 1.25rem;
   word-wrap: break-word;
 }
 
@@ -471,11 +477,12 @@
 .jobDescription {
   color: #000;
   margin-top: 0.625rem;
+  margin-bottom: 1.25rem;
   word-wrap: break-word;
 }
 
 .jobInfoFooter {
-  margin-top: 1.25rem;
+  margin-top: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Modal from '../Modal';
 import ContractCreator from './ContractCreator'
 import Contract from './Contract';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { UserContract, User } from '@/types';
 import { toast } from 'sonner'
 const fetcher = (url: string) => fetch(url).then(r => r.json())
@@ -39,13 +39,13 @@ export default function MyContracts(params: { user: User }) {
             </div>
             {showContractCreator &&
                 <Modal isOpen={showContractCreator} onClose={() => setShowContractCreator(false)}>
-                    <ContractCreator skillOptions={skillOptions} tagOptions={tagOptions} setModal={setShowContractCreator} toastTrigger={() => toast.success("Contract Created")} />
+                    <ContractCreator skillOptions={skillOptions} tagOptions={tagOptions} setModal={setShowContractCreator} toastTrigger={() => toast.success("Contract Created")} onSuccess={() => mutate('/api/contracts/user')} />
                 </Modal>
             }
 
             {isEditModalOpen && (
                 <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-                    <ContractCreator skillOptions={skillOptions} tagOptions={tagOptions} setModal={setIsEditModalOpen} toastTrigger={() => toast.success("Contract Updated")} editMode contract={selectedContract} />
+                    <ContractCreator skillOptions={skillOptions} tagOptions={tagOptions} setModal={setIsEditModalOpen} toastTrigger={() => toast.success("Contract Updated")} editMode contract={selectedContract} onSuccess={() => mutate('/api/contracts/user')} />
                 </Modal>
             )}
         </>

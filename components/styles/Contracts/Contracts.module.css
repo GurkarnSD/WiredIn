@@ -81,6 +81,10 @@
   font-weight: 600;
 }
 
+.contractsButton:active {
+  transform: translateY(3px);
+}
+
 .contractCreator {
   width: 50rem;
   height: 37.5rem;

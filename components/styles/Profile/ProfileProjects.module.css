@@ -40,13 +40,14 @@
   display: flex;
   flex-direction: column;
   margin-top: 1.25rem;
+  gap: 1rem;
 }
 
 .project {
   color: #000;
   display: flex;
   flex-direction: column;
-  margin-bottom: 0.625rem;
+  margin-left: 1.25rem;
 }
 
 .projectHeader {
@@ -82,15 +83,23 @@
   font-weight: 400;
 }
 
-.editIcon {
-  font-size: 1.875rem;
+.icons {
+  display: flex;
   margin-left: auto;
+  gap: 1rem;
+}
+
+.editIcon {
+  font-size: 1.75rem;
+}
+
+.editIcon:hover {
+  cursor: pointer;
+  color: #0096ff;
 }
 
 .deleteIcon {
-  font-size: 1.875rem;
-  margin-left: 0.625rem;
-  margin-right: 0.625rem;
+  font-size: 1.75rem;
 }
 
 .deleteIcon:hover {

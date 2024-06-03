@@ -7,10 +7,12 @@ import Modal from '../Modal';
 import axios from 'axios';
 import SelectOptions from '../SelectOptions';
 import { UserSkill, WorkExperience } from '@/types';
+import ProfileSkillsEditor from './ProfileSkillsEditor';
+import { toast } from 'sonner';
 
-export default function ProfileExperienceEditor(params: { skills: UserSkill[], setModal?: (isOpen: boolean) => void, editMode?: boolean, experience?: WorkExperience, toastTrigger?: () => void }) {
+export default function ProfileExperienceEditor(params: { skills: UserSkill[], setModal?: (isOpen: boolean) => void, updateSkillOptions?: () => void, editMode?: boolean, experience?: WorkExperience, toastTrigger?: () => void, onSuccess?: () => void }) {
 
-    const { skills, setModal, editMode, experience, toastTrigger } = params;
+    const { skills, setModal, updateSkillOptions, editMode, experience, toastTrigger, onSuccess } = params;
 
     const currentSkills = skills.map((skill: UserSkill) => ({ label: skill.name, value: skill.name }));
 
@@ -61,6 +63,7 @@ export default function ProfileExperienceEditor(params: { skills: UserSkill[], s
     }
 
     const [selectSkillsOpen, setSelectSkillsOpen] = useState(false);
+    const [addSkillOptions, setAddSkillOptions] = useState(false);
 
     const handleAddSkill = () => {
         setSelectSkillsOpen(true);
@@ -170,9 +173,8 @@ export default function ProfileExperienceEditor(params: { skills: UserSkill[], s
             setSelectedSkills([]);
             setImage('');
             setImageFile(null);
-            if (setModal) {
-                setModal(false);
-            }
+            setModal && setModal(false);
+            onSuccess && onSuccess();
         }
 
         setSubmitting(false);
@@ -288,7 +290,13 @@ export default function ProfileExperienceEditor(params: { skills: UserSkill[], s
 
             {selectSkillsOpen && (
                 <Modal isOpen={selectSkillsOpen} onClose={() => setSelectSkillsOpen(false)}>
-                    <SelectOptions type="Skills" optionsList={currentSkills} selector={setSelectedSkills} chosenOptions={selectedSkills} setSelectOptionsPanel={setSelectSkillsOpen} />
+                    <SelectOptions type="Skills" optionsList={currentSkills} selector={setSelectedSkills} chosenOptions={selectedSkills} setSelectOptionsPanel={setSelectSkillsOpen} setAddOptionsPanel={setAddSkillOptions} />
+                </Modal>
+            )}
+
+            {addSkillOptions && (
+                <Modal isOpen={addSkillOptions} onClose={() => setAddSkillOptions(false)}>
+                    <ProfileSkillsEditor skills={skills} toastTrigger={() => toast.success('Skill Added')} onSuccess={updateSkillOptions} />
                 </Modal>
             )}
         </div>

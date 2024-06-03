@@ -55,6 +55,15 @@ button {
   outline: none;
 }
 
+button {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+button:active {
+  transform: translateY(3px);
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

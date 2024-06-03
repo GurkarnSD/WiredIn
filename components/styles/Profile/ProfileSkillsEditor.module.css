@@ -26,23 +26,6 @@
   font-size: 1.875rem;
 }
 
-.footer {
-  margin-top: auto;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.saveButton {
-  width: 12.5rem;
-  height: 3.125rem;
-  background-color: #0096ff;
-  border-radius: 0.9375rem;
-  border: none;
-  font-size: 1.5625rem;
-  font-weight: 800;
-  color: #ffffff;
-}
-
 .addSkillMenu {
   width: 36.25rem;
   height: 22.5rem;

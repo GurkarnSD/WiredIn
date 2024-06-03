@@ -5,7 +5,7 @@ import { useState } from 'react'
 import ProfileSkillsEditor from './ProfileSkillsEditor';
 import { AddSkillMenu } from './ProfileSkillsEditor';
 import Modal from '../Modal';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { User, UserProfile, UserSkill } from '@/types';
 import { toast } from 'sonner'
 import ConfirmationPopup from '../ConfirmationPopup';
@@ -28,8 +28,6 @@ export default function ProfileSkills(params: { pageUser: UserProfile, user: Use
     const { pageUser, user } = params;
 
     const { data: userSkills } = useSWR(`/api/profile/skills/user/?uid=${pageUser.uid}`, fetcher)
-
-    const { data: skillOptions } = useSWR(`/api/profile/skills`, fetcher)
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -78,7 +76,7 @@ export default function ProfileSkills(params: { pageUser: UserProfile, user: Use
 
             {isModalOpen && (
                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
-                    <ProfileSkillsEditor skills={userSkills} skillOptions={skillOptions} toastTrigger={() => toast.success("Skill Added")} />
+                    <ProfileSkillsEditor skills={userSkills} toastTrigger={() => toast.success("Skill Added")} onSuccess={() => mutate(`/api/profile/skills/user/?uid=${pageUser.uid}`)} />
                 </Modal>
             )}
 
