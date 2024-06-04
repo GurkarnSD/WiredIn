@@ -32,7 +32,7 @@ export default function MyJobs(params: { user: User }) {
                 <div>
                     {userJobs && userJobs.map((job: UserJob) => {
                         return (
-                            <Job key={job.id} job={job} user={user} selectJob={setSelectedJob} openEditModal={setIsEditModalOpen} />
+                            <Job key={job.id} job={job} user={user} selectJob={setSelectedJob} openEditModal={setIsEditModalOpen} onDelete={() => mutate('/api/jobs/user')} />
                         )
                     })}
                 </div>

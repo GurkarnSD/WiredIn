@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperclip, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faImage, faXmark } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios';
 import styles from '../styles/Feed/Post.module.css';
 import Image from 'next/image';
@@ -248,7 +248,7 @@ export default function PostCreator(params: { setModal?: (isOpen: boolean) => vo
                 <textarea className={styles.inputBox} aria-multiline name='input' value={input} placeholder='Tell everyone what they need to know...' onChange={handleInputChange} />
                 <div className={styles.footer}>
                     <span>
-                        <FontAwesomeIcon icon={faPaperclip} className={styles.icon} onClick={handleImageClick} />
+                        <FontAwesomeIcon icon={faImage} className={styles.icon} onClick={handleImageClick} />
                         <input
                             type="file"
                             className={styles.imageInput}

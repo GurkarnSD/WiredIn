@@ -13,9 +13,9 @@ type PostCommentWithStats = PostComment & {
     };
 };
 
-export default function CommentSettings(params: { close: () => void, uid: string, comment: PostCommentWithStats, toggleEdit: (comment: PostCommentWithStats) => void }) {
+export default function CommentSettings(params: { close: () => void, uid: string, comment: PostCommentWithStats, toggleEdit: (comment: PostCommentWithStats) => void, onDelete?: () => void }) {
 
-    const { uid, comment, close, toggleEdit } = params;
+    const { uid, comment, close, toggleEdit, onDelete } = params;
     const [confirmationPopup, setConfirmationPopup] = useState(false);
 
     const deleteComment = async (commentId: number) => {
@@ -24,6 +24,8 @@ export default function CommentSettings(params: { close: () => void, uid: string
         if (!res.ok) {
             throw new Error("Failed to Delete Comment")
         }
+
+        onDelete && onDelete();
 
         return res.json()
     }

@@ -32,7 +32,7 @@ export default function MyContracts(params: { user: User }) {
                 <div>
                     {userContracts && userContracts.map((contract: UserContract) => {
                         return (
-                            <Contract key={contract.id} contract={contract} user={user} selectContract={setSelectedContract} openEditModal={setIsEditModalOpen} />
+                            <Contract key={contract.id} contract={contract} user={user} selectContract={setSelectedContract} openEditModal={setIsEditModalOpen} onDelete={() => mutate('/api/contracts/user')} />
                         )
                     })}
                 </div>

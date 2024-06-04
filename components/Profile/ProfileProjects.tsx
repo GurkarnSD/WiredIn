@@ -11,7 +11,7 @@ import { toast } from 'sonner'
 import ConfirmationPopup from '../ConfirmationPopup';
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-const deleteProject = async (id: number) => {
+const deleteProject = async (id: number, onSuccess: () => void) => {
     const res = await fetch(`/api/profile/projects/?id=${id}`, { method: 'DELETE' })
 
     if (!res.ok) {
@@ -19,6 +19,7 @@ const deleteProject = async (id: number) => {
     }
 
     toast.success('Project Deleted')
+    onSuccess();
 
     return res.json();
 }
@@ -104,7 +105,7 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
                 <ConfirmationPopup
                     showPopup={confirmationPopup}
                     setShowPopup={setConfirmationPopup}
-                    onConfirm={() => { if (selectedProject) deleteProject(selectedProject.id) }}
+                    onConfirm={() => { if (selectedProject) deleteProject(selectedProject.id, () => mutate(`/api/profile/projects/?uid=${pageUser.uid}`)) }}
                     onCancel={() => setConfirmationPopup(false)}
                     message='delete your project'
                 />

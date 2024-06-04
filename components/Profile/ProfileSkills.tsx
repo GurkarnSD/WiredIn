@@ -11,7 +11,7 @@ import { toast } from 'sonner'
 import ConfirmationPopup from '../ConfirmationPopup';
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-const deleteSkill = async (id: number) => {
+const deleteSkill = async (id: number, onSuccess: () => void) => {
     const res = await fetch(`/api/profile/skills/user/?id=${id}`, { method: 'DELETE' })
 
     if (!res.ok) {
@@ -19,6 +19,7 @@ const deleteSkill = async (id: number) => {
     }
 
     toast.success('Skill Deleted')
+    onSuccess();
 
     return res.json();
 }
@@ -90,7 +91,7 @@ export default function ProfileSkills(params: { pageUser: UserProfile, user: Use
                 <ConfirmationPopup
                     showPopup={confirmationPopup}
                     setShowPopup={setConfirmationPopup}
-                    onConfirm={() => { if (selectedSkill) deleteSkill(selectedSkill.id) }}
+                    onConfirm={() => { if (selectedSkill) deleteSkill(selectedSkill.id, () => mutate(`/api/profile/skills/user/?uid=${pageUser.uid}`)) }}
                     onCancel={() => setConfirmationPopup(false)}
                     message='delete your skill'
                 />

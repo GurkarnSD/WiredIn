@@ -12,10 +12,9 @@ type CommentResponseWithStats = CommentResponse & {
     };
 };
 
+export default function ResponseSettings(params: { close: () => void, uid: string, response: CommentResponseWithStats, toggleEdit: (response: CommentResponseWithStats) => void, onDelete?: () => void }) {
 
-export default function ResponseSettings(params: { close: () => void, uid: string, response: CommentResponseWithStats, toggleEdit: (response: CommentResponseWithStats) => void }) {
-
-    const { uid, response, close, toggleEdit } = params;
+    const { uid, response, close, toggleEdit, onDelete } = params;
     const [confirmationPopup, setConfirmationPopup] = useState(false);
 
     const deleteResponse = async (responseId: number) => {
@@ -24,6 +23,8 @@ export default function ResponseSettings(params: { close: () => void, uid: strin
         if (!res.ok) {
             throw new Error("Failed to Delete Response")
         }
+
+        onDelete && onDelete();
 
         return res.json()
     }

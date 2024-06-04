@@ -196,7 +196,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
 
     const { post, user } = params;
     const [profilePic, setProfilePic] = useState('');
-    const [comments, setComments] = useState([]);
+    const [comments, setComments] = useState<PostCommentWithStats[]>([]);
     const [responses, setResponses] = useState<Record<number, CommentResponseWithStats[]>>({});
     const [openResponses, setOpenResponses] = useState<Record<number, boolean>>({});
     const [selectedComment, setSelectedComment] = useState<PostCommentWithStats | null>(null);
@@ -207,7 +207,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
     const settingsRef = useRef(null);
     HandleCloseSettings(settingsRef, setShowPostSettings);
 
-    const toggleResponses = async (commentId: number) => {
+    const toggleResponses = async (commentId: number, set?: boolean) => {
         if (!responses[commentId]) {
             const newResponses = await fetchResponses(commentId);
             setResponses((prev) => ({
@@ -218,7 +218,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
 
         setOpenResponses((prev) => ({
             ...prev,
-            [commentId]: !prev[commentId],
+            [commentId]: set ? set : !prev[commentId],
         }));
     };
 
@@ -312,6 +312,11 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                 setInput('');
                 setCharCount(0);
                 setEditResponse(null);
+                const refreshedResponses = await fetchResponses(editResponse.commentId);
+                setResponses((prev) => ({
+                    ...prev,
+                    [editResponse.commentId]: refreshedResponses,
+                }));
             }
 
             return res.json();
@@ -345,7 +350,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                     [selectedComment.id]: refreshedResponses,
                 }));
                 setSelectedComment(null);
-                toggleResponses(selectedComment.id);
+                toggleResponses(selectedComment.id, true);
             }
 
             return res.json();
@@ -599,7 +604,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                                     </div>
                                 }
                                 {showCommentSettings[comment.id] ?
-                                    <CommentSettings close={() => setShowCommentSettings({ ...showCommentSettings, [comment.id]: false })} uid={user.uid} comment={comment} toggleEdit={setEditComment} />
+                                    <CommentSettings close={() => setShowCommentSettings({ ...showCommentSettings, [comment.id]: false })} uid={user.uid} comment={comment} toggleEdit={setEditComment} onDelete={async () => setComments(await fetchComments(post.uid))} />
                                     :
                                     <FontAwesomeIcon className={styles.settingsIcon} icon={faEllipsis} onClick={() => setShowCommentSettings({ ...showCommentSettings, [comment.id]: true })} />
                                 }
@@ -615,7 +620,31 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                                                 <div className={styles.responseName}>{response.user.displayName}</div>
                                                 <div className={styles.responseTime} suppressHydrationWarning={true}>{response.createdAt !== response.updatedAt && <span className={styles.editedResponse}>Edited · </span>}{formatTimeDifference(response.createdAt)}</div>
                                                 {showResponseSettings[response.id] ?
-                                                    <ResponseSettings close={() => setShowResponseSettings({ ...showResponseSettings, [response.id]: false })} uid={user.uid} response={response} toggleEdit={setEditResponse} />
+                                                    <ResponseSettings close={() => setShowResponseSettings({ ...showResponseSettings, [response.id]: false })} uid={user.uid} response={response} toggleEdit={setEditResponse}
+                                                        onDelete={async () => {
+                                                            const responses = await fetchResponses(comment.id);
+                                                            setResponses((prev) => ({
+                                                                ...prev,
+                                                                [comment.id]: responses,
+                                                            }));
+                                                            if (comment._count.responses === 1) {
+                                                                setComments((prevComments) =>
+                                                                    prevComments.map((prevComment) =>
+                                                                        prevComment.id === comment.id
+                                                                            ? {
+                                                                                ...prevComment,
+                                                                                _count: {
+                                                                                    ...prevComment._count,
+                                                                                    responses: prevComment._count.responses - 1,
+                                                                                },
+                                                                            }
+                                                                            : prevComment
+                                                                    )
+                                                                );
+                                                            }
+                                                            toggleResponses(comment.id, true);
+                                                        }}
+                                                    />
                                                     :
                                                     <FontAwesomeIcon className={styles.responseSettingsIcon} icon={faEllipsisVertical} onClick={() => setShowResponseSettings({ ...showResponseSettings, [response.id]: true })} />
                                                 }

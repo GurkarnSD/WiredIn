@@ -11,9 +11,9 @@ import ConfirmationPopup from "../ConfirmationPopup";
 import { toast } from 'sonner'
 import { Fragment } from "react";
 
-export default function Job(params: { job: UserJob, user: User, selectJob?: (job: UserJob) => void, openEditModal?: (isOpen: boolean) => void }) {
+export default function Job(params: { job: UserJob, user: User, selectJob?: (job: UserJob) => void, openEditModal?: (isOpen: boolean) => void, onDelete?: () => void }) {
 
-    const { job, user, selectJob, openEditModal } = params;
+    const { job, user, selectJob, openEditModal, onDelete } = params;
     const [confirmationPopup, setConfirmationPopup] = useState(false);
 
     async function applyToJob() {
@@ -52,6 +52,7 @@ export default function Job(params: { job: UserJob, user: User, selectJob?: (job
         }
 
         toast.success('Job Deleted')
+        onDelete && onDelete();
 
         return res.json()
     }

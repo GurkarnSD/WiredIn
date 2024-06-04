@@ -11,9 +11,9 @@ import ConfirmationPopup from "../ConfirmationPopup";
 import { toast } from 'sonner'
 import { Fragment } from "react";
 
-export default function Contract(params: { contract: UserContract, user: User, selectContract?: (contract: UserContract) => void, openEditModal?: (isOpen: boolean) => void }) {
+export default function Contract(params: { contract: UserContract, user: User, selectContract?: (contract: UserContract) => void, openEditModal?: (isOpen: boolean) => void, onDelete?: () => void }) {
 
-    const { contract, user, selectContract, openEditModal } = params;
+    const { contract, user, selectContract, openEditModal, onDelete } = params;
     const [confirmationPopup, setConfirmationPopup] = useState(false);
 
     async function applyToContract() {
@@ -52,6 +52,7 @@ export default function Contract(params: { contract: UserContract, user: User, s
         }
 
         toast.success('Contract Deleted')
+        onDelete && onDelete();
 
         return res.json()
     }

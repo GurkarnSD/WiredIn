@@ -11,7 +11,7 @@ import { toast } from 'sonner'
 import ConfirmationPopup from '../ConfirmationPopup';
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
-const deleteExperience = async (id: number) => {
+const deleteExperience = async (id: number, onSuccess: () => void) => {
     const res = await fetch(`/api/profile/experiences/?id=${id}`, { method: 'DELETE' })
 
     if (!res.ok) {
@@ -19,6 +19,7 @@ const deleteExperience = async (id: number) => {
     }
 
     toast.success('Experience Deleted')
+    onSuccess();
 
     return res.json();
 }
@@ -129,7 +130,7 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
                 <ConfirmationPopup
                     showPopup={confirmationPopup}
                     setShowPopup={setConfirmationPopup}
-                    onConfirm={() => { if (selectedExperience) deleteExperience(selectedExperience.id) }}
+                    onConfirm={() => { if (selectedExperience) deleteExperience(selectedExperience.id, () => mutate(`/api/profile/experiences/?uid=${pageUser.uid}`)) }}
                     onCancel={() => setConfirmationPopup(false)}
                     message='delete your experience'
                 />
