@@ -44,11 +44,10 @@
 }
 
 .input {
+  align-self: center;
   height: 3.75rem;
   max-width: 28rem;
-  width: 90%;
-  margin-left: 1rem;
-  margin-right: 1rem;
+  width: 95%;
   border-radius: 0.9375rem;
   padding-top: 0.9375rem;
   padding-bottom: 0.9375rem;
@@ -86,10 +85,6 @@
   color: #ffffff;
 }
 
-.loginButton:hover {
-  cursor: pointer;
-}
-
 .logoutButton {
   display: flex;
   justify-content: center;
@@ -106,10 +101,6 @@
   font-size: 1.5625rem;
   font-weight: 800;
   color: #ffffff;
-}
-
-.logoutButton:hover {
-  cursor: pointer;
 }
 
 .divider {
@@ -203,6 +194,12 @@
   font-size: 2.25rem;
   color: #000000;
   text-align: center;
+}
+
+@media screen and (max-width: 22rem) {
+  .input {
+    width: 100%;
+  }
 }
 
 @media screen and (max-width: 20rem) {

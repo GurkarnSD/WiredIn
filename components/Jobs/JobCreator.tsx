@@ -192,7 +192,7 @@ export default function JobCreator(params: { skillOptions: { skill: string }[], 
                     </div>
                 </div>
                 <div className={styles.jobFormFooter}>
-                    <button className={styles.submit} type='submit' disabled={submitting}>Publish Job</button>
+                    <button className={styles.submit} type='submit' disabled={submitting}>{editMode ? "Update Job" : "Publish Job"}</button>
                 </div>
             </form>
             {selectSkillsOpen && (

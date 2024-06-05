@@ -31,9 +31,4 @@
   border: none;
   font-size: 0.875rem;
   font-weight: 700;
-  cursor: pointer;
-}
-
-.confirmationButton:hover {
-  background-color: #0077cc;
 }

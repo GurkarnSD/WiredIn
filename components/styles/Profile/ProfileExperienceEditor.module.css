@@ -73,6 +73,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .imageInput {
@@ -113,12 +114,14 @@
 
 .input {
   height: 2.5rem;
+  width: 100%;
   background-color: #d9d9d9;
   border: none;
   border-radius: 0.3125rem;
   padding: 0.625rem;
   color: #000000;
   font-weight: 600;
+  display: block;
 }
 
 .imageIcon {

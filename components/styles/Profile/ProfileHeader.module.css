@@ -73,7 +73,6 @@
   border: none;
   font-size: 1.125rem;
   font-weight: 800;
-  cursor: pointer;
 }
 
 .message {
@@ -89,7 +88,6 @@
   border: none;
   font-size: 1.125rem;
   font-weight: 800;
-  cursor: pointer;
 }
 
 .stats {
@@ -131,12 +129,18 @@
   justify-content: flex-end;
   top: -13.5rem;
   right: 1rem;
+  min-height: 1.875rem;
 }
 
-.icon {
+.icon,
+.iconPlaceholder {
   color: #3ad5f7;
   font-size: 1.875rem;
   cursor: pointer;
+}
+
+.iconPlaceholder {
+  visibility: hidden;
 }
 
 .iconEdit {

@@ -25,6 +25,7 @@
   height: 12rem;
   border-radius: 6rem;
   border: 0.5rem solid #c4c4c4;
+  cursor: pointer;
 }
 
 .banner {
@@ -32,6 +33,7 @@
   height: 12rem;
   background-color: #c4c4c4;
   border-radius: 1rem;
+  cursor: pointer;
 }
 
 .error {
@@ -84,10 +86,6 @@
   font-weight: 800;
   color: #ffffff;
   align-self: flex-end;
-}
-
-.saveButton:hover {
-  cursor: pointer;
 }
 
 .inputContainer {

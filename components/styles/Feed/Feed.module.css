@@ -19,10 +19,6 @@
   border-radius: 0.9375rem;
 }
 
-.createPost:hover {
-  cursor: pointer;
-}
-
 .loadMore {
   width: 9.375rem;
   height: 2.5rem;

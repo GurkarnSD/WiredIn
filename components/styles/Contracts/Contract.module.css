@@ -69,7 +69,6 @@
   font-size: 1.25rem;
   font-weight: 700;
   border: none;
-  cursor: pointer;
   box-shadow: 0 0 16px rgba(0, 0, 0, 0.4);
 }
 
@@ -195,6 +194,10 @@
   cursor: pointer;
 }
 
+.view:hover {
+  filter: brightness(0.9);
+}
+
 .settings {
   display: flex;
   align-items: center;
@@ -209,7 +212,6 @@
 }
 
 .deleteIcon:hover {
-  cursor: pointer;
   color: #e30000;
 }
 
@@ -220,7 +222,6 @@
 }
 
 .editIcon:hover {
-  cursor: pointer;
   color: #0096ff;
 }
 

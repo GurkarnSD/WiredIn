@@ -94,19 +94,22 @@ const Signup: React.FC = () => {
                     <div className={styles.dividerText}>OR</div>
                     <div className={styles.dividerLine}></div>
                 </div>
-                <Link href='/login' className={styles.googleButton}>Log In With&nbsp;
-                    <span className={styles.googleBlue}>G</span>
-                    <span className={styles.googleRed}>o</span>
-                    <span className={styles.googleYellow}>o</span>
-                    <span className={styles.googleBlue}>g</span>
-                    <span className={styles.googleGreen}>l</span>
-                    <span className={styles.googleRed}>e</span>
+                <Link href='/login' className={styles.googleButton}>
+                    Log In With&nbsp;
+                    <span>
+                        <span className={styles.googleBlue}>G</span>
+                        <span className={styles.googleRed}>o</span>
+                        <span className={styles.googleYellow}>o</span>
+                        <span className={styles.googleBlue}>g</span>
+                        <span className={styles.googleGreen}>l</span>
+                        <span className={styles.googleRed}>e</span>
+                    </span>
                 </Link>
             </form>
             <div className={styles.additional}>
                 <div>Already Have An Account?&nbsp;<Link href='/login' className={styles.login}>Log In</Link></div>
             </div>
-        </div>
+        </div >
     )
 }
 

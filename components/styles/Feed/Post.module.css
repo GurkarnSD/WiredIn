@@ -54,6 +54,7 @@
   height: 1.875rem;
   width: 1.875rem;
   color: #000000;
+  cursor: pointer;
 }
 
 .postContainer {

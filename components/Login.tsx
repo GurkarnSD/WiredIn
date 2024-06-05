@@ -80,7 +80,7 @@ export default function Login({ user }: { user: User | null }) {
                         <div className={styles.displayName}>{user.displayName}</div>
                     </div>
                 </form>
-                <div className={styles.logoutButton} onClick={handleSignOut}>Log Out</div>
+                <button className={styles.logoutButton} onClick={handleSignOut}>Log Out</button>
             </div>
         )
     }

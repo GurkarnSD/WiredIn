@@ -117,11 +117,13 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
         <div className={styles.container}>
             <Image className={styles.banner} src={headerImages.bannerURL} alt={""} height={0} width={0} unoptimized />
             <div className={styles.icons}>
-                {pageUser.github &&
+                {pageUser.github ? (
                     <Link href={`https://github.com/${pageUser.github}`} target="_blank" rel="noopener noreferrer">
                         <FontAwesomeIcon className={styles.icon} icon={faGithub} />
                     </Link>
-                }
+                ) : (
+                    <div className={styles.iconPlaceholder}></div>
+                )}
                 {user?.uid === pageUser?.uid &&
                     <FontAwesomeIcon className={styles.iconEdit} icon={faEdit} onClick={handleOpenModal} />
                 }
