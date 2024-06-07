@@ -39,11 +39,23 @@ export default function ProfileProjectsEditor(params: { skills: UserSkill[], set
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-
+        setError('');
         setSubmitting(true);
 
         if (!projForm.title) {
             setError('Title is required');
+            setSubmitting(false);
+            return;
+        }
+
+        if (projForm.title.length > 50) {
+            setError('Title must be less than 50 characters');
+            setSubmitting(false);
+            return;
+        }
+
+        if (projForm.desc.length > 1000) {
+            setError('Description must be less than 1000 characters');
             setSubmitting(false);
             return;
         }

@@ -63,7 +63,7 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
                 {projectsData?.map((project: UserProject) => (
                     <div className={styles.project} key={project.id}>
                         <div className={styles.projectHeader}>
-                            <div className={styles.projectTitle}>{project.title}</div>
+                            <div className={styles.projectTitle} title={project.title}>{project.title}</div>
                             {project.deployment && <Link href={project.deployment} target="_blank" rel="noopener noreferrer">
                                 <FontAwesomeIcon className={styles.projectIcon} icon={faLink} />
                             </Link>}

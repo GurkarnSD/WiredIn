@@ -18,6 +18,7 @@
   font-size: 2.25rem;
   font-weight: 800;
   color: #000000;
+  cursor: default;
 }
 
 .modify {
@@ -48,6 +49,7 @@
   display: flex;
   flex-direction: column;
   margin-left: 1.25rem;
+  word-wrap: break-word;
 }
 
 .projectHeader {
@@ -58,6 +60,9 @@
 .projectTitle {
   font-size: 1.5rem;
   font-weight: 600;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .projectIcon {
@@ -86,6 +91,7 @@
 .icons {
   display: flex;
   margin-left: auto;
+  padding-left: 1rem;
   gap: 1rem;
 }
 

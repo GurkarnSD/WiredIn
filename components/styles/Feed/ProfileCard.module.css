@@ -29,6 +29,8 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  word-wrap: break-word;
+  max-width: 80%;
 }
 
 .options {

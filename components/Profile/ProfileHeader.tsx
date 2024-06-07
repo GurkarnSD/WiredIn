@@ -114,26 +114,26 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
     }, [user, pageUser.uid]);
 
     return (
-        <div className={styles.container}>
-            <Image className={styles.banner} src={headerImages.bannerURL} alt={""} height={0} width={0} unoptimized />
-            <div className={styles.icons}>
-                {pageUser.github ? (
-                    <Link href={`https://github.com/${pageUser.github}`} target="_blank" rel="noopener noreferrer">
-                        <FontAwesomeIcon className={styles.icon} icon={faGithub} />
-                    </Link>
-                ) : (
-                    <div className={styles.iconPlaceholder}></div>
-                )}
-                {user?.uid === pageUser?.uid &&
-                    <FontAwesomeIcon className={styles.iconEdit} icon={faEdit} onClick={handleOpenModal} />
-                }
-            </div>
-            <div className={styles.profile}>
-                <Image className={styles.profilePicture} src={headerImages.profileURL} alt={""} width={224} height={224} />
+        <div className={styles.outerContainer}>
+            <Image className={styles.profilePicture} src={headerImages.profileURL} alt={""} width={224} height={224} unoptimized />
+            <div className={styles.innerContainer}>
+                <Image className={styles.banner} src={headerImages.bannerURL} alt={""} height={0} width={0} unoptimized />
+                <div className={styles.icons}>
+                    {pageUser.github ? (
+                        <Link href={`https://github.com/${pageUser.github}`} target="_blank" rel="noopener noreferrer">
+                            <FontAwesomeIcon className={styles.icon} icon={faGithub} />
+                        </Link>
+                    ) : (
+                        <div className={styles.iconPlaceholder}></div>
+                    )}
+                    {user?.uid === pageUser?.uid &&
+                        <FontAwesomeIcon className={styles.iconEdit} icon={faEdit} onClick={handleOpenModal} />
+                    }
+                </div>
                 <div className={styles.content}>
                     <div className={styles.contentLeft}>
                         <div className={styles.header}>
-                            <div className={styles.displayName}>{pageUser?.displayName}</div>
+                            <div className={styles.displayName} title={pageUser?.displayName}>{pageUser?.displayName}</div>
                             <div className={styles.userTitle}>{pageUser?.title}</div>
                         </div>
                         <div className={styles.stats}>
@@ -157,26 +157,26 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
                         <button className={styles.message} onClick={async () => { await messageUser(pageUser?.uid); push('/messages') }}>Message</button>
                     </div>
                 </div>
+
+                {isModalOpen && (
+                    <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
+                        <ProfileHeaderEditor user={pageUser} userImages={headerImages} setModal={setIsModalOpen} />
+                    </Modal>
+                )}
+
+                {showFollowing && (
+                    <Modal isOpen={showFollowing} onClose={() => setShowFollowing(false)} backIcon disableClickOff>
+                        <UserList following pageUser={pageUser.uid} user={user.uid} />
+                    </Modal>
+                )}
+
+                {showFollowers && (
+                    <Modal isOpen={showFollowers} onClose={() => setShowFollowers(false)} backIcon disableClickOff>
+                        <UserList followers pageUser={pageUser.uid} user={user.uid} />
+                    </Modal>
+                )}
             </div>
-
-            {isModalOpen && (
-                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
-                    <ProfileHeaderEditor user={pageUser} userImages={headerImages} setModal={setIsModalOpen} />
-                </Modal>
-            )}
-
-            {showFollowing && (
-                <Modal isOpen={showFollowing} onClose={() => setShowFollowing(false)} backIcon disableClickOff>
-                    <UserList following pageUser={pageUser.uid} user={user.uid} />
-                </Modal>
-            )}
-
-            {showFollowers && (
-                <Modal isOpen={showFollowers} onClose={() => setShowFollowers(false)} backIcon disableClickOff>
-                    <UserList followers pageUser={pageUser.uid} user={user.uid} />
-                </Modal>
-            )}
-        </div >
+        </div>
     )
 }
 

@@ -16,6 +16,14 @@
   flex-direction: column;
 }
 
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 0.625rem;
+}
+
 .title {
   display: inline-flex;
   align-items: center;
@@ -24,13 +32,15 @@
   font-weight: 800;
 }
 
+.error {
+  color: #ff0000;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
 .settingsIcon {
   width: 1.875rem;
   height: 1.875rem;
-}
-
-.sectionTitle {
-  margin-bottom: 0.625rem;
 }
 
 .settings {
@@ -56,6 +66,12 @@
   border: none;
 }
 
+.disclaimer {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
 .settingTitle {
   font-size: 1.125rem;
   font-weight: 700;
@@ -74,6 +90,10 @@
   color: #fff;
   font-size: 1rem;
   font-weight: 600;
+}
+
+.button:disabled {
+  filter: brightness(0.5);
 }
 
 .usernameSection {

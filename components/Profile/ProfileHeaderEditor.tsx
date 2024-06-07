@@ -64,14 +64,16 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
 
     const handleProfilePicUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
+            setError('');
             const file = e.target.files[0];
-            setProfilePic(URL.createObjectURL(file));
-            setProfileFile(file);
 
             if (!validFileTypes.includes(file.type)) {
                 setError("File must be in JPG/PNG format")
                 return;
             }
+
+            setProfilePic(URL.createObjectURL(file));
+            setProfileFile(file);
         }
     };
 
@@ -84,12 +86,23 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        setError('');
 
         const data = {
             title: profileForm.title,
             github: profileForm.github,
             profilePic: user.profilePic,
             bannerPic: user.bannerPic,
+        }
+
+        if (data.title.length > 200) {
+            setError('Title must be less than 200 characters');
+            return;
+        }
+
+        if (data.github.length > 39) {
+            setError('Github Username must be less than 39 characters');
+            return;
         }
 
         if (profileFile) {
@@ -176,7 +189,7 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
                     <div className={styles.inputRow}>
                         <div className={styles.inputContainer}>
                             <div className={styles.inputTitle}>Title</div>
-                            <input className={styles.input} name='title' type='text' value={profileForm.title} onChange={handleChange} />
+                            <textarea className={styles.input} name='title' value={profileForm.title} onChange={handleChange} />
                         </div>
                         <div className={styles.inputContainer}>
                             <div className={styles.inputTitle}>Github Username</div>

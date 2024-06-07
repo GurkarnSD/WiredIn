@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { SettingsSession } from '@/types';
 import UAParser from 'ua-parser-js';
 import ConfirmationPopup from './ConfirmationPopup';
+import { toast } from 'sonner';
 
 async function checkNameChange(username: string) {
     const res = await fetch(`/api/user/username/?username=${username}&nameChange=true`);
@@ -26,30 +27,58 @@ export default function Settings(params: { user: User, currentSession: number, s
 
     const [username, setUsername] = useState(user.displayName);
     const [email, setEmail] = useState(user.email);
+    const [error, setError] = useState('');
 
     const [confirmationPopup, setConfirmationPopup] = useState(false);
     const [selectedSession, setSelectedSession] = useState<number>();
-    const [nameChangeAvailable, setNameChangeAvailable] = useState(null);
-    const [usernameAvailable, setUsernameAvailable] = useState(null);
+    const [nameChangeAvailable, setNameChangeAvailable] = useState(false);
+    const [usernameAvailable, setUsernameAvailable] = useState(false);
+
+    const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null);
+    const [isSearching, setIsSearching] = useState(false);
 
     useEffect(() => {
-        checkNameChange(user.displayName).then((data) => {
-            setNameChangeAvailable(data.available);
-        });
-        checkUsername(username).then((data) => {
-            setUsernameAvailable(data.available);
-        });
+        if (debounceTimeout) {
+            clearTimeout(debounceTimeout);
+        }
+
+        setIsSearching(true);
+
+        setDebounceTimeout(
+            setTimeout(() => {
+                if (username.length > 20) {
+                    setError('Username must be less than 20 characters');
+                    setUsernameAvailable(false);
+                } else {
+                    setError('');
+                    checkNameChange(user.displayName).then((data) => {
+                        setNameChangeAvailable(data.available);
+                    });
+                    checkUsername(username).then((data) => {
+                        setUsernameAvailable(data.available);
+                    });
+                }
+                setIsSearching(false);
+            }, 1000)
+        );
     }, [username]);
 
     async function saveChanges() {
         if (usernameAvailable && nameChangeAvailable) {
-            await fetch('/api/user/username', {
+            const res = await fetch('/api/user/username', {
                 method: 'POST',
                 body: JSON.stringify({
                     username: user.displayName,
                     newUsername: username
                 })
             });
+
+            if (!res.ok) {
+                toast.error('Failed to change username');
+                return;
+            }
+
+            toast.success('Username changed');
         }
     }
 
@@ -73,7 +102,10 @@ export default function Settings(params: { user: User, currentSession: number, s
                 <h1 className={styles.title}><FontAwesomeIcon icon={faCog} className={styles.settingsIcon} />Settings</h1>
             </div>
             <div className={styles.settingsSection}>
-                <h2 className={styles.sectionTitle}>General</h2>
+                <div className={styles.sectionHeader}>
+                    <h2>General</h2>
+                    {error && <div className={styles.error}>{error}</div>}
+                </div>
                 <div className={styles.settings}>
                     <div className={styles.setting}>
                         <h3 className={styles.settingTitle}>Username</h3>
@@ -84,16 +116,19 @@ export default function Settings(params: { user: User, currentSession: number, s
                                 : <FontAwesomeIcon icon={faXmark} className={styles.settingsIcon} />
                             }
                         </div>
+                        <div className={styles.disclaimer}>*Username can only be changed every 30 days</div>
                     </div>
                     <div className={styles.setting}>
                         <h3 className={styles.settingTitle}>Email</h3>
-                        <input className={styles.settingInput} value={email} onChange={(e) => setEmail(e.target.value)} />
+                        <input className={styles.settingInput} value={email} onChange={(e) => setEmail(e.target.value)} disabled />
                     </div>
                 </div>
-                <button className={styles.button} onClick={saveChanges}>Save Changes</button>
+                <button className={styles.button} onClick={saveChanges} disabled={isSearching || !nameChangeAvailable || !usernameAvailable}>Save Changes</button>
             </div>
             <div className={styles.settingsSessions}>
-                <h2 className={styles.sectionTitle}>Sessions</h2>
+                <div className={styles.sectionHeader}>
+                    <h2>Sessions</h2>
+                </div>
                 <div className={styles.sessions}>
                     {sessions.map((session) => {
                         const parser = new UAParser(session.userAgent);

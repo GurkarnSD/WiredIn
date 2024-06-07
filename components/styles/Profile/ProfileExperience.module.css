@@ -18,6 +18,7 @@
   font-size: 2.25rem;
   font-weight: 800;
   color: #000000;
+  cursor: default;
 }
 
 .modify {
@@ -47,6 +48,7 @@
   color: #000;
   display: flex;
   flex-direction: column;
+  word-wrap: break-word;
 }
 
 .experienceTop {
@@ -57,14 +59,21 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin-left: 1.25rem;
+}
+
+.experienceHeader {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  align-items: center;
 }
 
 .experienceTitle {
-  display: flex;
-  justify-content: space-between;
   font-size: 1.5rem;
   font-weight: 600;
+  flex: 1 1 auto;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .experienceBottom {
@@ -100,8 +109,11 @@
 }
 
 .icons {
+  margin: auto;
   display: flex;
+  align-self: center;
   gap: 1rem;
+  flex: 0 0 auto;
 }
 
 .editIcon {

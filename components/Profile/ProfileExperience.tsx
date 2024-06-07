@@ -73,8 +73,8 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
                                 />
                             }
                             <div className={styles.experienceInfo}>
-                                <div className={styles.experienceTitle}>
-                                    {experience.title}
+                                <div className={styles.experienceHeader}>
+                                    <div className={styles.experienceTitle} title={experience.title}>{experience.title}</div>
                                     {isEditExperiences &&
                                         <div className={styles.icons}>
                                             <FontAwesomeIcon className={styles.editIcon} icon={faPen} onClick={() => { setSelectedExperience(experience); setIsEditModalOpen(true) }} />

@@ -71,17 +71,35 @@ export default function ProfileExperienceEditor(params: { skills: UserSkill[], s
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-
+        setError('');
         setSubmitting(true);
 
         if (!expForm.title) {
-            setError('Title is required');
+            setError('Position Title is required');
+            setSubmitting(false);
+            return;
+        }
+
+        if (expForm.title.length > 50) {
+            setError('Position Title must be less than 50 characters');
+            setSubmitting(false);
+            return;
+        }
+
+        if (expForm.desc.length > 1000) {
+            setError('Description must be less than 1000 characters');
             setSubmitting(false);
             return;
         }
 
         if (!expForm.company) {
             setError('Company is required');
+            setSubmitting(false);
+            return;
+        }
+
+        if (expForm.company.length > 50) {
+            setError('Company must be less than 50 characters');
             setSubmitting(false);
             return;
         }

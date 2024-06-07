@@ -180,20 +180,21 @@ const getOptions = (req: NextRequest): NextAuthOptions => {
         };
       },
       signIn: async ({ user, account }) => {
-        if (account?.provider === "google" && user?.email) {
+        if (account?.provider === "google" && user?.email && user?.name) {
           let userExists = await prisma.user.findUnique({
             where: { email: user.email! },
           });
 
           if (!userExists) {
+            const namePart = user.name.split(" ")[0];
+            const randomNumbers = Math.floor(Math.random() * 9000) + 1000;
+            const displayName = (namePart + randomNumbers).substring(0, 20);
+
             const userData = {
               email: user.email.toLowerCase(),
-              displayName: `${user.name}${
-                Math.floor(Math.random() * 900000) + 100000
-              }`,
+              displayName: displayName,
             };
             userExists = await prisma.user.create({ data: userData });
-            console.log("User created:", userExists);
 
             const credentials = await prisma.credentials.create({
               data: {

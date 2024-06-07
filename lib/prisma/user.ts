@@ -90,13 +90,11 @@ async function changeDisplayNamePrisma(
 
   try {
     const result = await prisma.$transaction([
-      prisma.nameChange.upsert({
-        where: { name: oldName },
-        create: {
+      prisma.nameChange.create({
+        data: {
           name: newName,
           credentials: { connect: { userId } },
         },
-        update: { name: newName },
       }),
       prisma.user.update({
         where: { uid: userId, displayName: oldName },
@@ -114,7 +112,6 @@ async function changeDisplayNamePrisma(
 
 async function createUserPrisma(user: NewUser): Promise<boolean> {
   try {
-    console.log("Creating credentials:");
     // Check if email already exists
     const existingUserWithEmail = await prisma.user.findUnique({
       where: { email: user.email },
@@ -138,7 +135,6 @@ async function createUserPrisma(user: NewUser): Promise<boolean> {
       displayName: user.displayName,
     };
     const result = await prisma.user.create({ data: userData });
-    console.log("User created:", result);
 
     const authData = {
       password: user.password,
@@ -156,7 +152,6 @@ async function createUserPrisma(user: NewUser): Promise<boolean> {
         credsId: credentials.userId,
       },
     });
-    console.log("Token created:", token);
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -197,8 +192,6 @@ async function deleteUserPrisma(uid: string): Promise<UserProfile> {
 }
 
 async function getUserPrisma(uid: string, name: string): Promise<UserProfile> {
-  console.log("Finding user:", uid);
-
   try {
     if (uid !== "") {
       const result = await prisma.user.findUnique({
@@ -222,7 +215,6 @@ async function getUserPrisma(uid: string, name: string): Promise<UserProfile> {
           },
         },
       });
-      console.log("Found user:", result);
       if (result === null) {
         throw new Error("User not found");
       }
