@@ -47,7 +47,7 @@ export default function Settings(params: { user: User, currentSession: number, s
         setDebounceTimeout(
             setTimeout(() => {
                 if (username.length > 20) {
-                    setError('Username must be less than 20 characters');
+                    setError('Username must be 20 characters or less');
                     setUsernameAvailable(false);
                 } else {
                     setError('');

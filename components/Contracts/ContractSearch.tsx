@@ -10,32 +10,23 @@ import SelectOptions from '../SelectOptions';
 import Modal from '../Modal';
 import useSWR from 'swr';
 const fetcher = (url: string) => fetch(url).then(r => r.json())
+import { useSearchParams, useRouter } from 'next/navigation'
 
-const fetchContracts = async (page: number = 1, pageSize: number = 10) => {
-    const res = await fetch(`/api/contracts/?page=${page}&pageSize=${pageSize}`)
+const searchContracts = async (title: string, skills: string[], tags: string[], openFilterPanel: boolean, page: number = 1, pageSize: number = 10) => {
 
-    if (!res.ok) {
-        throw new Error("Failed to fetch contracts")
-    }
-
-    return res.json()
-}
-
-const searchContracts = async (title: string, skills: string[], tags: string[], page: number = 1, pageSize: number = 10,) => {
-
-    let url = `/api/contracts/search/?page=${page}&pageSize=${pageSize}`
+    let url = `/api/contracts/search?page=${page}&pageSize=${pageSize}`
 
     if (title.length > 0) {
-        url += `&title=${title}`;
+        url += `&title=${encodeURIComponent(title)}`;
     }
 
-    if (skills.length > 0) {
-        const skillsString = skills.join(',');
+    if (skills.length > 0 && openFilterPanel) {
+        const skillsString = encodeURIComponent(skills.join(','));
         url += `&skills=${skillsString}`;
     }
 
-    if (tags.length > 0) {
-        const tagsString = tags.join(',');
+    if (tags.length > 0 && openFilterPanel) {
+        const tagsString = encodeURIComponent(tags.join(','));
         url += `&tags=${tagsString}`;
     }
 
@@ -49,16 +40,37 @@ const searchContracts = async (title: string, skills: string[], tags: string[], 
 }
 
 export default function ContractSearch(params: { user: User }) {
-
+    const searchParams = useSearchParams();
+    const router = useRouter();
     const [contracts, setContracts] = useState<UserContract[]>([]);
-    const [page, setPage] = useState(1);
-    const [searchInput, setSearchInput] = useState('');
-    const [searchMode, setSearchMode] = useState(false);
-    const [openFilterPanel, setOpenFilterPanel] = useState(false);
+    const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
+    const searchInputParam = searchParams.get('title');
+    const [searchInput, setSearchInput] = useState(searchInputParam ? decodeURIComponent(searchInputParam) : '');
     const [showLoadMore, setShowLoadMore] = useState(false);
-    const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const skillsParam = searchParams.get('skills');
+    const [selectedSkills, setSelectedSkills] = useState<string[]>(
+        skillsParam ? decodeURIComponent(skillsParam).split(',') : []
+    );
+    const tagsParam = searchParams.get('tags');
+    const [selectedTags, setSelectedTags] = useState<string[]>(
+        tagsParam ? decodeURIComponent(tagsParam).split(',') : []
+    );
+    const [openFilterPanel, setOpenFilterPanel] = useState(selectedSkills.length > 0 || selectedTags.length > 0 ? true : false);
+
     const { user } = params;
+
+    useEffect(() => {
+        const fetchContracts = async () => {
+            const newContracts = await searchContracts(searchInput, selectedSkills, selectedTags, openFilterPanel, page);
+            if (newContracts.length < 10) {
+                setShowLoadMore(false);
+            } else {
+                setShowLoadMore(true);
+            }
+            setContracts(newContracts);
+        }
+        fetchContracts();
+    }, [searchParams]);
 
     const loadMoreContracts = async () => {
         setPage((prevPage) => prevPage + 1);
@@ -66,49 +78,41 @@ export default function ContractSearch(params: { user: User }) {
 
     useEffect(() => {
         const fetchMoreContracts = async () => {
-            if (!searchMode) {
-                const newContracts = await fetchContracts(page);
-                if (newContracts.length < 10) {
-                    setShowLoadMore(false);
-                } else {
-                    setShowLoadMore(true);
-                }
-                setContracts((prevContracts: UserContract[]) => [...prevContracts, ...newContracts]);
+            const newContracts = await searchContracts(searchInput, selectedSkills, selectedTags, openFilterPanel, page);
+            if (newContracts.length < 10) {
+                setShowLoadMore(false);
             } else {
-                const newContracts = await searchContracts(searchInput, selectedSkills, selectedTags, page);
-                if (newContracts.length < 10) {
-                    setShowLoadMore(false);
-                } else {
-                    setShowLoadMore(true);
-                }
-                setContracts((prevContracts: UserContract[]) => [...prevContracts, ...newContracts]);
+                setShowLoadMore(true);
             }
+            setContracts((prevContracts: UserContract[]) => [...prevContracts, ...newContracts]);
         }
-        fetchMoreContracts();
+        if (page > 1) {
+            fetchMoreContracts();
+        }
     }, [page]);
 
-    const handleSearch = async () => {
-        if (searchInput === '' && selectedSkills.length === 0 && selectedTags.length === 0) {
-            const newContracts = await fetchContracts(page);
-            setContracts(newContracts);
-            if (newContracts.length < 10) {
-                setShowLoadMore(false);
-            } else {
-                setShowLoadMore(true);
-            }
-            setSearchMode(false);
-        } else {
-            const newContracts = await searchContracts(searchInput, selectedSkills, selectedTags, page);
-            setContracts(newContracts);
-            if (newContracts.length < 10) {
-                setShowLoadMore(false);
-            } else {
-                setShowLoadMore(true);
-            }
-            setSearchMode(true);
+    const handleSearch = async (title: string, skills: string[], tags: string[], page: number = 1) => {
+        let url = '/contracts';
+
+        if (page > 1) {
+            url += `?page=${page}`;
         }
-        setPage(1);
-        return;
+
+        if (title.length > 0) {
+            url += `${url.includes('?') ? '&' : '?'}title=${encodeURIComponent(title)}`;
+        }
+
+        if (skills.length > 0 && openFilterPanel) {
+            const skillsString = encodeURIComponent(skills.join(','));
+            url += `${url.includes('?') ? '&' : '?'}skills=${skillsString}`;
+        }
+
+        if (tags.length > 0 && openFilterPanel) {
+            const tagsString = encodeURIComponent(tags.join(','));
+            url += `${url.includes('?') ? '&' : '?'}tags=${tagsString}`;
+        }
+
+        router.push(url);
     };
 
     return (
@@ -117,10 +121,10 @@ export default function ContractSearch(params: { user: User }) {
                 <div className={styles.headerRow}>
                     <div className={styles.searchBar}>
                         <FontAwesomeIcon icon={faMagnifyingGlass} className={styles.searchIcon} />
-                        <input className={styles.searchInput} type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Contract Title, Skills, or Technologies" />
+                        <input className={styles.searchInput} type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Contract Title" />
                         <FontAwesomeIcon icon={faFilter} className={styles.searchIcon} onClick={() => setOpenFilterPanel(!openFilterPanel)} />
                     </div>
-                    <button className={styles.searchButton} onClick={handleSearch}>Search Contracts</button>
+                    <button className={styles.searchButton} onClick={() => handleSearch(searchInput, selectedSkills, selectedTags)}>Search Contracts</button>
                 </div>
                 {openFilterPanel && <SearchFilters setSelectedSkills={setSelectedSkills} selectedSkills={selectedSkills} setSelectedTags={setSelectedTags} selectedTags={selectedTags} setOpenFilterPanel={setOpenFilterPanel} />}
                 <div className={styles.headerRow}>

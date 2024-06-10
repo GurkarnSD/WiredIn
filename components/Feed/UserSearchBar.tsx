@@ -1,18 +1,13 @@
-import styles from "../styles/Feed/Connect.module.css"
+'use client';
+import { useState, useEffect } from "react";
+import styles from "../styles/Feed/UserSearch.module.css"
 import Link from "next/link"
 import Image from "next/image"
-import { User, UserProfile } from "@/types"
-import UserSearch from "./UserSearch"
+import { UserProfile } from "@/types";
 
-const fetchRandomUsers = async (uid: string) => {
-    const res = await fetch(`${process.env.API_URL}/api/users/random?uid=${uid}`)
-
-    if (!res.ok) {
-        throw new Error("Failed to fetch users")
-    }
-
+async function searchUsers(query: string) {
+    const res = await fetch(`/api/users/search?query=${query}`);
     const data = await res.json();
-
     const updatedUsersData = await Promise.all(
         data.map(async (userData: UserProfile) => {
             if (userData.profilePic) {
@@ -37,20 +32,31 @@ const fetchProfileImage = async (profileKey: string) => {
     return profileURL;
 }
 
-export default async function Connect(params: { user: User }) {
+export default function UserSearchBar() {
 
-    const { user } = params;
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null);
+    const [searchResults, setSearchResults] = useState<UserProfile[]>([]);
 
-    const usersData = await fetchRandomUsers(user.uid);
+    useEffect(() => {
+        if (debounceTimeout) {
+            clearTimeout(debounceTimeout);
+        }
+
+        setDebounceTimeout(
+            setTimeout(() => {
+                searchUsers(searchQuery).then((data) => {
+                    setSearchResults(data);
+                });
+            }, 500)
+        );
+    }, [searchQuery]);
 
     return (
         <div className={styles.container}>
-            <div className={styles.header}>
-                <div className={styles.title}>Connect</div>
-                <UserSearch />
-            </div>
-            <div className={styles.usersContainer}>
-                {usersData.map((user: UserProfile) => (
+            <input className={styles.searchBar} name='search' placeholder="Search Users" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+            {searchResults.length > 0 && <div className={styles.resultsContainer}>
+                {searchResults.map((user: UserProfile) => (
                     <Link className={styles.userContainer} href={`/profile/${user.displayName}`} key={user.uid}>
                         <Image className={styles.userImage} src={user.profilePic} alt='User Image' width={65} height={65} />
                         <div className={styles.userInfo}>
@@ -60,6 +66,7 @@ export default async function Connect(params: { user: User }) {
                     </Link>
                 ))}
             </div>
+            }
         </div>
-    )
+    );
 }

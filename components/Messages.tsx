@@ -248,11 +248,21 @@ export default function Messages(params: { user: User }) {
                 </div>
                 <div className={styles.chatRooms}>
                     {chatRooms?.map((room: UserChatRoom, index: number) => {
-                        const chatRoomUser = room.users.filter((userInfo: { uid: string }) => userInfo.uid !== user.uid)[0];
+                        const chatRoomUser = room.users[0];
                         return (
                             <div key={index} className={`${styles.recipient} ${room.id === chatRoom?.id && styles.selectedChatRoom}`} onClick={() => setChatRoom(room)}>
-                                <Image className={styles.recipientImage} src={chatRoomUser.profilePic} alt="Recipient Profile Picture" width={50} height={50} />
-                                <div className={styles.recipientName}>{chatRoomUser.displayName}</div>
+                                {chatRoomUser ?
+                                    <>
+                                        <Image className={styles.recipientImageList} src={chatRoomUser.profilePic} alt="Recipient Profile Picture" width={50} height={50} />
+                                        <div className={styles.recipientName}>{chatRoomUser.displayName}</div>
+                                    </>
+                                    :
+                                    <>
+                                        <div className={styles.recipientImageList} />
+                                        <div className={styles.recipientName}>Deleted User</div>
+                                    </>
+                                }
+
                             </div>
                         )
                     })}
@@ -261,13 +271,20 @@ export default function Messages(params: { user: User }) {
             <div className={styles.messenger}>
                 {chatRoom?.users &&
                     <div className={styles.messageHeader}>
-                        <Link className={styles.userInfo} href={`/profile/${chatRoom.users[0].displayName}`}>
-                            <Image className={styles.recipientImage} src={chatRoom.users[0].profilePic} alt="Recipient Profile Picture" width={80} height={80} />
-                            <div className={styles.messageHeaderName}>{chatRoom.users[0].displayName}</div>
-                        </Link>
+                        {chatRoom.users.length > 0 ?
+                            <Link className={styles.userInfo} href={`/profile/${chatRoom.users[0].displayName}`}>
+                                <Image className={styles.recipientImageHeader} src={chatRoom.users[0].profilePic} alt="Recipient Profile Picture" width={80} height={80} />
+                                <div className={styles.messageHeaderName}>{chatRoom.users[0].displayName}</div>
+                            </Link>
+                            :
+                            <div className={styles.userInfo}>
+                                <div className={styles.recipientImageHeader} />
+                                <div className={styles.messageHeaderName}>Deleted User</div>
+                            </div>
+                        }
                         <div className={styles.messageHeaderStatus}>
-                            {onlineUsers.includes(chatRoom.users[0].uid) || numOnlineUsers > 1 ? <div className={styles.online} /> : <div className={styles.offline} />}
-                            {onlineUsers.includes(chatRoom.users[0].uid) || numOnlineUsers > 1 ? 'Online' : 'Offline'}
+                            {chatRoom.users.length > 0 && onlineUsers.includes(chatRoom.users[0].uid) || numOnlineUsers > 1 ? <div className={styles.online} /> : <div className={styles.offline} />}
+                            {chatRoom.users.length > 0 && onlineUsers.includes(chatRoom.users[0].uid) || numOnlineUsers > 1 ? 'Online' : 'Offline'}
                         </div>
                     </div>
                 }
@@ -313,22 +330,24 @@ export default function Messages(params: { user: User }) {
                         </Modal>
                     )}
                     {error && <div className={styles.error}>{error}</div>}
-                    <textarea className={styles.messageInput} aria-multiline name='input' value={message} placeholder="Type a message..." onChange={handleInputChange} />
-                    <div className={styles.inputControls}>
-                        <span>
-                            <FontAwesomeIcon className={styles.attachmentButton} icon={faImage} onClick={handleImageClick} />
-                            <input
-                                type="file"
-                                className={styles.imageInput}
-                                onChange={handleImageUpload}
-                                ref={imageInputRef}
-                                hidden
-                            />
-                        </span>
-                        <button className={styles.sendButton} onClick={() => handleSubmit()}>Send</button>
-                    </div>
+                    {chatRoom && <>
+                        <textarea className={styles.messageInput} aria-multiline name='input' value={message} placeholder="Type a message..." onChange={handleInputChange} />
+                        <div className={styles.inputControls}>
+                            <span>
+                                <FontAwesomeIcon className={styles.attachmentButton} icon={faImage} onClick={handleImageClick} />
+                                <input
+                                    type="file"
+                                    className={styles.imageInput}
+                                    onChange={handleImageUpload}
+                                    ref={imageInputRef}
+                                    hidden
+                                />
+                            </span>
+                            <button className={styles.sendButton} onClick={() => handleSubmit()}>Send</button>
+                        </div>
+                    </>}
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

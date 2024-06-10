@@ -15,9 +15,12 @@ export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const page = Number(searchParams.get("page") || 1);
   const pageSize = Number(searchParams.get("pageSize") || 10);
-  const title = searchParams.get("title") || "";
-  const skills = searchParams.get("skills")?.split(",") || [];
-  const tags = searchParams.get("tags")?.split(",") || [];
+  const titleParam = searchParams.get("title");
+  const title = titleParam ? decodeURIComponent(titleParam) : "";
+  const skillsParam = searchParams.get("skills");
+  const skills = skillsParam ? decodeURIComponent(skillsParam).split(",") : [];
+  const tagsParam = searchParams.get("tags");
+  const tags = tagsParam ? decodeURIComponent(tagsParam).split(",") : [];
   if (!userId) {
     return NextResponse.error();
   }

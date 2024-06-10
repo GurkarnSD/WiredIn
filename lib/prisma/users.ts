@@ -20,8 +20,6 @@ async function init() {
 })();
 
 async function getRandomUsersPrisma(uid: string): Promise<UserProfile[]> {
-  console.log("Fetching random users");
-
   try {
     const randomUsers = (await prisma.$queryRaw`
       SELECT * FROM "User"
@@ -38,4 +36,28 @@ async function getRandomUsersPrisma(uid: string): Promise<UserProfile[]> {
   }
 }
 
-export { getRandomUsersPrisma };
+async function searchUsersPrisma(
+  uid: string,
+  query: string
+): Promise<UserProfile[]> {
+  try {
+    const users = (await prisma.user.findMany({
+      where: {
+        uid: { not: uid },
+        displayName: {
+          contains: query,
+          mode: "insensitive",
+        },
+      },
+      take: 5,
+    })) as UserProfile[];
+
+    return users;
+  } catch (error) {
+    throw new Error("Unable to search for users");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export { getRandomUsersPrisma, searchUsersPrisma };

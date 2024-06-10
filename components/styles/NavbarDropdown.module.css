@@ -97,7 +97,7 @@
   display: none;
 }
 
-@media screen and (max-width: 51.25rem) {
+@media screen and (max-width: 50rem) {
   .links {
     display: block;
   }

@@ -860,6 +860,12 @@
   }
 }
 
+@media screen and (max-width: 50rem) {
+  .links {
+    display: none;
+  }
+}
+
 @media screen and (max-width: 56.25rem) {
   .profileBox {
     width: 100%;
@@ -964,10 +970,6 @@
 }
 
 @media screen and (max-width: 38.75rem) {
-  .links {
-    display: none;
-  }
-
   .additionalInfo {
     padding-left: 0rem;
   }

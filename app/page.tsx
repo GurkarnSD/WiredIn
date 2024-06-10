@@ -36,7 +36,7 @@ export default async function Home() {
               </Link>
             </div>
           }
-          {user ? <NavbarDropdown session={session} lightMode={true} nav /> : <div className={styles.headerButtons}><Link className={styles.signupButton} href='/signup'>Sign Up</Link><Link className={styles.loginButton} href='/login'>Log In</Link></div>}
+          {user ? <NavbarDropdown session={session} lightMode={true} /> : <div className={styles.headerButtons}><Link className={styles.signupButton} href='/signup'>Sign Up</Link><Link className={styles.loginButton} href='/login'>Log In</Link></div>}
         </div>
       </div>
       <div className={styles.mainSection}>
