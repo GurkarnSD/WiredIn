@@ -1,8 +1,8 @@
 import styles from '@/styles/Home.module.css'
 import Image from 'next/image';
-import AliceSmith from '@/assets/AliceSmith.jpg';
-import BobJohnson from '@/assets/BobJohnson.png';
-import CharlieBrown from '@/assets/CharlieBrown.jpg';
+import AliceSmith from '@/assets/AliceSmith.webp';
+import BobJohnson from '@/assets/BobJohnson.webp';
+import CharlieBrown from '@/assets/CharlieBrown.webp';
 
 export default function ContractsShowcase() {
     return (

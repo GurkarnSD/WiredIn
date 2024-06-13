@@ -36,7 +36,9 @@ type UserProfile = {
   title?: string | null;
   github?: string | null;
   profilePic: string;
+  profileURL?: string;
   bannerPic: string;
+  bannerURL?: string;
   createdAt: Date;
   updatedAt: Date;
   following?: UserProfile[];

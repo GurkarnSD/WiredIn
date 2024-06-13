@@ -153,12 +153,12 @@ async function searchContractsPrisma(
       take: pageSize,
     });
 
-    const imageCache: Record<string, string> = {};
+    const imageCache: Record<string, Promise<string>> = {};
 
     const updatedContracts = await Promise.all(
       contracts.map(async (contract) => {
         if (!imageCache[contract.user.profilePic]) {
-          imageCache[contract.user.profilePic] = await fetch(
+          imageCache[contract.user.profilePic] = fetch(
             `${process.env.API_URL}/api/image/${contract.user.profilePic}`
           )
             .then((res) => res.json())

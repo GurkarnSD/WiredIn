@@ -3,6 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { User, UserProfile } from "@/types"
 import UserSearch from "./UserSearch"
+import { getUserPresignedUrl } from "@/lib/aws/image"
 
 const fetchRandomUsers = async (uid: string) => {
     const res = await fetch(`${process.env.API_URL}/api/users/random?uid=${uid}`)
@@ -16,7 +17,7 @@ const fetchRandomUsers = async (uid: string) => {
     const updatedUsersData = await Promise.all(
         data.map(async (userData: UserProfile) => {
             if (userData.profilePic) {
-                const profileURL = await fetchProfileImage(userData.profilePic);
+                const profileURL = (await getUserPresignedUrl(userData.profilePic)).url;
                 return { ...userData, profilePic: profileURL };
             }
             return userData;
@@ -24,17 +25,6 @@ const fetchRandomUsers = async (uid: string) => {
     );
 
     return updatedUsersData
-}
-
-const fetchProfileImage = async (profileKey: string) => {
-    const res = await fetch(`${process.env.API_URL}/api/image/${profileKey}`);
-
-    if (!res.ok) {
-        throw new Error('Failed to Fetch Image Url')
-    }
-
-    const { url: profileURL } = await res.json();
-    return profileURL;
 }
 
 export default async function Connect(params: { user: User }) {

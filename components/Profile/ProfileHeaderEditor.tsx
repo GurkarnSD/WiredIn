@@ -5,9 +5,9 @@ import { useState, useRef, useEffect } from 'react'
 import { UserProfile } from '@/types';
 import { toast } from 'sonner';
 
-export default function ProfileHeaderEditor(params: { user: UserProfile, userImages: { bannerURL: string, profileURL: string }, setModal?: (isOpen: boolean) => void }) {
+export default function ProfileHeaderEditor(params: { user: UserProfile, setModal?: (isOpen: boolean) => void }) {
 
-    const { user, userImages, setModal } = params;
+    const { user, setModal } = params;
 
     const validFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
@@ -28,8 +28,8 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
     const bannerInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        setProfilePic(userImages.profileURL);
-        setBanner(userImages.bannerURL);
+        setProfilePic(user.profileURL || '');
+        setBanner(user.bannerURL || '');
         setProfileForm({
             title: user.title || '',
             github: user.github || '',
@@ -52,13 +52,14 @@ export default function ProfileHeaderEditor(params: { user: UserProfile, userIma
     const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const file = e.target.files[0];
-            setBanner(URL.createObjectURL(file));
-            setBannerFile(file);
 
             if (!validFileTypes.includes(file.type)) {
                 setError("File must be in JPG/PNG format")
                 return;
             }
+
+            setBanner(URL.createObjectURL(file));
+            setBannerFile(file);
         }
     };
 

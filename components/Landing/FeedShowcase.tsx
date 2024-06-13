@@ -1,15 +1,15 @@
 import styles from '@/styles/Home.module.css'
 import Image from 'next/image';
-import Software1 from '@/assets/Software1.png';
-import DataSci1 from '@/assets/DataSci1.png';
-import DataSci2 from '@/assets/DataSci2.png';
-import DataSci3 from '@/assets/DataSci3.png';
-import DataSci4 from '@/assets/DataSci4.png';
-import DataAn1 from '@/assets/DataAn1.png';
-import DataAn2 from '@/assets/DataAn2.png';
-import AliceSmith from '@/assets/AliceSmith.jpg';
-import BobJohnson from '@/assets/BobJohnson.png';
-import CharlieBrown from '@/assets/CharlieBrown.jpg';
+import Software1 from '@/assets/Software1.webp';
+import DataSci1 from '@/assets/DataSci1.webp';
+import DataSci2 from '@/assets/DataSci2.webp';
+import DataSci3 from '@/assets/DataSci3.webp';
+import DataSci4 from '@/assets/DataSci4.webp';
+import DataAn1 from '@/assets/DataAn1.webp';
+import DataAn2 from '@/assets/DataAn2.webp';
+import AliceSmith from '@/assets/AliceSmith.webp';
+import BobJohnson from '@/assets/BobJohnson.webp';
+import CharlieBrown from '@/assets/CharlieBrown.webp';
 
 export default function FeedShowcase() {
     return (

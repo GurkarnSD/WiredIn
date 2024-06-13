@@ -4,10 +4,15 @@ import NavbarDropdown from '@/components/NavbarDropdown'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { UserSession } from '@/types'
+import { getUserPresignedUrl } from '@/lib/aws/image'
 
 export default async function Navbar() {
 
-    const session = (await getServerSession(authOptions)) as UserSession;
+    let session = (await getServerSession(authOptions)) as UserSession;
+    if (session) {
+        const profilePic = (await getUserPresignedUrl(session?.user?.profilePic)).url as string;
+        session = { ...session, user: { ...session?.user, profilePic } };
+    }
 
     return (
         <>

@@ -6,6 +6,7 @@ import Post from '@/components/Post';
 import { PostComment, UserPost, UserSession } from "@/types";
 import { notFound, redirect } from 'next/navigation'
 import { Metadata } from 'next';
+import { getUserPresignedUrl } from "@/lib/aws/image";
 
 export async function generateMetadata(
     { params }: { params: { postId: string } },
@@ -17,8 +18,6 @@ export async function generateMetadata(
         title: `${postData.user.displayName} on WiredIn ${postData.text ? ": " + "\"" + postData.text + "\"" : ""}`
     }
 }
-
-export const revalidate = 0;
 
 const fetchPost = async (postId: string) => {
     try {
@@ -48,8 +47,10 @@ type PostCommentWithStats = PostComment & {
 
 export default async function PostPage({ params }: { params: { postId: string } }) {
 
-    const session = (await getServerSession(authOptions)) as UserSession;
-    if (!session) redirect('/')
+    let session = (await getServerSession(authOptions)) as UserSession;
+    if (!session) redirect('/');
+    const profilePic = (await getUserPresignedUrl(session?.user?.profilePic)).url as string;
+    session = { ...session, user: { ...session?.user, profilePic } };
     const postId = params.postId;
     const postData = await fetchPost(postId) as unknown as PostWithStats;
 

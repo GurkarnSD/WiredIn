@@ -8,30 +8,17 @@ import ProfileCard from "@/components/Feed/ProfileCard";
 import { UserSession } from "@/types";
 import { redirect } from "next/navigation";
 import { Metadata } from 'next';
+import { getUserPresignedUrl } from "@/lib/aws/image";
 
 export const metadata: Metadata = {
   title: 'Feed | WiredIn',
 };
 
-
-export const revalidate = 0;
-
-const fetchProfileImage = async (profileKey: string) => {
-  const res = await fetch(`${process.env.API_URL}/api/image/${profileKey}`);
-
-  if (!res.ok) {
-    throw new Error('Failed to Fetch Image Url')
-  }
-
-  const { url: profileURL } = await res.json();
-  return profileURL;
-}
-
 export default async function FeedPage() {
 
   let session = (await getServerSession(authOptions)) as UserSession;
   if (!session) redirect('/');
-  const profilePic = await fetchProfileImage(session?.user?.profilePic);
+  const profilePic = (await getUserPresignedUrl(session?.user?.profilePic)).url as string;
   session = { ...session, user: { ...session?.user, profilePic } };
 
   return (

@@ -1,12 +1,12 @@
 'use client';
 import styles from '@/styles/Home.module.css'
 import Image from 'next/image';
-import Amazon from '@/assets/Amazon.png';
-import Microsoft from '@/assets/Microsoft.png';
-import Meta from '@/assets/Meta.png';
-import Google from '@/assets/Google.png';
-import Netflix from '@/assets/Netflix.png';
-import Spotify from '@/assets/Spotify.png';
+import Amazon from '@/assets/Amazon.webp';
+import Microsoft from '@/assets/Microsoft.webp';
+import Meta from '@/assets/Meta.webp';
+import Google from '@/assets/Google.webp';
+import Netflix from '@/assets/Netflix.webp';
+import Spotify from '@/assets/Spotify.webp';
 import { useInView } from 'react-intersection-observer';
 
 export default function ProfileShowcase() {

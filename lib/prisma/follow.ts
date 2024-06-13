@@ -97,7 +97,7 @@ async function getFollowers(user: string, otherUser: string) {
     const updatedFollowers = await Promise.all(
       followers.map(async (user: UserProfile) => {
         if (!imageCache[user.profilePic]) {
-          imageCache[user.profilePic] = await fetch(
+          imageCache[user.profilePic] = fetch(
             `${process.env.API_URL}/api/image/${user.profilePic}`
           )
             .then((res) => res.json())

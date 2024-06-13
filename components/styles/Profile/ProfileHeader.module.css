@@ -17,15 +17,19 @@
   border-radius: 1.25rem 1.25rem 0 0;
 }
 
-.profilePicture {
+.profilePictureContainer {
   margin-top: -14rem;
   position: relative;
   top: 19rem;
   margin-left: 3.125rem;
+}
+
+.profilePicture {
   width: 14rem;
-  height: fit-content;
+  height: 14rem;
   border-radius: 7rem;
   border: 0.5rem solid #000000;
+  background-color: #d9d9d9;
 }
 
 .content {

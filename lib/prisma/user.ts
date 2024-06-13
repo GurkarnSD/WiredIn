@@ -1,9 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { prisma } from "./index";
 import { randomUUID } from "crypto";
-import { UserProfile, UserSession } from "@/types";
+import { UserProfile } from "@/types";
 import { Resend } from "resend";
 import ActivateTemplate from "@/emails/activate";
+import { getUserPresignedUrl } from "../aws/image";
 
 let client: PrismaClient | undefined;
 
@@ -205,7 +206,15 @@ async function getUserPrisma(uid: string, name: string): Promise<UserProfile> {
       if (result === null) {
         throw new Error("User not found");
       }
-      return result as UserProfile;
+
+      const profilePic = (await getUserPresignedUrl(result.profilePic)).url;
+      const bannerPic = (await getUserPresignedUrl(result.bannerPic)).url;
+
+      return {
+        ...result,
+        profileURL: profilePic,
+        bannerURL: bannerPic,
+      } as UserProfile;
     } else if (name !== "") {
       const result = await prisma.user.findFirst({
         where: { displayName: { contains: name, mode: "insensitive" } },
@@ -218,7 +227,15 @@ async function getUserPrisma(uid: string, name: string): Promise<UserProfile> {
       if (result === null) {
         throw new Error("User not found");
       }
-      return result as UserProfile;
+
+      const profilePic = (await getUserPresignedUrl(result.profilePic)).url;
+      const bannerPic = (await getUserPresignedUrl(result.bannerPic)).url;
+
+      return {
+        ...result,
+        profileURL: profilePic,
+        bannerURL: bannerPic,
+      } as UserProfile;
     } else {
       throw new Error("No UID or name provided");
     }

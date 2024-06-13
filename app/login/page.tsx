@@ -5,6 +5,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import Navbar from "@/components/Navbar"
 import { UserSession } from "@/types"
 import { Metadata } from 'next';
+import { getUserPresignedUrl } from "@/lib/aws/image"
 
 export const metadata: Metadata = {
     title: 'Login | WiredIn',
@@ -13,7 +14,11 @@ export const metadata: Metadata = {
 
 export default async function LoginPage() {
 
-    const session = (await getServerSession(authOptions)) as UserSession;
+    let session = (await getServerSession(authOptions)) as UserSession;
+    if (session) {
+        const profilePic = (await getUserPresignedUrl(session?.user?.profilePic)).url as string;
+        session = { ...session, user: { ...session?.user, profilePic } };
+    }
 
     return (
         <>

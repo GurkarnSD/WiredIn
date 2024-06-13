@@ -179,13 +179,14 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 1.5625rem;
+  flex-wrap: wrap;
 }
 
 .profilePic {
   height: 3.75rem;
   width: 3.75rem;
   border-radius: 50%;
-  margin-right: 2.5rem;
+  margin-right: 1rem;
   background-color: #ffffff;
 }
 

@@ -42,12 +42,6 @@ const unlikePost = async (postId: string) => {
     return res.json()
 }
 
-const fetchProfileImage = async (profileKey: string) => {
-    const response = await fetch(`/api/image/${profileKey}`);
-    const { url: profileURL } = await response.json();
-    return profileURL;
-}
-
 const calculateImageGrid = (images: string[]) => {
     let gridType = '';
 
@@ -195,7 +189,6 @@ type CommentResponseWithStats = CommentResponse & {
 export default function Post(params: { post: PostWithStats, user: User }) {
 
     const { post, user } = params;
-    const [profilePic, setProfilePic] = useState('');
     const [comments, setComments] = useState<PostCommentWithStats[]>([]);
     const [responses, setResponses] = useState<Record<number, CommentResponseWithStats[]>>({});
     const [openResponses, setOpenResponses] = useState<Record<number, boolean>>({});
@@ -221,14 +214,6 @@ export default function Post(params: { post: PostWithStats, user: User }) {
             [commentId]: set ? set : !prev[commentId],
         }));
     };
-
-    useEffect(() => {
-        const fetchImage = async () => {
-            const image = await fetchProfileImage(user.profilePic);
-            setProfilePic(image);
-        };
-        if (user) fetchImage();
-    }, [user?.profilePic]);
 
     useEffect(() => {
         const getComments = async () => {
@@ -725,7 +710,7 @@ export default function Post(params: { post: PostWithStats, user: User }) {
                         </>
                     }
                     <div className={styles.commentInput}>
-                        <Image className={styles.profilePic} src={profilePic} width={50} height={50} alt='Profile Pic' />
+                        <Image className={styles.profilePic} src={user.profilePic} width={50} height={50} alt='Profile Pic' />
                         <textarea className={styles.addComment} placeholder={selectedComment && 'Post a response...' || editComment && 'Edit a comment...' || editResponse && 'Edit a response...' || 'Post a comment...'} name='input' value={input} onChange={handleInputChange} />
                         <div className={`${styles.charCount} ${charCount > maxChars && styles.overMaxChars}`}>{charCount}/{maxChars}</div>
                         <FontAwesomeIcon className={styles.sendComment} icon={faPaperPlane} onClick={!editComment && !editResponse ? handleSubmit : handleUpdateSubmit} />

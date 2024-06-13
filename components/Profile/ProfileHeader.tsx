@@ -55,16 +55,6 @@ const messageUser = async (pageUserId: string) => {
     return res.json()
 }
 
-const fetchHeaderImages = async (bannerKey: string, profileKey: string) => {
-    const response1 = await fetch(`/api/image/${bannerKey}`);
-    const { url: bannerURL } = await response1.json();
-
-    const response2 = await fetch(`/api/image/${profileKey}`);
-    const { url: profileURL } = await response2.json();
-
-    return { bannerURL, profileURL };
-}
-
 const checkFollowing = async (pageUserId: string) => {
     const res = await fetch(`/api/follow?otherUser=${pageUserId}`)
 
@@ -84,23 +74,9 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
     const [isFollowing, setIsFollowing] = useState(false);
     const { push } = useRouter();
 
-    const [headerImages, setHeaderImages] = useState({
-        bannerURL: '',
-        profileURL: '',
-    });
-
     const handleOpenModal = () => {
         setIsModalOpen(true);
     };
-
-    useEffect(() => {
-        const fetchImages = async () => {
-            const images = await fetchHeaderImages(pageUser.bannerPic, pageUser.profilePic);
-            setHeaderImages(images);
-        };
-
-        fetchImages();
-    }, [pageUser.bannerPic, pageUser.profilePic]);
 
     useEffect(() => {
         const checkIfFollowing = async () => {
@@ -115,19 +91,21 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
 
     return (
         <div className={styles.outerContainer}>
-            <Image className={styles.profilePicture} src={headerImages.profileURL} alt={""} width={224} height={224} unoptimized />
+            <div className={styles.profilePictureContainer}>
+                <Image className={styles.profilePicture} src={pageUser.profileURL || ''} alt={""} width={224} height={224} unoptimized />
+            </div>
             <div className={styles.innerContainer}>
-                <Image className={styles.banner} src={headerImages.bannerURL} alt={""} height={0} width={0} unoptimized />
+                <Image className={styles.banner} src={pageUser.bannerURL || ''} alt={""} height={0} width={0} unoptimized />
                 <div className={styles.icons}>
                     {pageUser.github ? (
                         <Link href={`https://github.com/${pageUser.github}`} target="_blank" rel="noopener noreferrer">
-                            <FontAwesomeIcon className={styles.icon} icon={faGithub} />
+                            <FontAwesomeIcon className={styles.icon} icon={faGithub} height={30} width={30} />
                         </Link>
                     ) : (
                         <div className={styles.iconPlaceholder}></div>
                     )}
                     {user?.uid === pageUser?.uid &&
-                        <FontAwesomeIcon className={styles.iconEdit} icon={faEdit} onClick={handleOpenModal} />
+                        <FontAwesomeIcon className={styles.iconEdit} icon={faEdit} onClick={handleOpenModal} height={30} width={30} />
                     }
                 </div>
                 <div className={styles.content}>
@@ -160,7 +138,7 @@ export default function ProfileHeader(params: { pageUser: UserProfile, user: Use
 
                 {isModalOpen && (
                     <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} backIcon disableClickOff>
-                        <ProfileHeaderEditor user={pageUser} userImages={headerImages} setModal={setIsModalOpen} />
+                        <ProfileHeaderEditor user={pageUser} setModal={setIsModalOpen} />
                     </Modal>
                 )}
 

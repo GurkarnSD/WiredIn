@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useState } from 'react';
 import { signIn, signOut } from 'next-auth/react'
 import Image from 'next/image';
-import defaultProfile from '@/assets/defaultProfilePic.png'
 import { useRouter } from 'next/navigation'
 import { User } from '@/types';
 
@@ -76,7 +75,7 @@ export default function Login({ user }: { user: User | null }) {
                 <div className={styles.wiredIn}>WiredIn</div>
                 <form className={styles.loggedInInfo}>
                     <div className={styles.currentUser}>
-                        <Image className={styles.profilePic} src={defaultProfile} alt="" />
+                        <Image className={styles.profilePic} src={user.profilePic} alt="" width={60} height={60} unoptimized />
                         <div className={styles.displayName}>{user.displayName}</div>
                     </div>
                 </form>

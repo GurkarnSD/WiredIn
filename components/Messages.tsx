@@ -3,7 +3,6 @@ import styles from "./styles/Messages.module.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faComment, faImage, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useState, useEffect, useRef } from "react"
-import { pusherClient } from "@/lib/pusher";
 import Image from "next/image";
 import useSWR from 'swr';
 const fetcher = (url: string) => fetch(url).then(r => r.json());
@@ -13,6 +12,13 @@ import axios from "axios";
 import { ChatMessage, User, UserChatRoom } from "@/types";
 import { Members } from "pusher-js";
 import Link from "next/link";
+import Pusher from "pusher-js/types/src/core/pusher";
+
+let pusherClient: Pusher;
+
+import('@/lib/pusher').then((Pusher) => {
+    pusherClient = Pusher.pusherClient
+});
 
 const fetchChatMessages = async (chatRoomId: string) => {
     const response = await fetch(`/api/message?chatRoomId=${chatRoomId}`);

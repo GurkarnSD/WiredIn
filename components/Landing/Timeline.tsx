@@ -13,7 +13,7 @@ function ProfileTimeline() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-            <FontAwesomeIcon className={styles.timelineIcon} icon={faBolt} />
+            <FontAwesomeIcon className={styles.timelineIcon} icon={faBolt} height={50} width={50} />
             <div className={`${styles.profileTimeline} ${profileInView ? styles.fadeIn : ''}`} ref={profileRef} />
         </div>
     )
@@ -27,7 +27,7 @@ function FeedTimeline() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-            <FontAwesomeIcon className={styles.timelineIcon} icon={faPlug} />
+            <FontAwesomeIcon className={styles.timelineIcon} icon={faPlug} height={50} width={50} />
             <div className={`${styles.feedTimeline} ${feedInView ? styles.fadeIn : ''}`} ref={feedRef} />
         </div>
     )
@@ -41,7 +41,7 @@ function ContractsTimeline() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-            <FontAwesomeIcon className={styles.timelineIcon} icon={faFileContract} />
+            <FontAwesomeIcon className={styles.timelineIcon} icon={faFileContract} height={50} width={50} />
             <div className={`${styles.contractsTimeline} ${contractsInView ? styles.fadeIn : ''}`} ref={contractsRef} />
         </div>
     )
@@ -55,7 +55,7 @@ function JobsTimeline() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-            <FontAwesomeIcon className={styles.timelineIcon} icon={faSuitcase} />
+            <FontAwesomeIcon className={styles.timelineIcon} icon={faSuitcase} height={50} width={50} />
             <div className={`${styles.jobsTimeline} ${jobsInView ? styles.fadeIn : ''}`} ref={jobsRef} />
         </div>
     )
@@ -64,7 +64,7 @@ function JobsTimeline() {
 function ClosingTimeline() {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-            <FontAwesomeIcon className={styles.timelineIcon} icon={faCircleDot} />
+            <FontAwesomeIcon className={styles.timelineIcon} icon={faCircleDot} height={50} width={50} />
             <div className={styles.timelinePlaceHolder} />
         </div>
     )
