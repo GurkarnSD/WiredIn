@@ -6,7 +6,7 @@ import ProfileProjectsEditor from './ProfileProjectsEditor';
 import Modal from '../../components/Modal';
 import useSWR, { mutate } from 'swr';
 import Link from 'next/link';
-import { User, UserProfile, UserProject } from '@/types';
+import { User, UserProfile, UserProject, UserSkill } from '@/types';
 import { toast } from 'sonner'
 import ConfirmationPopup from '../ConfirmationPopup';
 const fetcher = (url: string) => fetch(url).then(r => r.json())
@@ -78,9 +78,17 @@ export default function ProfileProjects(params: { pageUser: UserProfile, user: U
                             }
                         </div>
                         <div className={styles.projectDate}>{new Date(project.start).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}{project.current ? " - Present" : project.end && " - " + new Date(project.end).toLocaleDateString('en-US', { year: 'numeric', month: 'short', timeZone: 'UTC' })}</div>
+                        {project.skills && project.skills.length > 0 &&
+                            <div className={styles.skills}>
+                                <div>Skills:&nbsp;</div>
+                                {project.skills?.map((skill: UserSkill, index: number) => (
+                                    <div className={styles.skill} key={skill.id}>{skill.name}{index !== (project.skills ?? []).length - 1 && ','}&nbsp;</div>
+                                ))}
+                            </div>
+                        }
                         <div className={styles.projectDescription}>
                             <ul>
-                                {project?.description?.split('.').map((point: string, index: number) => (
+                                {project?.description?.split('.\n').map((point: string, index: number) => (
                                     point !== " " && point !== "" && <li key={index}>{point.trim()}</li>
                                 ))}
                             </ul>

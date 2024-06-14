@@ -98,7 +98,7 @@ export default function ProfileExperience(params: { pageUser: UserProfile, user:
                             <div className={styles.experienceBottom}>
                                 <div className={styles.experienceDescription}>
                                     <ul>
-                                        {experience?.description?.split('.').map((point: string, index: number) => (
+                                        {experience?.description?.split('.\n').map((point: string, index: number) => (
                                             point !== " " && point !== "" && <li key={index}>{point.trim()}</li>
                                         ))}
                                     </ul>

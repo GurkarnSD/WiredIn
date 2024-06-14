@@ -23,6 +23,7 @@ async function getProjectsPrisma(userId: string) {
     const skills = await prisma.project.findMany({
       where: { userId },
       include: { skills: true },
+      orderBy: { start: "desc" },
     });
     return skills;
   } catch (error) {

@@ -65,6 +65,17 @@
   white-space: nowrap;
 }
 
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+
+.skill {
+  font-weight: 400;
+}
+
 .projectIcon {
   font-size: 1.25rem;
   margin-left: 0.3125rem;

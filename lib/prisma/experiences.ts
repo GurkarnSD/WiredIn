@@ -23,6 +23,7 @@ async function getExperiencesPrisma(userId: string) {
     const experiences = await prisma.experience.findMany({
       where: { userId },
       include: { skills: true },
+      orderBy: { start: "desc" },
     });
 
     const updatedExperiences = await Promise.all(
