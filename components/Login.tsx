@@ -46,6 +46,9 @@ export default function Login({ user }: { user: User | null }) {
                 case 'User not found':
                     setError('User not found')
                     break;
+                case 'Login with provider':
+                    setError('Use Google To Log In')
+                    break;
                 case 'Incorrect password':
                     setError('Incorrect password')
                     break;
@@ -97,7 +100,7 @@ export default function Login({ user }: { user: User | null }) {
                     <div className={styles.dividerText}>OR</div>
                     <div className={styles.dividerLine}></div>
                 </div>
-                <button className={styles.googleButton} type="button" onClick={() => signIn('google')}>Log In With&nbsp;
+                <button className={styles.googleButton} type="button" onClick={() => signIn('google', { callbackUrl: '/feed' })}>Log In With&nbsp;
                     <span className={styles.googleBlue}>G</span>
                     <span className={styles.googleRed}>o</span>
                     <span className={styles.googleYellow}>o</span>

@@ -39,6 +39,10 @@ const getOptions = (req: NextRequest): NextAuthOptions => {
             },
           });
 
+          if (loginInfo?.password === "EXTERNAL_PROVIDER") {
+            throw new Error("Login with provider");
+          }
+
           if (!loginInfo?.ActivateToken?.activatedAt) {
             const token = await prisma.activateToken.upsert({
               where: { credsId: user.uid },
