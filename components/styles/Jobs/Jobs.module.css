@@ -45,6 +45,7 @@
 }
 
 .searchButton {
+  color: #fff;
   background-color: #0096ff;
   height: 3.75rem;
   width: 12.5rem;
@@ -67,6 +68,7 @@
 }
 
 .jobsButton {
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
