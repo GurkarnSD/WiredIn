@@ -75,6 +75,7 @@
 .mainHook {
   font-size: 5rem;
   font-weight: 800;
+  color: #fff;
 }
 
 .mainSub {
@@ -83,6 +84,7 @@
   font-size: 1.875rem;
   font-weight: 500;
   width: 31.25rem;
+  color: #fff;
 }
 
 .mainButtons {
